@@ -113,15 +113,15 @@ class FileSystem {
    */
   bool deleteFile(const std::string& filepath, int user, int group);
   
-  
-  bool openFile(std::string filepath, int user, int group);
   /**
-   * @brief Close a File
-   * @param filepath Path of the File that is trying to be closed
-   * @param user User trying to close the File
-   * @param group Group of the user trying to close the File
+   * @brief Open a File
+   * @param filepath Path of the File that is trying to be opened
+   * @param user User trying to open the File
+   * @param group Group of the user trying to open the File
    * @return True on success, false on failure.
    */
+  bool openFile(std::string filepath, int user, int group);
+ 
 
   /*
   * DIRECTORY MANAGEMENT METHODS
