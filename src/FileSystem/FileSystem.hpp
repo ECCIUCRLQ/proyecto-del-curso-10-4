@@ -139,7 +139,7 @@ class FileSystem {
    * @param group Group of the user trying to check the File
    * @return True on success, false on failure.
    */
-  bool isOpen(std::string filepath, int user, int group);
+  bool isFileOpen(std::string filepath, int user, int group);
  
 
   /*
