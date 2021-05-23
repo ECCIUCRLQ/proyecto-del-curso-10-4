@@ -151,3 +151,22 @@ bool FileSystem::openFile(std::string filepath, int user, int group){
 	
 	return opened;
 }
+
+bool FileSystem::closeFile(std::string filepath, int user, int group){
+	bool closed = false;
+	if(search(filepath) != nullptr){
+		search(filepath)->close();
+		closed = true;
+	}
+	
+	return closed;
+}
+
+bool FileSystem::isFileOpen(std::string filepath, int user, int group){
+	bool fileOpen = false;
+	if(search(filepath) != nullptr){
+		fileOpen = search(filepath)->isOpen();
+	}
+	return fileOpen;
+}
+
