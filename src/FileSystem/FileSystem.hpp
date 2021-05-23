@@ -141,8 +141,6 @@ class FileSystem {
    */
   bool isOpen(std::string filepath, int user, int group);
  
- 
- 
 
   /*
   * DIRECTORY MANAGEMENT METHODS
