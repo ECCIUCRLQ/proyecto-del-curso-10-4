@@ -65,6 +65,14 @@ class Bitmap {
    * @return True on success, false otherwise
    */
   bool setBlockAs(size_t block, bool status);
+
+  /**
+   * @brief Reserves an amount of blocks.
+   * @details Tries to reserve the max amount of contiguous blocks
+   * @param amountOfBlocks amount of blocks to reserve
+   * @return a vector containing the contigous portions of blocks reserved
+   */
+  std::vector<std::pair<size_t, size_t>> reserveBlocks(size_t amountOfBlocks);
 };
 
 

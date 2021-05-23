@@ -8,6 +8,9 @@ Bitmap::Bitmap(size_t size) : amountOfBlocks(size) {
 
   // Reserves 'bytes' bytes for the array
   this->blocks.resize(bytes);
+
+  // Sets the first block as used
+  this->setBlockAs(0, BITMAP_USED_BLOCK);
 }
 
 Bitmap::~Bitmap() {
@@ -89,5 +92,36 @@ size_t Bitmap::firstFreeBlock() {
     }
   }
   
+  return ret;
+}
+
+std::vector<std::pair<size_t, size_t>> Bitmap::reserveBlocks(size_t amountOfBlocks) {
+  std::vector<std::pair<size_t, size_t>> ret;
+
+  size_t reserved = 1;
+  bool noSpace = false;
+
+  while (reserved < amountOfBlocks && !noSpace) {
+    size_t first = this->firstFreeBlock();
+    if (first != 0) {
+      size_t second = first;
+
+      // Gets a contiguous portion of blocks
+      while (this->blockIsFree(second + 1) && reserved < amountOfBlocks) {
+        ++second;
+        ++reserved;
+      }
+
+      // Sets the blocks as used
+      for (size_t i = first; i <= second; ++i) {
+        this->setBlockAs(i, BITMAP_USED_BLOCK);
+      }
+      
+      ret.push_back(std::make_pair(first, second));
+    } else {
+      noSpace = true;
+    }
+  }
+
   return ret;
 }
