@@ -44,7 +44,7 @@ void enviarMensaje(char* mensaje, char* host){
   //inet_ntoa(); está definida en <arpa/inet.h>
   
   //buffer es el mensaje a  enviar
-  fgets(buffer, 100, stdin);
+  buffer = mensaje;
   send(conexion, buffer, 100, 0); //envio
   bzero(buffer, 100);
   recv(conexion, buffer, 100, 0); //recepción
