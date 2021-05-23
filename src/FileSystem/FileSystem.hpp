@@ -122,6 +122,27 @@ class FileSystem {
    */
   bool openFile(std::string filepath, int user, int group);
  
+ 
+  /**
+   * @brief Close  a File
+   * @param filepath Path of the File that is trying to be closed
+   * @param user User trying to close the File
+   * @param group Group of the user trying to close the File
+   * @return True on success, false on failure.
+   */
+  bool closeFile(std::string filepath, int user, int group);
+ 
+   /**
+   * @brief Check if a File is open
+   * @param filepath Path of the File that is trying to be checked
+   * @param user User trying to check if  the File open 
+   * @param group Group of the user trying to check the File
+   * @return True on success, false on failure.
+   */
+  bool isOpen(std::string filepath, int user, int group);
+ 
+ 
+ 
 
   /*
   * DIRECTORY MANAGEMENT METHODS
