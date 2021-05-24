@@ -16,7 +16,7 @@ class Bitmap {
    * @brief Array of blocks of a File System.
    * @details Each bit of the array represents one block. 0 means it's free, 1 otherwise.
    */
-  std::vector<unsigned char> blocks;
+  std::vector<char> blocks;
 
  public:
   /**

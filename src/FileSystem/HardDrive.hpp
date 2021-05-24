@@ -17,7 +17,7 @@ class HardDrive {
   /**
    * @brief Stores all the data in the Hard Drive
    */
-  std::vector<unsigned char> data;
+  std::vector<char> data;
 
  public:
   /**
@@ -43,7 +43,9 @@ class HardDrive {
    * @param pos Requested position of the Hard Drive
    * @return A pointer to the requested position. Nullptr if the position cannot be accessed
    */
-  unsigned char* getPos(const size_t& pos);
+  char* getPos(const size_t& pos);
+
+  void print();
 };
 
 

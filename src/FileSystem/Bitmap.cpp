@@ -101,6 +101,11 @@ std::vector<std::pair<size_t, size_t>> Bitmap::reserveBlocks(size_t amountOfBloc
   size_t reserved = 1;
   bool noSpace = false;
 
+  if (amountOfBlocks == 1) {
+    size_t first = this->firstFreeBlock();
+    ret.push_back(std::make_pair(first, first));
+  }
+
   while (reserved < amountOfBlocks && !noSpace) {
     size_t first = this->firstFreeBlock();
     if (first != 0) {
