@@ -8,7 +8,7 @@
 #include<netdb.h>
 int main(){
   
-  string puerto = "";
+  int puerto = "";
   int conexion_servidor, conexion_cliente;
   socklen_t longc; 
   struct sockaddr_in servidor, cliente;
