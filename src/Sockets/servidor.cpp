@@ -9,7 +9,7 @@
 void recibirMensaje(int puerto){
   
   
-  int conexion_servidor, conexion_cliente, puerto; //declaramos las variables
+  int conexion_servidor, conexion_cliente; //declaramos las variables
   socklen_t longc; //Debemos declarar una variable que contendrá la longitud de la estructura
   struct sockaddr_in servidor, cliente;
   char buffer[100]; //Declaramos una variable que contendrá los mensajes que recibamos
