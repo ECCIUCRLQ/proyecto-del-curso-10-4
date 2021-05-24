@@ -6,7 +6,7 @@
 #include<sys/socket.h>
 #include<netinet/in.h>
 #include<netdb.h>
-void enviarMensaje(char* mensaje, char* host){
+void enviarMensaje(char* mensaje, string host){
   
 
   struct sockaddr_in cliente;
