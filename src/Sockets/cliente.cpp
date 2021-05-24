@@ -6,9 +6,9 @@
 #include<sys/socket.h>
 #include<netinet/in.h>
 #include<netdb.h>
-void enviarMensaje(char* mensaje, string host){
-  
 
+int main(){
+  
   struct sockaddr_in cliente;
   struct hostent *servidor;
   servidor = gethostbyname(host); 
@@ -43,4 +43,6 @@ void enviarMensaje(char* mensaje, string host){
   bzero(buffer, 100);
   recv(conexion, buffer, 100, 0); //recepción
   printf("%s", buffer);
+  
+  return 0;
 }
