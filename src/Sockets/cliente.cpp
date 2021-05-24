@@ -9,6 +9,9 @@
 
 int main(){
   
+  string host= " ";
+  char* mensaje;
+
   struct sockaddr_in cliente;
   struct hostent *servidor;
   servidor = gethostbyname(host); 
