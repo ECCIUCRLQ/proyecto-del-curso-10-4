@@ -51,7 +51,7 @@ int main(){
   }
   else{
     printf("%s\n", buffer);
-    bzero((char *)&buffer, sizeof(buffer));
+    bzero((char *)&buffer, sizeof(buffer));  //La función bzero() es como memset()
     send(conexion_cliente, "Recibido\n", 13, 0);
   }
   close(conexion_servidor);
