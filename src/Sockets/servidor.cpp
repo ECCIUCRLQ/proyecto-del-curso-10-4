@@ -6,9 +6,9 @@
 #include<arpa/inet.h>
 #include<netinet/in.h>
 #include<netdb.h>
-void recibirMensaje(int puerto){
+int main(){
   
-  
+  string puerto = "";
   int conexion_servidor, conexion_cliente;
   socklen_t longc; 
   struct sockaddr_in servidor, cliente;
