@@ -20,7 +20,7 @@ void enviarMensaje(char* mensaje, string host){
   int puerto, conexion;
   char buffer[100];
   conexion = socket(AF_INET, SOCK_STREAM, 0); 
-  bzero((char *)&cliente, sizeof((char *)&cliente)); 
+  bzero((char *)&cliente, sizeof((char *)&cliente)); //La función bzero() es como memset() pero inicializando a 0 todas la variables
         
   cliente.sin_family = AF_INET; 
   cliente.sin_port = htons(puerto); 
