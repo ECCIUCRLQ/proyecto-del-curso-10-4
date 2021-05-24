@@ -1,5 +1,6 @@
 #include "FileSystem.hpp"
 
+#include <cstring>
 #include <iostream>
 
 FileSystem::FileSystem(const size_t& size, HardDrive* drive) : size(size),
@@ -59,23 +60,85 @@ bool FileSystem::createFile(std::string fileName, int user, int group) {
   return created;
 }
 
-bool FileSystem::writeFile(std::string filepath, char* data, int user, int group) {
-  // Busca el archivo
-  // Abre el archivo
-  // Medir el largo de data
-  // Calcular cuántos bloques necesita para almacenar data
-  // Se va a la última porción del archivo
-  // Busca el primer byte disponible [calculado a partir de size]
-  // Empieza a escribir bytes hasta llegar al final del bloque
+bool FileSystem::writeFile(std::string filepath, unsigned char* data, size_t len, int user, int group) {
+  bool ret = false;
 
-  // Cuando llega al final del bloque:
-  // Pregunta si el siguiente bloque está disponible:
-    // Si el siguiente está disponible, lo agrega al "portion" actual
+  // Search for the File
+  if (this->search(filepath)) {
+    // Opens the File
+    if (this->openFile(filepath, user, group)) {
+      // Calculates the amount of blocks needed for the file
+      size_t blocksNeeded = len / BLOCK_SIZE;
 
-  // Si el siguiente bloque no está disponible:
-    // Empieza a escribir en el próximo bloque vacío
-    // Agregar un nuevo "portion" al archivo
-  return true;
+      // Reserves blocks for the data
+      auto portions = this->spaceBitmap->reserveBlocks(blocksNeeded);
+
+      // Divides the data in chunks for each portion
+      size_t pos = 0;
+      for (auto p : portions) {
+        size_t chunkSize = (p.second - p.first + 1) * BLOCK_SIZE;
+
+        if (pos + chunkSize > len) {
+          chunkSize = chunkSize % len;
+        }
+
+        unsigned char* chunk = new unsigned char[chunkSize];
+        std::memcpy(chunk, &data[pos], chunkSize);
+
+        delete[] chunk;
+        pos += chunkSize;
+      }
+    }
+  }
+
+  return ret;
+}
+
+bool FileSystem::writeFile(size_t block, unsigned char* data, size_t len) {
+  bool ret = false;
+
+  if (len > 0) {
+    // Calculates how many blocks are needed to store data
+    size_t amountOfBlocks = len / BLOCK_SIZE;
+    size_t count = 0;
+
+    // Writes the first n-1 full blocks
+    for (size_t i = 0; i < amountOfBlocks - 1; ++i) {
+      unsigned char chunk[BLOCK_SIZE];
+      std::memcpy(chunk, &data[count * BLOCK_SIZE], BLOCK_SIZE);
+      this->writeBlock(block * count, chunk, BLOCK_SIZE);
+      ++count;
+    }
+
+    // Writes the last block (either if it's full or not)
+    unsigned char chunk[BLOCK_SIZE];
+    std::memcpy(chunk, &data[count * BLOCK_SIZE], len % BLOCK_SIZE);
+
+    ret = true;
+  }
+  
+  return ret;
+}
+
+bool FileSystem::writeBlock(size_t block, unsigned char* data, size_t len) {
+  bool ret = false;
+
+  if (block < this->spaceBitmap->getAmountOfBlocks()) {
+    // Calculates the pos of the block
+    size_t pos = block * BLOCK_SIZE;
+
+    // Gets the first byte for the block
+    unsigned char* storage = this->hardDrive->getPos(pos);
+
+    // Write len bytes on storage
+    for (size_t i = 0; i < len; ++i) {
+      storage[i] = data[i];
+    }
+
+    ret = true;
+  }
+
+  return ret;
 }
 
 File* FileSystem::search(const std::string& filePath) {

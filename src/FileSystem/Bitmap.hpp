@@ -35,6 +35,13 @@ class Bitmap {
    */
   ~Bitmap();
 
+ public:
+  /**
+   * @brief Returns the value of amountOfBlocks
+   * @return The value of amountOfBlocks
+   */
+  size_t getAmountOfBlocks();
+
  private:
   /**
    * @brief Verifies if a block is free or not

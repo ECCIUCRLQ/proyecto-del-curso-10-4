@@ -92,7 +92,7 @@ class FileSystem {
    * @param group Group of the user trying to access the File
    * @return True on success, false on failure or access not granted
    */
-  bool writeFile(std::string filepath, char* data, int user, int group);
+  bool writeFile(std::string filepath, unsigned char* data, size_t len, int user, int group);
 
   /**
    * @brief Append some data to a File
@@ -155,10 +155,12 @@ class FileSystem {
   * FILE SYSTEM UTILS
   */
  private:
+  bool writeFile(size_t block, unsigned char* data, size_t len);
+  bool writeBlock(size_t block, unsigned char* data, size_t len);
   File* search(std::vector<std::string>* splitPath, size_t pos, Directory* directory);
+  char* getBlock(size_t pos);
  public:
   File* search(const std::string& filepath);
-  char* getBlock(size_t pos);
 };
 
 

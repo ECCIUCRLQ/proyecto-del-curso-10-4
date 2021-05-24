@@ -125,3 +125,7 @@ std::vector<std::pair<size_t, size_t>> Bitmap::reserveBlocks(size_t amountOfBloc
 
   return ret;
 }
+
+size_t Bitmap::getAmountOfBlocks() {
+  return this->amountOfBlocks;
+}
