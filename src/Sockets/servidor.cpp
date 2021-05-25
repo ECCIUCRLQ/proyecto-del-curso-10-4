@@ -41,6 +41,7 @@ int main(){
     return 1;
   }
   
+  
   printf("Conectando con %s:%d\n", inet_ntoa(cliente.sin_addr),htons(cliente.sin_port));
   
   if(recv(conexion_cliente, buffer, 100, 0) < 0){ 
