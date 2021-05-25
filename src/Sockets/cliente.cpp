@@ -6,21 +6,23 @@
 #include<sys/socket.h>
 #include<netinet/in.h>
 #include<netdb.h>
+using namespace std;
 
 int main(){
   
-  string host= " ";
-  char* mensaje;
+  auto host = "127.0.0.1";
+  auto mensaje = "Hola primer mensaje por sockets";
 
   struct sockaddr_in cliente;
   struct hostent *servidor;
-  servidor = gethostbyname(host); 
+  servidor = gethostbyname("127.0.0.1"); 
   if(servidor == NULL)
   { //Comprobación
     printf("Host erróneo\n");
     return 1;
   }
   int puerto, conexion;
+  puerto = 1337;
   char buffer[100];
   conexion = socket(AF_INET, SOCK_STREAM, 0); 
   bzero((char *)&cliente, sizeof((char *)&cliente)); //La función bzero() es como memset() pero inicializando a 0 todas la variables
@@ -41,7 +43,8 @@ int main(){
   
   
   //buffer es el mensaje a  enviar
-  buffer = mensaje;
+ 
+  strcpy(buffer, mensaje);
   send(conexion, buffer, 100, 0); //envio
   bzero(buffer, 100);
   recv(conexion, buffer, 100, 0); //recepción
