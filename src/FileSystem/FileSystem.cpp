@@ -54,18 +54,30 @@ bool FileSystem::createFile(std::string fileName, int user, int group) {
 bool FileSystem::writeFile(std::string filepath, const char* data, size_t len, int user, int group) {
   bool ret = false;
 
+  // FOR TESTING
+  /*
+  B0: always used
+  B1: free
+  B2: used
+  B3: free
+  */
+  this->spaceBitmap->setBlockAs(2, BITMAP_USED_BLOCK);
+
   // Search for the File
   if (this->search(filepath)) {
     // Opens the File
     if (this->openFile(filepath, user, group)) {
       // Calculates the amount of blocks needed for the file
-      size_t blocksNeeded = len / BLOCK_SIZE;
-      if (blocksNeeded == 0) {
-        ++blocksNeeded;
-      }
+      size_t blocksNeeded = (len + BLOCK_SIZE - 1) / BLOCK_SIZE;
+      std::cout << "Amount of blocks to reserve: " << blocksNeeded << std::endl;
 
       // Reserves blocks for the data
       auto portions = this->spaceBitmap->reserveBlocks(blocksNeeded);
+      std::cout << "Portions reserved:" << std::endl;
+      for (auto p : portions) {
+        std::cout << p.first << " & " << p.second << std::endl;
+      }
+      
 
       // Divides the data in chunks for each portion
       size_t pos = 0;
@@ -79,6 +91,13 @@ bool FileSystem::writeFile(std::string filepath, const char* data, size_t len, i
         char* chunk = new char[chunkSize + 1];
         chunk[chunkSize] = 0;
         std::memcpy(chunk, &data[pos], chunkSize);
+
+        std::cout << "Chunk size: " << chunkSize << std::endl;
+        std::cout << "Pos: " << pos << std::endl;
+        std::cout << "Len: " << len << std::endl;
+        //std::cout << "Chunk: ";
+        //std::cout << chunk << std::endl;
+        std::cout << "SENDING TO WRITE 2" << std::endl;
 
         this->writeFile(p.first, chunk, chunkSize);
 
@@ -96,26 +115,31 @@ bool FileSystem::writeFile(size_t block, char* data, size_t len) {
 
   if (len > 0) {
     // Calculates how many blocks are needed to store data
-    size_t amountOfBlocks = len / BLOCK_SIZE;
-    if (amountOfBlocks == 0) {
-      ++amountOfBlocks;
-    }
-    size_t count = 1;
-    size_t writtenBytes = 0;
+    size_t amountOfBlocks = (len + BLOCK_SIZE - 1) / BLOCK_SIZE;
+    std::cout << "Amount of blocks reserved: " << amountOfBlocks << std::endl;
+    std::cout << "Len = " << len << std::endl;
+    std::cout << "Writting from block #" << block << std::endl;
+    size_t count = 0;
 
     // Writes the first n-1 full blocks
-    for (size_t i = 0; i < amountOfBlocks - 1; ++i) {
+    for (size_t i = 0; i < amountOfBlocks; ++i) {
       char chunk[BLOCK_SIZE];
-      std::memcpy(chunk, &data[count * BLOCK_SIZE], BLOCK_SIZE);
-      this->writeBlock(block * count, chunk, BLOCK_SIZE);
-      ++count;
-      writtenBytes += BLOCK_SIZE;
-    }
+      size_t chunkSize = 0;
+      // If still not the last chunk or exact last chunk
+      if (count < amountOfBlocks - 1) {
+        std::cout << "Entering non last" << std::endl;
+        chunkSize = BLOCK_SIZE;
+      } else {
+        std::cout << "Entering last" << std::endl;
+        // If last chunk is not exact
+        chunkSize = len - (count * BLOCK_SIZE);
+      }
 
-    // Writes the last block (either if it's full or not)
-    char chunk[BLOCK_SIZE];
-    std::memcpy(chunk, &data[writtenBytes], len % BLOCK_SIZE);
-    this->writeBlock(block * count, chunk, len % BLOCK_SIZE);
+      // Writes the chunk
+      std::memcpy(chunk, &data[count * BLOCK_SIZE], chunkSize);
+      this->writeBlock(block + count, chunk, chunkSize);
+      ++count;
+    }
 
     ret = true;
   }

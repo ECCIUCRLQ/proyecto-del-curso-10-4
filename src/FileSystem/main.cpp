@@ -5,12 +5,24 @@
 #include "FileSystem.hpp"
 
 int main(int argc, char* argv[]) {
-  HardDrive* hd = new HardDrive(1024*3);
-  FileSystem* fs = new FileSystem(1024*3, hd);
+  HardDrive* hd = new HardDrive(1024*4);
+  FileSystem* fs = new FileSystem(1024*4, hd);
 
-  std::string prueba = "Texto de prueba";
+  std::string prueba = "";
+  for (size_t i = 0; i < 512 + 512 + 512; i++) {
+    if (i < 512) {
+      prueba += 'a';
+    } else {
+      if (i < 1024) {
+        prueba += 'b';
+      } else {
+        prueba += 'c';
+      }
+    }
+  }
+  
 
-  std::cout << fs->search("prueba") << std::endl;
+  // std::cout << fs->search("prueba") << std::endl;
   fs->createFile("prueba", 0, 0);
   fs->writeFile("/prueba", prueba.c_str(), prueba.length(), 0, 0);
 
