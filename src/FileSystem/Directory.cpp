@@ -1,5 +1,6 @@
 #include "Directory.hpp"
 
+#include <cstring>
 #include <iostream>
 
 Directory::Directory(std::string dirName) : File(dirName) {
@@ -71,5 +72,27 @@ bool Directory::deleteFile(File* file) {
 void Directory::list() {
   for (size_t i = 0; i < this->containedFilesCounter; ++i) {
     std::cout << "  -> " << this->containedFiles[i]->getName() << std::endl;
+  }
+}
+
+void Directory::serialize(FileStruct& fs) {
+  // Copy the name
+  std::memcpy(fs.name, this->name, FILE_NAME_LEN);
+
+  // Copy the size
+  fs.size = this->containedFilesCounter;
+
+  // This is not a dir
+  fs.isDir = true;
+
+  // Copy parent
+  fs.parent = this->parent;
+
+  // Copy next block
+  fs.nextBlock = this->nextBlock;
+
+  // Copy the portions
+  for (size_t i = 0; i < POINTERS_SIZE; ++i) {
+    fs.pointers[i] = (void*)this->containedFiles[i];
   }
 }

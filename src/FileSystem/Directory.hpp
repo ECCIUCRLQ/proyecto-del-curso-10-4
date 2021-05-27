@@ -12,7 +12,7 @@ class Directory : public File {
   /**
    * @brief List of files and directories contained in the directory
    */
-  File* containedFiles[(BLOCK_SIZE - FILE_NAME_LEN - 8) / 8];
+  File* containedFiles[POINTERS_SIZE];
 
   /**
    * @brief Counter for the Files contained in containedFiles
@@ -50,6 +50,8 @@ class Directory : public File {
   bool deleteFile(File* file);
 
   void list();
+
+  void serialize(FileStruct& fs);
 };
 
 

@@ -54,3 +54,28 @@ std::vector<std::pair<size_t, size_t>> File::getAllPortions() {
 
   return ret;
 }
+
+void File::serialize(FileStruct& fs) {
+  // Copy the name
+  std::memcpy(fs.name, this->name, FILE_NAME_LEN);
+
+  // Copy the size
+  fs.size = this->size;
+
+  // This is not a dir
+  fs.isDir = false;
+
+  // Copy parent
+  fs.parent = this->parent;
+
+  // Copy next block
+  fs.nextBlock = this->nextBlock;
+
+  // Copy the portions
+  size_t pos = 0;
+  for (auto p : this->portions) {
+    fs.pointers[pos] = (void*)p.first;
+    fs.pointers[pos + 1] = (void*)p.second;
+    pos += 2;
+  }
+}

@@ -2,12 +2,26 @@
 #define FILE_HPP
 
 #define BLOCK_SIZE 512
-#define FILE_NAME_LEN 40
+#define FILE_NAME_LEN 28
+#define POINTERS_SIZE 58
 
 #include <cstddef>
 #include <string>
 #include <utility>
 #include <vector>
+
+/**
+ * @brief Struct for storing a serialized File
+ */
+struct FileStruct {
+  char name[FILE_NAME_LEN] = {0};
+  bool isDir = false;
+  void* parent = nullptr;
+  void* nextBlock = nullptr;
+  size_t size = 0;
+  void* pointers[POINTERS_SIZE] = {0};
+};
+
 
 /**
  * @brief Class that represents a File in a File System
@@ -87,6 +101,7 @@ class File {
   void addPortion(size_t block1,size_t block2);
   File* getParent();
   std::vector<std::pair<size_t, size_t>> getAllPortions();
+  virtual void serialize(FileStruct& fs);
 };
 
 
