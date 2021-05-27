@@ -15,11 +15,12 @@
  */
 struct FileStruct {
   char name[FILE_NAME_LEN] = {0};
+  size_t fileBlock = 0;
   bool isDir = false;
-  void* parent = nullptr;
-  void* nextBlock = nullptr;
+  size_t parent = 0;
+  size_t nextBlock = 0;
   size_t size = 0;
-  void* pointers[POINTERS_SIZE] = {0};
+  size_t pointers[POINTERS_SIZE] = {0};
 };
 
 
@@ -29,14 +30,19 @@ struct FileStruct {
 class File {
  protected:
   /**
-   * @brief Flag for diferentiating Directories from Files
+   * @brief First block of the File
    */
-  bool isDir = false;
-  
+  size_t block = 0;
+
   /**
    * @brief File/Folder Name
    */
   char name[FILE_NAME_LEN] = {0};
+
+  /**
+   * @brief Flag for diferentiating Directories from Files
+   */
+  bool isDir = false;
 
   File* parent = nullptr;
 
@@ -102,6 +108,8 @@ class File {
   File* getParent();
   std::vector<std::pair<size_t, size_t>> getAllPortions();
   virtual void serialize(FileStruct& fs);
+  size_t getBlock();
+  bool setBlock(size_t block);
 };
 
 

@@ -79,20 +79,20 @@ void Directory::serialize(FileStruct& fs) {
   // Copy the name
   std::memcpy(fs.name, this->name, FILE_NAME_LEN);
 
-  // Copy the size
+  // Copy the amount of contained Files
   fs.size = this->containedFilesCounter;
 
-  // This is not a dir
+  // This is a dir
   fs.isDir = true;
 
   // Copy parent
-  fs.parent = this->parent;
+  fs.parent = this->parent->getBlock();
 
   // Copy next block
-  fs.nextBlock = this->nextBlock;
+  fs.nextBlock = this->nextBlock->getBlock();
 
   // Copy the portions
   for (size_t i = 0; i < POINTERS_SIZE; ++i) {
-    fs.pointers[i] = (void*)this->containedFiles[i];
+    fs.pointers[i] = this->containedFiles[i]->getBlock();
   }
 }

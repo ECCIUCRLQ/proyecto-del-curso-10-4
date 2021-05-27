@@ -66,16 +66,31 @@ void File::serialize(FileStruct& fs) {
   fs.isDir = false;
 
   // Copy parent
-  fs.parent = this->parent;
+  fs.parent = this->parent->getBlock();
 
   // Copy next block
-  fs.nextBlock = this->nextBlock;
+  fs.nextBlock = this->nextBlock->getBlock();
 
   // Copy the portions
   size_t pos = 0;
   for (auto p : this->portions) {
-    fs.pointers[pos] = (void*)p.first;
-    fs.pointers[pos + 1] = (void*)p.second;
+    fs.pointers[pos] = p.first;
+    fs.pointers[pos + 1] = p.second;
     pos += 2;
   }
+}
+
+size_t File::getBlock() {
+  return this->block;
+}
+
+bool File::setBlock(size_t block) {
+  bool ret = false;
+
+  if (block > 0) {
+    this->block = block;
+    ret = true;
+  }
+  
+  return ret;
 }
