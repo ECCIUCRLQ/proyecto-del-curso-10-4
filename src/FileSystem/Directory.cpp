@@ -1,7 +1,6 @@
 #include "Directory.hpp"
 
 #include <cstring>
-#include <iostream>
 
 Directory::Directory(std::string dirName) : File(dirName) {
   this->_isDir = true;

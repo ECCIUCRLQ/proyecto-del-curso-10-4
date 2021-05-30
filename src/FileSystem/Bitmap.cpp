@@ -2,8 +2,6 @@
 
 #include "Bitmap.hpp"
 
-#include <iostream>
-
 Bitmap::Bitmap(size_t size) : amountOfBlocks(size) {
   // Amount of bytes for the block array
   size_t bytes = size / 8 + (size % 8 != 0);
@@ -109,8 +107,6 @@ std::vector<std::pair<size_t, size_t>> Bitmap::reserveBlocks(size_t amountOfBloc
 
   size_t reserved = 0;
   bool noSpace = false;
-
-  std::cout << "Gonna reserve: " << amountOfBlocks << " blocks" << std::endl;
 
   if (amountOfBlocks == 1) {
     size_t first = this->firstFreeBlock();

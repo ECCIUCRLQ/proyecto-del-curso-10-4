@@ -1,8 +1,8 @@
 #include <cstring>
 
-#include <iostream>
-
 #include "File.hpp"
+
+#include <iostream>
 
 File::File(std::string fileName) {
   std::strncpy(this->name, fileName.c_str(), FILE_NAME_LEN - 1);
@@ -34,8 +34,15 @@ bool File::isOpen() {
 }
 
 void File::addPortion(size_t block1, size_t block2) {
-	auto pair = std::make_pair(block1, block2);
-  portions.push_back(pair);
+  if (this->portions.size() < POINTERS_SIZE / 2) {
+	  auto pair = std::make_pair(block1, block2);
+    portions.push_back(pair);
+  } else {
+    if (this->nextBlock == nullptr) {
+      this->nextBlock = new File(this->name);
+    }
+    this->nextBlock->addPortion(block1, block2);
+  }
 }
 
 File* File::getParent() {
@@ -65,7 +72,7 @@ void File::serialize(FileStruct& fs) {
   fs.size = this->size;
 
   // This is a dir
-  fs.isDir = true;
+  fs.isDir = false;
 
   // Copy parent
   if (this->parent != nullptr) {
@@ -82,6 +89,8 @@ void File::serialize(FileStruct& fs) {
   for (auto p : this->portions) {
     fs.pointers[pos] = p.first;
     fs.pointers[pos + 1] = p.second;
+    std::cout << "Pos1: " << fs.pointers[pos] << std::endl;
+    std::cout << "Pos2: " << fs.pointers[pos+1] << std::endl;
     pos += 2;
   }
 }

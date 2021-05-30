@@ -5,19 +5,10 @@
 #include "FileSystem.hpp"
 
 int main(int argc, char* argv[]) {
-  HardDrive* hd = new HardDrive(1024*20);
-  FileSystem* fs = new FileSystem(1024*20, hd);
+  HardDrive* hd = new HardDrive(1024*8);
+  FileSystem* fs = new FileSystem(1024*8, hd);
 
   fs->createFile("prueba", 0, 0);
-
-  std::cout << "--- BEGINNING OF DISK ---" << std::endl;
-  hd->print();
-  std::cout << "--- END OF DISK ---" << std::endl;
-
-  delete hd;
-  delete fs;
-
-  return 0;
 
   std::string prueba = "";
   for (size_t i = 0; i < 512 + 512 + 512; i++) {
@@ -32,10 +23,10 @@ int main(int argc, char* argv[]) {
     }
   }
   
-
-  // std::cout << fs->search("prueba") << std::endl;
-  fs->createFile("prueba", 0, 0);
   fs->writeFile("/prueba", prueba.c_str(), prueba.length(), 0, 0);
+
+  fs->createFile("pruebita", 0, 0);
+  fs->createFile("pruebita2", 0, 0);
 
   std::cout << "--- BEGINNING OF DISK ---" << std::endl;
   hd->print();

@@ -1,7 +1,6 @@
 #include "FileSystem.hpp"
 
 #include <cstring>
-#include <iostream>
 
 FileSystem::FileSystem(const size_t& size, HardDrive* drive) : size(size),
   hardDrive(drive) {
@@ -10,6 +9,8 @@ FileSystem::FileSystem(const size_t& size, HardDrive* drive) : size(size),
 
   // Creates the root directory
   this->rootDirectory = new Directory("/");
+  rootDirectory->setBlock(this->spaceBitmap->reserveFirstFreeBlock());
+  this->serializeTree();
 
   // Always set the first block as used
   this->spaceBitmap->setBlockAs(0, BITMAP_USED_BLOCK);
@@ -49,6 +50,9 @@ bool FileSystem::createFile(std::string fileName, int user, int group) {
       // The File was created
       created = true;
 
+      // Reserves a block for the file, and sets it
+      newFile->setBlock(this->spaceBitmap->reserveFirstFreeBlock());
+
       // Re serialize the FS
       this->serializeTree();
     }
@@ -61,7 +65,8 @@ bool FileSystem::writeFile(std::string filepath, const char* data, size_t len, i
   bool ret = false;
 
   // Search for the File
-  if (this->search(filepath)) {
+  File* file = this->search(filepath);
+  if (file != nullptr) {
     // Opens the File
     if (this->openFile(filepath, user, group)) {
       // Calculates the amount of blocks needed for the file
@@ -69,14 +74,14 @@ bool FileSystem::writeFile(std::string filepath, const char* data, size_t len, i
 
       // Reserves blocks for the data
       auto portions = this->spaceBitmap->reserveBlocks(blocksNeeded);
-      for (auto p : portions) {
-        std::cout << p.first << " & " << p.second << std::endl;
-      }
-      
+
+      // TODO(any): file size must increase
 
       // Divides the data in chunks for each portion
       size_t pos = 0;
       for (auto p : portions) {
+        file->addPortion(p.first, p.second);
+
         size_t chunkSize = (p.second - p.first + 1) * BLOCK_SIZE;
 
         if (pos + chunkSize > len) {
@@ -92,6 +97,9 @@ bool FileSystem::writeFile(std::string filepath, const char* data, size_t len, i
         delete[] chunk;
         pos += chunkSize;
       }
+
+      // Serializes the tree
+      this->serializeTree();
     }
   }
 
@@ -268,11 +276,9 @@ void FileSystem::serializeDirectory(Directory* dir) {
 }
 
 void FileSystem::serializeFile(File* file) {
-  // Get a free Block
-  size_t blockForFile = this->spaceBitmap->reserveFirstFreeBlock();
+  // Get the block for the File
+  size_t blockForFile = file->getBlock();
   if (blockForFile > 0) {
-    std::cout << "Writting to block: " << blockForFile << std::endl;
-
     // Sets the file block to blockForFile
     file->setBlock(blockForFile);
 
