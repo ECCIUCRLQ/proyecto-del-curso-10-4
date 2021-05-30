@@ -9,7 +9,6 @@ int main(int argc, char* argv[]) {
   FileSystem* fs = new FileSystem(1024*20, hd);
 
   fs->createFile("prueba", 0, 0);
-  //std::cout << "Prueba: " << fs->search("prueba") << std::endl;
 
   std::cout << "--- BEGINNING OF DISK ---" << std::endl;
   hd->print();
