@@ -159,8 +159,11 @@ class FileSystem {
   bool writeBlock(size_t block, char* data, size_t len);
   File* search(std::vector<std::string>* splitPath, size_t pos, Directory* directory);
   char* getBlock(size_t pos);
+  void serializeDirectory(Directory* dir);
+  void serializeFile(File* file);
  public:
   File* search(const std::string& filepath);
+  void serializeTree();
 };
 
 

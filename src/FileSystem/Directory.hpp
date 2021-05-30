@@ -38,6 +38,7 @@ class Directory : public File {
    */
   ~Directory();
 
+ public:
   /**
    * @brief Verifies if a Directory contains a File with the specified name
    * @param fileName name of the File that is being searched
@@ -49,7 +50,7 @@ class Directory : public File {
 
   bool deleteFile(File* file);
 
-  void list();
+  std::vector<File*> list();
 
   void serialize(FileStruct& fs);
 };

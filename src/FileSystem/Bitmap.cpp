@@ -10,9 +10,6 @@ Bitmap::Bitmap(size_t size) : amountOfBlocks(size) {
 
   // Reserves 'bytes' bytes for the array
   this->blocks.resize(bytes);
-
-  // Sets the first block as used
-  this->setBlockAs(0, BITMAP_USED_BLOCK);
 }
 
 Bitmap::~Bitmap() {
@@ -71,6 +68,16 @@ bool Bitmap::setBlockAs(size_t block, bool status) {
     this->blocks[block / 8] = newByte;
 
     ret = true;
+  }
+
+  return ret;
+}
+
+size_t Bitmap::reserveFirstFreeBlock() {
+  size_t ret = this->firstFreeBlock();
+
+  if (ret > 0) {
+    this->setBlockAs(ret, BITMAP_USED_BLOCK);
   }
 
   return ret;

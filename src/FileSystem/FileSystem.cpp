@@ -10,6 +10,9 @@ FileSystem::FileSystem(const size_t& size, HardDrive* drive) : size(size),
 
   // Creates the root directory
   this->rootDirectory = new Directory("/");
+
+  // Always set the first block as used
+  this->spaceBitmap->setBlockAs(0, BITMAP_USED_BLOCK);
 }
 
 FileSystem::~FileSystem() {
@@ -45,6 +48,9 @@ bool FileSystem::createFile(std::string fileName, int user, int group) {
 
       // The File was created
       created = true;
+
+      // Re serialize the FS
+      this->serializeTree();
     }
   }
 
@@ -54,26 +60,15 @@ bool FileSystem::createFile(std::string fileName, int user, int group) {
 bool FileSystem::writeFile(std::string filepath, const char* data, size_t len, int user, int group) {
   bool ret = false;
 
-  // FOR TESTING
-  /*
-  B0: always used
-  B1: free
-  B2: used
-  B3: free
-  */
-  this->spaceBitmap->setBlockAs(2, BITMAP_USED_BLOCK);
-
   // Search for the File
   if (this->search(filepath)) {
     // Opens the File
     if (this->openFile(filepath, user, group)) {
       // Calculates the amount of blocks needed for the file
       size_t blocksNeeded = (len + BLOCK_SIZE - 1) / BLOCK_SIZE;
-      std::cout << "Amount of blocks to reserve: " << blocksNeeded << std::endl;
 
       // Reserves blocks for the data
       auto portions = this->spaceBitmap->reserveBlocks(blocksNeeded);
-      std::cout << "Portions reserved:" << std::endl;
       for (auto p : portions) {
         std::cout << p.first << " & " << p.second << std::endl;
       }
@@ -92,13 +87,6 @@ bool FileSystem::writeFile(std::string filepath, const char* data, size_t len, i
         chunk[chunkSize] = 0;
         std::memcpy(chunk, &data[pos], chunkSize);
 
-        std::cout << "Chunk size: " << chunkSize << std::endl;
-        std::cout << "Pos: " << pos << std::endl;
-        std::cout << "Len: " << len << std::endl;
-        //std::cout << "Chunk: ";
-        //std::cout << chunk << std::endl;
-        std::cout << "SENDING TO WRITE 2" << std::endl;
-
         this->writeFile(p.first, chunk, chunkSize);
 
         delete[] chunk;
@@ -116,9 +104,6 @@ bool FileSystem::writeFile(size_t block, char* data, size_t len) {
   if (len > 0) {
     // Calculates how many blocks are needed to store data
     size_t amountOfBlocks = (len + BLOCK_SIZE - 1) / BLOCK_SIZE;
-    std::cout << "Amount of blocks reserved: " << amountOfBlocks << std::endl;
-    std::cout << "Len = " << len << std::endl;
-    std::cout << "Writting from block #" << block << std::endl;
     size_t count = 0;
 
     // Writes the first n-1 full blocks
@@ -127,10 +112,8 @@ bool FileSystem::writeFile(size_t block, char* data, size_t len) {
       size_t chunkSize = 0;
       // If still not the last chunk or exact last chunk
       if (count < amountOfBlocks - 1) {
-        std::cout << "Entering non last" << std::endl;
         chunkSize = BLOCK_SIZE;
       } else {
-        std::cout << "Entering last" << std::endl;
         // If last chunk is not exact
         chunkSize = len - (count * BLOCK_SIZE);
       }
@@ -261,3 +244,49 @@ bool FileSystem::isFileOpen(std::string filepath, int user, int group){
 	return fileOpen;
 }
 
+void FileSystem::serializeTree() {
+  this->serializeDirectory(this->rootDirectory);
+}
+
+void FileSystem::serializeDirectory(Directory* dir) {
+  // Serialize the current Dir
+  this->serializeFile(dir);
+
+  auto f = dir->list();
+
+  // Serialize the subfiles
+  for (auto file : dir->list()) {
+    if (file != nullptr) {
+      if (file->isDir()) {
+        Directory* nextDir = dynamic_cast<Directory*>(file);
+        serializeDirectory(nextDir);
+      } else {
+        this->serializeFile(file);
+      }
+    }
+  }
+}
+
+void FileSystem::serializeFile(File* file) {
+  // Get a free Block
+  size_t blockForFile = this->spaceBitmap->reserveFirstFreeBlock();
+  if (blockForFile > 0) {
+    std::cout << "Writting to block: " << blockForFile << std::endl;
+
+    // Sets the file block to blockForFile
+    file->setBlock(blockForFile);
+
+    // Gets the serialized data for the block
+    FileStruct data;
+    if (file->isDir()) {
+      Directory* dir = dynamic_cast<Directory*>(file);
+      dir->serialize(data);
+    } else {
+      file->serialize(data);
+    }
+
+    // Writes the File to disk
+    char* byte = this->hardDrive->getPos(blockForFile * BLOCK_SIZE);
+    std::memcpy(byte, &data, sizeof(data));
+  }
+}

@@ -66,6 +66,12 @@ class Bitmap {
   size_t firstFreeBlock();
 
   /**
+   * @brief Finds the first free block in the File System and sets it as used
+   * @return Position of the first free block in the File System
+   */
+  size_t reserveFirstFreeBlock();
+
+  /**
    * @brief Changes the state of a block to used or free
    * @param block Position of the block to change
    * @param status The status for the block. BITMAP_FREE_BLOCK or BITMAP_USED_BLOCK

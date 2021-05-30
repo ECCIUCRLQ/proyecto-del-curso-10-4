@@ -1,5 +1,7 @@
 #include <cstring>
 
+#include <iostream>
+
 #include "File.hpp"
 
 File::File(std::string fileName) {
@@ -59,17 +61,21 @@ void File::serialize(FileStruct& fs) {
   // Copy the name
   std::memcpy(fs.name, this->name, FILE_NAME_LEN);
 
-  // Copy the size
+  // Copy the size of the file
   fs.size = this->size;
 
-  // This is not a dir
-  fs.isDir = false;
+  // This is a dir
+  fs.isDir = true;
 
   // Copy parent
-  fs.parent = this->parent->getBlock();
+  if (this->parent != nullptr) {
+    fs.parent = this->parent->getBlock();
+  }
 
   // Copy next block
-  fs.nextBlock = this->nextBlock->getBlock();
+  if (this->nextBlock != nullptr) {
+    fs.nextBlock = this->nextBlock->getBlock();
+  }
 
   // Copy the portions
   size_t pos = 0;
@@ -93,4 +99,8 @@ bool File::setBlock(size_t block) {
   }
   
   return ret;
+}
+
+bool File::isDir() {
+  return this->_isDir;
 }

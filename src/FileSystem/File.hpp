@@ -2,8 +2,8 @@
 #define FILE_HPP
 
 #define BLOCK_SIZE 512
-#define FILE_NAME_LEN 28
-#define POINTERS_SIZE 58
+#define FILE_NAME_LEN 31
+#define POINTERS_SIZE 56
 
 #include <cstddef>
 #include <string>
@@ -14,13 +14,13 @@
  * @brief Struct for storing a serialized File
  */
 struct FileStruct {
-  char name[FILE_NAME_LEN] = {0};
   size_t fileBlock = 0;
-  bool isDir = false;
   size_t parent = 0;
   size_t nextBlock = 0;
   size_t size = 0;
   size_t pointers[POINTERS_SIZE] = {0};
+  char name[FILE_NAME_LEN] = {0};
+  bool isDir = false;
 };
 
 
@@ -42,7 +42,7 @@ class File {
   /**
    * @brief Flag for diferentiating Directories from Files
    */
-  bool isDir = false;
+  bool _isDir = false;
 
   File* parent = nullptr;
 
@@ -50,8 +50,7 @@ class File {
   /**
    * @brief List of all the portions of the File.
    */
-  // [10, 12]
-  // [14, 14]
+  std::pair<size_t, size_t> pors[POINTERS_SIZE];
   std::vector<std::pair<size_t, size_t>> portions;
 
   /**
@@ -110,6 +109,7 @@ class File {
   virtual void serialize(FileStruct& fs);
   size_t getBlock();
   bool setBlock(size_t block);
+  bool isDir();
 };
 
 

@@ -4,7 +4,7 @@
 #include <iostream>
 
 Directory::Directory(std::string dirName) : File(dirName) {
-  this->isDir = true;
+  this->_isDir = true;
 }
 
 Directory::~Directory() {
@@ -69,10 +69,14 @@ bool Directory::deleteFile(File* file) {
   return ret;
 }
 
-void Directory::list() {
-  for (size_t i = 0; i < this->containedFilesCounter; ++i) {
-    std::cout << "  -> " << this->containedFiles[i]->getName() << std::endl;
+std::vector<File*> Directory::list() {
+  std::vector<File*> ret;
+
+  for (size_t i = 0; i < POINTERS_SIZE; ++i) {
+    ret.push_back(this->containedFiles[i]);
   }
+
+  return ret;
 }
 
 void Directory::serialize(FileStruct& fs) {
@@ -86,13 +90,17 @@ void Directory::serialize(FileStruct& fs) {
   fs.isDir = true;
 
   // Copy parent
-  fs.parent = this->parent->getBlock();
+  if (this->parent != nullptr) {
+    fs.parent = this->parent->getBlock();
+  }
 
   // Copy next block
-  fs.nextBlock = this->nextBlock->getBlock();
+  if (this->nextBlock != nullptr) {
+    fs.nextBlock = this->nextBlock->getBlock();
+  }
 
   // Copy the portions
-  for (size_t i = 0; i < POINTERS_SIZE; ++i) {
+  for (size_t i = 0; i < this->containedFilesCounter; ++i) {
     fs.pointers[i] = this->containedFiles[i]->getBlock();
   }
 }
