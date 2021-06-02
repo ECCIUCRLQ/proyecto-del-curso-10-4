@@ -3,6 +3,31 @@
 
 #define BLOCK_SIZE 512
 
+// 15 permissions to choose from
+// last 4 bits represent permissions, i.e. 0100 >0001< only group can write = A
+// 0100 >1001< group can read, user can write = F 
+#define gWrite 'A'
+#define gRead 'B'
+#define gReadWrite 'C'
+#define uWrite 'D'
+#define uRead 'H'
+#define uReadWrite 'L'
+#define uWritegWrite 'E'
+#define uReadgRead 'J'
+#define ALLOW_ALL 'O'
+#define uReadgWrite 'I'
+#define uWritegRead 'F'
+#define uReadgReadWrite 'K'
+#define uReadWritegRead 'N'
+#define uWritegReadWrite 'G' 
+#define uReadWritegWrite 'M'
+
+//use wwhen calling verifypermission from a fileSystem function.
+// use READ when opening, reading
+// use WRITE when creating,deleting, writing
+#define READ 'R'
+#define WRITE 'W'
+
 #include <cstddef>
 #include <map>
 #include <string>
@@ -73,7 +98,7 @@ class FileSystem {
    * @param group Group of the user trying to access the File
    * @return True on success, false if the File could not be created
    */
-  bool createFile(std::string fileName, int user, int group);
+  bool createFile(std::string fileName, int user, int group, char permission);
 
   /**
    * @brief Read the content of a File
@@ -146,7 +171,7 @@ class FileSystem {
   * DIRECTORY MANAGEMENT METHODS
   */
  public:
-  bool createDir(std::string dir, int user, int group);
+  bool createDir(std::string dir, int user, int group, char permission);
   bool deleteDir(std::string dir, int user, int group);
   bool changeDir(std::string dir, int user, int group);
   char* dirList(std::string dir, int user, int group);
@@ -161,6 +186,9 @@ class FileSystem {
   char* getBlock(size_t pos);
   void serializeDirectory(Directory* dir);
   void serializeFile(File* file);
+  bool verifyPermission(char permission, int user, int group,char accessPermission, int accessUser, int accessGroup);
+  bool verifyUser(char permission, char accessPermission);
+  bool verifyGroup(char permission, char accessPermission);
  public:
   File* search(const std::string& filepath);
   void serializeTree();

@@ -1,8 +1,9 @@
 #ifndef FILE_HPP
 #define FILE_HPP
 
+// file name length went from 31 to 22 (-1byte -4byte -4byte)
 #define BLOCK_SIZE 512
-#define FILE_NAME_LEN 31
+#define FILE_NAME_LEN 22
 #define POINTERS_SIZE 56
 
 #include <cstddef>
@@ -18,9 +19,12 @@ struct FileStruct {
   size_t parent = 0;
   size_t nextBlock = 0;
   size_t size = 0;
+  int user = 0;
+  int group = 0;
   size_t pointers[POINTERS_SIZE] = {0};
   char name[FILE_NAME_LEN] = {0};
   bool isDir = false;
+  char permission = '\0';
 };
 
 
@@ -43,6 +47,17 @@ class File {
    * @brief Flag for diferentiating Directories from Files
    */
   bool _isDir = false;
+
+  /**
+  * @brief sort of Flag for user and group
+  */
+  int user = 0;
+  int group = 0;
+
+  /**
+  * @stores permission of file
+  */
+  char permission;
 
   File* parent = nullptr;
 
@@ -81,6 +96,15 @@ class File {
    */
   File(std::string fileName, size_t block);
 
+
+  /**
+  * @brief Constructor for File with permissions
+  * @param fileName file name
+  * @param int user
+  * @param int group
+  * @param char permission
+  **/
+  File(std::string fileName, int user, int group, char permission);
   /**
    * @brief Destructor for a File
    */
@@ -110,6 +134,9 @@ class File {
   size_t getBlock();
   bool setBlock(size_t block);
   bool isDir();
+  int getUser();
+  int getGroup();
+  char getPermission();
 };
 
 

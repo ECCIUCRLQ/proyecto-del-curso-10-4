@@ -1,5 +1,4 @@
 #include "FileSystem.hpp"
-
 #include <cstring>
 
 FileSystem::FileSystem(const size_t& size, HardDrive* drive) : size(size),
@@ -12,18 +11,19 @@ FileSystem::FileSystem(const size_t& size, HardDrive* drive) : size(size),
   rootDirectory->setBlock(this->spaceBitmap->reserveFirstFreeBlock());
   this->serializeTree();
 
-  // Always set the first block as used
+  // Always set the first block as use
   this->spaceBitmap->setBlockAs(0, BITMAP_USED_BLOCK);
 }
 
 FileSystem::~FileSystem() {
+  
 }
 
 /*
  * FILE MANAGEMENT METHODS
 */
 
-bool FileSystem::createFile(std::string fileName, int user, int group) {
+bool FileSystem::createFile(std::string fileName, int user, int group, char permission) {
   bool created = false;
 
   // TODO (any): Add a method to verify if path is relative or absolute
@@ -41,14 +41,18 @@ bool FileSystem::createFile(std::string fileName, int user, int group) {
       parent = dynamic_cast<Directory*>(this->search(parentPath));
     }
     if (parent != nullptr) {
-      // Creates a new File
-      File* newFile = new File(fileName);
+      bool good2Go =this->verifyPermission(parent->getPermission(), parent->getUser(), parent->getGroup(),WRITE,user,group);
+
+      // Creates a new File with user, group, permission
+      File* newFile = new File(fileName, user, group, permission);
+
 
       // Adds the new File to the parent Directory
       parent->addFile(newFile);
 
       // The File was created
       created = true;
+
 
       // Reserves a block for the file, and sets it
       newFile->setBlock(this->spaceBitmap->reserveFirstFreeBlock());
@@ -219,17 +223,21 @@ bool FileSystem::deleteFile(const std::string& filePath, int user, int group) {
   return ret;
 }
 
-
+// agregar verificar permiso para leer
 bool FileSystem::openFile(std::string filepath, int user, int group){
 	bool open = false;
   File* file = this->search(filepath);
+  if (this->verifyPermission(file->getPermission(), file->getUser(), file->getGroup(),READ,user,group)) {
+    if(file != nullptr){
+      file->open();
+      open = true;
+    }
 
-	if(file != nullptr){
-		file->open();
-		open = true;
-	}
-	
-	return open;
+   // return open;
+
+  }
+  return open;
+
 }
 
 bool FileSystem::closeFile(std::string filepath, int user, int group){
@@ -295,4 +303,147 @@ void FileSystem::serializeFile(File* file) {
     char* byte = this->hardDrive->getPos(blockForFile * BLOCK_SIZE);
     std::memcpy(byte, &data, sizeof(data));
   }
+}
+
+//METODO TEMPORAL
+/**
+* @verifies file permissions
+* @param char permission file permission
+* @param int fileUser file user
+* @param int fileGroup file group
+* @param char accessPermission permission to test for
+* @param int accessUser user trying to access file function
+* @param int accessGroup group trying to access file function
+*/
+bool FileSystem::verifyPermission(char permission, int fileUser, int fileGroup,
+  char accessPermission, int accessUser, int accessGroup) {
+  bool good2Go = false;
+  // TODO change verifications to bit operations
+  // TODO move permission check for group and file to different functions  (modularizar)
+  //by group, check all relating to groups
+  // if permission allows all, good to go
+  // say permission allows only userWrite, and i want to read as user
+  if (fileGroup == accessGroup) {
+    good2Go =this->verifyGroup(permission, accessPermission);
+  }
+  //by user
+  if (fileUser == accessUser) {
+    good2Go = this->verifyUser(permission, accessPermission);
+  }
+  // verify for following:
+  // case: FILE
+  // create/write
+  // leer (read)
+
+
+
+  return good2Go;
+
+}
+bool FileSystem::verifyGroup(char permission, char accessPermission) {
+  bool good2Go = false;
+  if (permission == ALLOW_ALL ) {
+      good2Go = true;
+    }
+
+    if (accessPermission == READ) {
+      if (permission == gRead) {
+        good2Go = true;
+      }
+      if (permission == gReadWrite) {
+        good2Go = true;
+      }
+      if (permission == uReadgRead) {
+        good2Go = true;
+      }
+      if (permission == uWritegRead) {
+        good2Go = true;
+      }
+      if (permission == uReadgReadWrite) {
+        good2Go = true;
+      }
+      if (permission == uReadWritegRead) {
+        good2Go = true;
+      }
+      if (permission == uWritegReadWrite) {
+        good2Go = true;
+      }
+    } else if (accessPermission == WRITE) {
+      if (permission == gWrite) {
+        good2Go = true;
+      } 
+      if (permission == gReadWrite) {
+        good2Go = true;
+      }
+      if (permission == uWritegWrite) {
+        good2Go = true;
+      }
+      if (permission == uReadgWrite) {
+        good2Go = true;
+      }
+      if (permission == uReadgReadWrite) {
+        good2Go = true;
+      }
+      if (permission == uWritegReadWrite) {
+        good2Go = true;
+      }
+      if (permission == uReadWritegWrite) {
+        good2Go = true;
+      }
+    }
+    return good2Go;
+}
+
+bool FileSystem::verifyUser(char permission, char accessPermission) {
+  bool good2Go = false;
+  if (permission == ALLOW_ALL ) {
+    good2Go = true;
+  }
+  if (accessPermission == READ) {
+    if (permission == uRead) {
+      good2Go = true;
+    }
+    if (permission == uReadWrite) {
+      good2Go = true;
+    }
+    if (permission == uReadgRead) {
+      good2Go = true;
+    }
+    if (permission == uReadgReadWrite) {
+      good2Go = true;
+    }
+    if (permission == uReadWritegRead) {
+      good2Go = true;
+    }
+    if (permission == uReadgWrite) {
+      good2Go = true;
+    }
+    if (permission == uReadWritegWrite) {
+      good2Go = true;
+    }
+  } else if (accessPermission == WRITE) {
+    if (permission == uWrite) {
+      good2Go = true;
+    } 
+    if (permission == uReadWrite) {
+      good2Go = true;
+    }
+    if (permission == uWritegWrite) {
+      good2Go = true;
+    }
+    if (permission == uWritegRead) {
+      good2Go = true;
+    }
+    if (permission == uReadWritegRead) {
+      good2Go = true;
+    }
+    if (permission == uWritegReadWrite) {
+      good2Go = true;
+    }
+    if (permission == uReadWritegWrite) {
+      good2Go = true;
+    }
+  }
+
+  return good2Go;
 }

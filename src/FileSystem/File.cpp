@@ -13,6 +13,13 @@ File::File(std::string fileName, size_t block) {
   std::strncpy(this->name, fileName.c_str(), FILE_NAME_LEN);
   this->addPortion(block, block);
 }
+File::File(std::string fileName, int user, int group, char permission) {
+  std::strncpy(this->name, fileName.c_str(), FILE_NAME_LEN - 1);
+  this->name[FILE_NAME_LEN - 1] = 0;
+  this->user = user;
+  this->group = group;
+  this->permission = permission;
+}
 
 File::~File() {
 }
@@ -113,3 +120,16 @@ bool File::setBlock(size_t block) {
 bool File::isDir() {
   return this->_isDir;
 }
+
+//getters to access protected (TODO might change)
+int File::getUser() {
+  return this->user;
+}
+
+int File::getGroup() {
+  return this->group;
+}
+char File::getPermission() {
+  return this->permission;
+}
+
