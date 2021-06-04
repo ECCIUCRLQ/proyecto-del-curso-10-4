@@ -307,7 +307,7 @@ void FileSystem::serializeFile(File* file) {
 
 //METODO TEMPORAL
 /**
-* @verifies file permissions
+* @brief verifies file permissions
 * @param char permission file permission
 * @param int fileUser file user
 * @param int fileGroup file group
@@ -322,7 +322,6 @@ bool FileSystem::verifyPermission(char permission, int fileUser, int fileGroup,
   // TODO move permission check for group and file to different functions  (modularizar)
   //by group, check all relating to groups
   // if permission allows all, good to go
-  // say permission allows only userWrite, and i want to read as user
   if (fileGroup == accessGroup) {
     good2Go =this->verifyGroup(permission, accessPermission);
   }
