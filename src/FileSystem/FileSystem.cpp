@@ -1,5 +1,6 @@
 #include "FileSystem.hpp"
 #include <cstring>
+#include <bitset>
 
 FileSystem::FileSystem(const size_t& size, HardDrive* drive) : size(size),
   hardDrive(drive) {
@@ -340,53 +341,20 @@ bool FileSystem::verifyPermission(char permission, int fileUser, int fileGroup,
 
 }
 bool FileSystem::verifyGroup(char permission, char accessPermission) {
+  std::bitset<8> bits(permission);
   bool good2Go = false;
+  // if it allows all as a group
   if (permission == ALLOW_ALL ) {
       good2Go = true;
     }
-
+  // Checks if you can read as a group
     if (accessPermission == READ) {
-      if (permission == gRead) {
+      if (bits[1] == 1) {
         good2Go = true;
       }
-      if (permission == gReadWrite) {
-        good2Go = true;
-      }
-      if (permission == uReadgRead) {
-        good2Go = true;
-      }
-      if (permission == uWritegRead) {
-        good2Go = true;
-      }
-      if (permission == uReadgReadWrite) {
-        good2Go = true;
-      }
-      if (permission == uReadWritegRead) {
-        good2Go = true;
-      }
-      if (permission == uWritegReadWrite) {
-        good2Go = true;
-      }
+  // Checks if you can write as a group
     } else if (accessPermission == WRITE) {
-      if (permission == gWrite) {
-        good2Go = true;
-      } 
-      if (permission == gReadWrite) {
-        good2Go = true;
-      }
-      if (permission == uWritegWrite) {
-        good2Go = true;
-      }
-      if (permission == uReadgWrite) {
-        good2Go = true;
-      }
-      if (permission == uReadgReadWrite) {
-        good2Go = true;
-      }
-      if (permission == uWritegReadWrite) {
-        good2Go = true;
-      }
-      if (permission == uReadWritegWrite) {
+      if (bits[0] == 1) {
         good2Go = true;
       }
     }
@@ -394,52 +362,20 @@ bool FileSystem::verifyGroup(char permission, char accessPermission) {
 }
 
 bool FileSystem::verifyUser(char permission, char accessPermission) {
+  std::bitset<8> bits(permission);
   bool good2Go = false;
+  // if it allows all as a user
   if (permission == ALLOW_ALL ) {
     good2Go = true;
   }
+  // Checks if you can read as a user
   if (accessPermission == READ) {
-    if (permission == uRead) {
+    if (bits[3] == 1) {
       good2Go = true;
     }
-    if (permission == uReadWrite) {
-      good2Go = true;
-    }
-    if (permission == uReadgRead) {
-      good2Go = true;
-    }
-    if (permission == uReadgReadWrite) {
-      good2Go = true;
-    }
-    if (permission == uReadWritegRead) {
-      good2Go = true;
-    }
-    if (permission == uReadgWrite) {
-      good2Go = true;
-    }
-    if (permission == uReadWritegWrite) {
-      good2Go = true;
-    }
+  // Checks if you can write as a user
   } else if (accessPermission == WRITE) {
-    if (permission == uWrite) {
-      good2Go = true;
-    } 
-    if (permission == uReadWrite) {
-      good2Go = true;
-    }
-    if (permission == uWritegWrite) {
-      good2Go = true;
-    }
-    if (permission == uWritegRead) {
-      good2Go = true;
-    }
-    if (permission == uReadWritegRead) {
-      good2Go = true;
-    }
-    if (permission == uWritegReadWrite) {
-      good2Go = true;
-    }
-    if (permission == uReadWritegWrite) {
+    if (bits[2] == 1) {
       good2Go = true;
     }
   }
