@@ -3,7 +3,7 @@
 #include <bitset>
 
 FileSystem::FileSystem(const size_t& size, HardDrive* drive) : size(size),
-  hardDrive(drive) {
+hardDrive(drive) {
   // Creates the Bitmap for free/used space in storage
   this->spaceBitmap = new Bitmap(this->size / BLOCK_SIZE);
 
@@ -17,7 +17,7 @@ FileSystem::FileSystem(const size_t& size, HardDrive* drive) : size(size),
 }
 
 FileSystem::~FileSystem() {
-  
+
 }
 
 /*
@@ -42,7 +42,7 @@ bool FileSystem::createFile(std::string fileName, int user, int group, char perm
       parent = dynamic_cast<Directory*>(this->search(parentPath));
     }
     if (parent != nullptr) {
-      bool good2Go =this->verifyPermission(parent->getPermission(), parent->getUser(), parent->getGroup(),WRITE,user,group);
+      bool good2Go =this->verifyPermission(parent->getPermission(), parent->getUser(), parent->getGroup(),WRITE, user, group);
 
       // Creates a new File with user, group, permission
       File* newFile = new File(fileName, user, group, permission);
@@ -73,39 +73,43 @@ bool FileSystem::writeFile(std::string filepath, const char* data, size_t len, i
   File* file = this->search(filepath);
   if (file != nullptr) {
     // Opens the File
+
     if (this->openFile(filepath, user, group)) {
-      // Calculates the amount of blocks needed for the file
-      size_t blocksNeeded = (len + BLOCK_SIZE - 1) / BLOCK_SIZE;
+      if (verifyPermission(file->getPermission(), file->getUser(), file->getGroup(), WRITE, user, group)) {
+                // Calculates the amount of blocks needed for the file
+        size_t blocksNeeded = (len + BLOCK_SIZE - 1) / BLOCK_SIZE;
 
       // Reserves blocks for the data
-      auto portions = this->spaceBitmap->reserveBlocks(blocksNeeded);
+        auto portions = this->spaceBitmap->reserveBlocks(blocksNeeded);
 
       // TODO(any): file size must increase
 
       // Divides the data in chunks for each portion
-      size_t pos = 0;
-      for (auto p : portions) {
-        file->addPortion(p.first, p.second);
+        size_t pos = 0;
+        for (auto p : portions) {
+          file->addPortion(p.first, p.second);
 
-        size_t chunkSize = (p.second - p.first + 1) * BLOCK_SIZE;
+          size_t chunkSize = (p.second - p.first + 1) * BLOCK_SIZE;
 
-        if (pos + chunkSize > len) {
-          chunkSize = len % chunkSize;
+          if (pos + chunkSize > len) {
+            chunkSize = len % chunkSize;
+          }
+
+          char* chunk = new char[chunkSize + 1];
+          chunk[chunkSize] = 0;
+          std::memcpy(chunk, &data[pos], chunkSize);
+
+          this->writeFile(p.first, chunk, chunkSize);
+
+          delete[] chunk;
+          pos += chunkSize;
         }
 
-        char* chunk = new char[chunkSize + 1];
-        chunk[chunkSize] = 0;
-        std::memcpy(chunk, &data[pos], chunkSize);
-
-        this->writeFile(p.first, chunk, chunkSize);
-
-        delete[] chunk;
-        pos += chunkSize;
-      }
-
       // Serializes the tree
-      this->serializeTree();
+        this->serializeTree();
+      }
     }
+
   }
 
   return ret;
@@ -204,7 +208,11 @@ bool FileSystem::deleteFile(const std::string& filePath, int user, int group) {
 
     // Delete the File from the parent
     if (parent != nullptr) {
-      parent->deleteFile(file);
+      //verify if you can delete the file (can write)
+      if (verifyPermission(file->getPermission(), file->getUser(), file->getGroup(), WRITE, user, group)) {
+        parent->deleteFile(file);
+      }
+      
     }
 
     // Get all the portions of the File
@@ -245,12 +253,12 @@ bool FileSystem::closeFile(std::string filepath, int user, int group){
 	bool closed = false;
   File* file = this->search(filepath);
 
-	if(file != nullptr){
-		file->close();
-		closed = true;
-	}
-	
-	return closed;
+  if(file != nullptr){
+    file->close();
+    closed = true;
+  }
+
+  return closed;
 }
 
 bool FileSystem::isFileOpen(std::string filepath, int user, int group){
@@ -345,20 +353,20 @@ bool FileSystem::verifyGroup(char permission, char accessPermission) {
   bool good2Go = false;
   // if it allows all as a group
   if (permission == ALLOW_ALL ) {
+    good2Go = true;
+  }
+  // Checks if you can read as a group
+  if (accessPermission == READ) {
+    if (bits[1] == 1) {
       good2Go = true;
     }
-  // Checks if you can read as a group
-    if (accessPermission == READ) {
-      if (bits[1] == 1) {
-        good2Go = true;
-      }
   // Checks if you can write as a group
-    } else if (accessPermission == WRITE) {
-      if (bits[0] == 1) {
-        good2Go = true;
-      }
+  } else if (accessPermission == WRITE) {
+    if (bits[0] == 1) {
+      good2Go = true;
     }
-    return good2Go;
+  }
+  return good2Go;
 }
 
 bool FileSystem::verifyUser(char permission, char accessPermission) {
