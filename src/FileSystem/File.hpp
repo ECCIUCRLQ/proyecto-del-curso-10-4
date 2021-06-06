@@ -19,9 +19,9 @@ struct FileStruct {
   size_t parent = 0;
   size_t nextBlock = 0;
   size_t size = 0;
+  size_t pointers[POINTERS_SIZE] = {0};
   int user = 0;
   int group = 0;
-  size_t pointers[POINTERS_SIZE] = {0};
   char name[FILE_NAME_LEN] = {0};
   bool isDir = false;
   char permission = '\0';
@@ -55,7 +55,7 @@ class File {
   int group = 0;
 
   /**
-  * @stores permission of file
+  * @brief stores permission of file
   */
   char permission;
 

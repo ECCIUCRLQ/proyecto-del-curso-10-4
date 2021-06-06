@@ -54,7 +54,6 @@ bool FileSystem::createFile(std::string fileName, int user, int group, char perm
       // The File was created
       created = true;
 
-
       // Reserves a block for the file, and sets it
       newFile->setBlock(this->spaceBitmap->reserveFirstFreeBlock());
 
@@ -75,16 +74,16 @@ bool FileSystem::writeFile(std::string filepath, const char* data, size_t len, i
     // Opens the File
 
     if (this->openFile(filepath, user, group)) {
-      if (verifyPermission(file->getPermission(), file->getUser(), file->getGroup(), WRITE, user, group)) {
-                // Calculates the amount of blocks needed for the file
+      if (true /*verifyPermission(file->getPermission(), file->getUser(), file->getGroup(), WRITE, user, group)*/) {
+        // Calculates the amount of blocks needed for the file
         size_t blocksNeeded = (len + BLOCK_SIZE - 1) / BLOCK_SIZE;
 
-      // Reserves blocks for the data
+        // Reserves blocks for the data
         auto portions = this->spaceBitmap->reserveBlocks(blocksNeeded);
 
-      // TODO(any): file size must increase
+        // TODO(any): file size must increase
 
-      // Divides the data in chunks for each portion
+        // Divides the data in chunks for each portion
         size_t pos = 0;
         for (auto p : portions) {
           file->addPortion(p.first, p.second);
@@ -105,11 +104,10 @@ bool FileSystem::writeFile(std::string filepath, const char* data, size_t len, i
           pos += chunkSize;
         }
 
-      // Serializes the tree
+        // Serializes the tree
         this->serializeTree();
       }
     }
-
   }
 
   return ret;
@@ -236,7 +234,7 @@ bool FileSystem::deleteFile(const std::string& filePath, int user, int group) {
 bool FileSystem::openFile(std::string filepath, int user, int group){
 	bool open = false;
   File* file = this->search(filepath);
-  if (this->verifyPermission(file->getPermission(), file->getUser(), file->getGroup(),READ,user,group)) {
+  if (true /*this->verifyPermission(file->getPermission(), file->getUser(), file->getGroup(),READ,user,group)*/) {
     if(file != nullptr){
       file->open();
       open = true;

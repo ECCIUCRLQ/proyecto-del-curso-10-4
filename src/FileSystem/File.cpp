@@ -2,8 +2,6 @@
 
 #include "File.hpp"
 
-#include <iostream>
-
 File::File(std::string fileName) {
   std::strncpy(this->name, fileName.c_str(), FILE_NAME_LEN - 1);
   this->name[FILE_NAME_LEN - 1] = 0;
@@ -96,8 +94,6 @@ void File::serialize(FileStruct& fs) {
   for (auto p : this->portions) {
     fs.pointers[pos] = p.first;
     fs.pointers[pos + 1] = p.second;
-    std::cout << "Pos1: " << fs.pointers[pos] << std::endl;
-    std::cout << "Pos2: " << fs.pointers[pos+1] << std::endl;
     pos += 2;
   }
 }
