@@ -39,7 +39,7 @@ class TcpServer {
   /// Constructor
   TcpServer();
   /// Destructor
-  ~TcpServer();
+  virtual ~TcpServer();
   /// Infinetelly listen for client connection requests and accept all of them.
   /// For each accepted connection request, the virtual onConnectionAccepted()
   /// will be called. Inherited classes must override that method
@@ -72,7 +72,7 @@ class TcpServer {
   /// This method is called each time a client connection request is accepted.
   /// Inherited classes must override this method, process the connection
   /// request, and finally close the connection socket
-  virtual void handleClientConnection(Socket& client) = 0;
+  virtual void handleClientConnection(Socket& client)=0;
   /// Closes the listening socket and sets listen to false
   void killServer();
   /// Closes a socket from the vector and deletes it

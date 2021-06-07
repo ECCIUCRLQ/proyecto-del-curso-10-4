@@ -1,27 +1,21 @@
-#ifndef DIRECTORY_HPP
-#define DIRECTORY_HPP
+#ifndef SERVER_PADRON_HPP
+#define SERVER_PADRON_HPP
 
 #include <iostream>
 #include <string>
 #include <sstream>
 #include <fstream>
-#include "FileSystem.hpp"
+//#include "FileSystem.hpp"
 #include "TcpServer.hpp"
 #define NOMBRE_ARCHIVO "PadronPrueba.csv"
 
 class serverPadron : public TcpServer {
  protected:
   std::string padron;
-  size_t tamaño;
+  size_t tamano;
 
  public:
-  serverPadron() = delete;
-
-  /**
-   * @brief DefaultConstructor for a Directory
-   * @param dirName name of the Directory
-   */
-  explicit serverPadron();
+  serverPadron();
 
   /**
    * @brief Default Destructor for a Directory
