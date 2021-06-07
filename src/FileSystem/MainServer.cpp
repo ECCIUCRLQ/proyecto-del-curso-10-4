@@ -49,8 +49,9 @@ int main(int argc, char* argv[]) {
   std::cout << "--- BEGINNING OF DISK ---" << std::endl;
   hd->print();
   std::cout << "--- END OF DISK ---" << std::endl;
-
-  fss->receiveFile("/prueba",prueba,0,0);
-
+  while(true){
+  std::string recivido = fss->receiveFile("/prueba",prueba,0,0);
+  std::cout << recivido << std::endl;
+  }
   return 0;
 }

@@ -13,17 +13,17 @@ FileSystemServer::~FileSystemServer() {
 }
 
 
-bool FileSystemServer::receiveFile(std::string filepath,std::string archivo, int user, int group){
+std::string FileSystemServer::receiveFile(std::string filepath,std::string archivo, int user, int group){
     bool success = false;
-
-    std::string Padron = archivo;
     
+    std::string Padron = archivo;
+    std::string recivido  = "";
 	 // Create a socket
     int listening = socket(AF_INET, SOCK_STREAM, 0);
     if (listening == -1)
     {
         std::cerr << "Error al crear socket" << std::endl;
-        return -1;
+        return "Error";
     }
 		int puerto = 54000;
     // Bind the ip address and port to a socket
@@ -66,8 +66,7 @@ bool FileSystemServer::receiveFile(std::string filepath,std::string archivo, int
     // While loop: accept and echo message back to client
     char buf[4096];
  
-    while (true)
-    {
+    
         memset(buf, 0, 4096);
  
         // Wait for client to send data
@@ -75,31 +74,30 @@ bool FileSystemServer::receiveFile(std::string filepath,std::string archivo, int
         if (bytesReceived == -1)
         {
             std::cerr << "Error al recibir datos" << std::endl;
-            break;
+            return "";
         }
  
         if (bytesReceived == 0)
         {
             success = true;
             std::cout << "Cliente desconectado " << std::endl;
-            break;
+            return "";
         }
  
         std::cout << std::string(buf, 0, bytesReceived) << std::endl;
-        std::string peticion = std::string(buf, 0, bytesReceived);
+        recivido = std::string(buf, 0, bytesReceived);
 
-        if(peticion== "Padron"){
+        
           //Hay que meter en buf el padron
             send(clientSocket, Padron.c_str(), Padron.size() + 1, 0);
-        }
+    
 
         // Echo message back to client
         
-    }
 	 // Close the socket
     close(clientSocket);
 
-return success;
+return recivido;
 }
 	
 

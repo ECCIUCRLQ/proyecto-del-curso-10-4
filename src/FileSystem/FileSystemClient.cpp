@@ -7,17 +7,18 @@ FileSystemClient::FileSystemClient(FileSystem* file) {
 FileSystemClient::~FileSystemClient() {
 
 }
-bool FileSystemClient::sendSocket() {
+std::string FileSystemClient::sendSocket() {
+    std::string archRecivido  = "";
     //	Create a socket
     int sock = socket(AF_INET, SOCK_STREAM, 0);
     if (sock == -1)
     {
-        return 1;
+        return "listo1";
     }
 
     //	Create a hint structure for the server we're connecting with
     int port = 54000;
-    string ipAddress = "127.0.0.1";
+    std::string ipAddress = "127.0.0.1";
 
     sockaddr_in hint;
     hint.sin_family = AF_INET;
@@ -28,12 +29,12 @@ bool FileSystemClient::sendSocket() {
     int connectRes = connect(sock, (sockaddr*)&hint, sizeof(hint));
     if (connectRes == -1)
     {
-        return 1;
+        return "Listo";
     }
 
     //	While loop:
     char buf[4096];
-    string userInput;
+    std::string userInput;
 
 
     
@@ -44,7 +45,7 @@ bool FileSystemClient::sendSocket() {
         int sendRes = send(sock, solicitud.c_str(), solicitud.size() + 1, 0);
         if (sendRes == -1)
         {
-            cout << "Could not send to server! Whoops!\r\n";
+            std::cout << "Could not send to server! Whoops!\r\n";
             
         }
 
@@ -53,18 +54,18 @@ bool FileSystemClient::sendSocket() {
         int bytesReceived = recv(sock, buf, 4096, 0);
         if (bytesReceived == -1)
         {
-            cout << "There was an error getting response from server\r\n";
+            std::cout << "There was an error getting response from server\r\n";
         }
         else
         {
             //		Display response
-            cout << "SERVER> " << string(buf, bytesReceived) << "\r\n";
-            string archRecivido = string(buf, bytesReceived);
+            std::cout << "SERVER> " << std::string(buf, bytesReceived) << "\r\n";
+            archRecivido = std::string(buf, bytesReceived);
         }
-    
+
 
     //	Close the socket
     close(sock);
 
-    return 0;
+    return archRecivido;
 }

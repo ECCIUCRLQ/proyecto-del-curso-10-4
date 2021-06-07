@@ -10,8 +10,6 @@
 #include <arpa/inet.h>
 #include <string.h>
 #include <string>
-
-using namespace std;
 #include "HardDrive.hpp"
 #include "FileSystem.hpp"
 class FileSystemClient {
@@ -23,7 +21,7 @@ public:
 	FileSystem* fs;
 	FileSystemClient(FileSystem* file);
 	~FileSystemClient();
-	bool sendSocket();
+	std::string sendSocket();
 	
 };
 

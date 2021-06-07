@@ -25,7 +25,12 @@ int main(int argc, char* argv[]) {
   hd->print();
   std::cout << "--- END OF DISK ---" << std::endl;
 
-  fsc->sendSocket();
+  std::string recivido = fsc->sendSocket();
+  std::cout << recivido << std::endl;
+  std::string recivido = fsc->sendSocket();
+  std::cout << recivido << std::endl;
+  std::string recivido = fsc->sendSocket();
+  std::cout << recivido << std::endl;
 
   return 0;
 }
