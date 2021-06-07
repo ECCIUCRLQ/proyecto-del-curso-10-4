@@ -44,9 +44,8 @@ bool FileSystem::createFile(std::string fileName, int user, int group, char perm
       parent = dynamic_cast<Directory*>(this->search(parentPath));
     }
     if (parent != nullptr) {
-      bool good2Go =this->verifyPermission(parent->getPermission(), parent->getUser(), parent->getGroup(),WRITE, user, group);
-
-      // Creates a new File with user, group, permission
+      if (true/*this->verifyPermission(parent->getPermission(), parent->getUser(), parent->getGroup(),WRITE, user, group)*/){
+ 	  // Creates a new File with user, group, permission
       File* newFile = new File(fileName, user, group, permission);
 
 
@@ -61,6 +60,7 @@ bool FileSystem::createFile(std::string fileName, int user, int group, char perm
 
       // Re serialize the FS
       this->serializeTree();
+      }
     }
   }
 
@@ -76,7 +76,7 @@ bool FileSystem::readFile(std::string filepath, char* dest, size_t len, int user
 
   // Read only if file is no Dir
   if (directory == nullptr) {
-    // Permisions here?
+    // Permisions to open file is same as read
     if (this->openFile(filepath, user, group)) {
       // Blocks to read
       auto portions = file->getAllPortions();
@@ -134,7 +134,7 @@ bool FileSystem::writeFile(std::string filepath, const char* data, size_t len, i
   if (file != nullptr) {
     // Opens the File
     if (this->openFile(filepath, user, group)) {
-      if (true /*verifyPermission(file->getPermission(), file->getUser(), file->getGroup(), WRITE, user, group)*/) {
+      if (verifyPermission(file->getPermission(), file->getUser(), file->getGroup(), WRITE, user, group)) {
         // Calculates the amount of blocks needed for the file
         size_t blocksNeeded = (len + BLOCK_SIZE - 1) / BLOCK_SIZE;
 
@@ -295,11 +295,12 @@ bool FileSystem::deleteFile(const std::string& filePath, int user, int group) {
 bool FileSystem::openFile(std::string filepath, int user, int group){
 	bool open = false;
   File* file = this->search(filepath);
-  if (true /*this->verifyPermission(file->getPermission(), file->getUser(), file->getGroup(),READ,user,group)*/) {
-    if(file != nullptr){
-      file->open();
-      open = true;
-    }
+  
+  if(file != nullptr){
+  	if (this->verifyPermission(file->getPermission(), file->getUser(), file->getGroup(),READ,user,group)) {
+  		file->open();
+  		open = true;
+  	}
 
    // return open;
 
@@ -431,11 +432,15 @@ bool FileSystem::verifyGroup(char permission, char accessPermission, bool verifi
   if (accessPermission == READ) {
     if (bits[1] == 1) {
       good2Go = true;
+    } else {
+      good2Go = false;
     }
   // Checks if you can write as a group
   } else if (accessPermission == WRITE) {
     if (bits[0] == 1) {
       good2Go = true;
+    } else {
+      good2Go = false;
     }
   }
   return good2Go;
@@ -452,11 +457,15 @@ bool FileSystem::verifyUser(char permission, char accessPermission, bool verific
   if (accessPermission == READ) {
     if (bits[3] == 1) {
       good2Go = true;
+    } else {
+      good2Go = false;
     }
   // Checks if you can write as a user
   } else if (accessPermission == WRITE) {
     if (bits[2] == 1) {
       good2Go = true;
+    } else {
+      good2Go = false;
     }
   }
 
