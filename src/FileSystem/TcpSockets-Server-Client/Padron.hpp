@@ -1,9 +1,15 @@
 #ifndef PADRON_HPP
 #define PADRON_HPP
 #include <map>
+#include <string_view>
+#include <string>
+#include <iostream>
+#include <unordered_map>
+
 class Padron {
 	
 	
+
 	struct datoVotante{
        std::string nombre;
 	   int codigo;
@@ -14,14 +20,13 @@ class Padron {
   public:
   Padron();
   ~Padron();
-	setNombre();
-	setCodigo();
-	setVoto();
-	getNombre();
-	getCodigo();
-	getVoto();
-
- 
-
+    void agregarVotante(std::string carnet);
+	void setNombre(std::string carnet,std::string nombre);
+	void setCodigo(std::string carnet,int codigo);
+	void setVoto(std::string carnet,int voto);
+	std::string getNombre(std::string carnet);
+	int getCodigo(std::string carnet);
+	int getVoto(std::string carnet);
+	std::string getCarnet(int codigo);
 };
 #endif

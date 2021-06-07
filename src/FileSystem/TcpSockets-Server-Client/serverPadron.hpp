@@ -7,12 +7,13 @@
 #include <fstream>
 //#include "FileSystem.hpp"
 #include "TcpServer.hpp"
+#include "Padron.hpp"
 #define NOMBRE_ARCHIVO "PadronPrueba.csv"
 
 class serverPadron : public TcpServer {
- protected:
-  std::string padron;
-  size_t tamano;
+ 
+  Padron padron;
+ 
 
  public:
   serverPadron();
