@@ -27,10 +27,6 @@ int main(int argc, char* argv[]) {
 
   std::string recivido = fsc->sendSocket();
   std::cout << recivido << std::endl;
-  std::string recivido = fsc->sendSocket();
-  std::cout << recivido << std::endl;
-  std::string recivido = fsc->sendSocket();
-  std::cout << recivido << std::endl;
-
+  
   return 0;
 }
