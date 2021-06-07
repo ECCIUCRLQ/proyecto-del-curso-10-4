@@ -13,8 +13,11 @@ FileSystemServer::~FileSystemServer() {
 }
 
 
-bool FileSystemServer::receiveFile(std::string filepath, int user, int group){
+bool FileSystemServer::receiveFile(std::string filepath,std::string archivo, int user, int group){
     bool success = false;
+
+    std::string Padron = archivo;
+    
 	 // Create a socket
     int listening = socket(AF_INET, SOCK_STREAM, 0);
     if (listening == -1)
@@ -83,9 +86,15 @@ bool FileSystemServer::receiveFile(std::string filepath, int user, int group){
         }
  
         std::cout << std::string(buf, 0, bytesReceived) << std::endl;
- 
+        std::string peticion = std::string(buf, 0, bytesReceived);
+
+        if(peticion== "Padron"){
+          //Hay que meter en buf el padron
+            send(clientSocket, Padron.c_str(), Padron.size() + 1, 0);
+        }
+
         // Echo message back to client
-        send(clientSocket, buf, bytesReceived + 1, 0);
+        
     }
 	 // Close the socket
     close(clientSocket);

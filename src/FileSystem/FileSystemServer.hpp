@@ -27,7 +27,7 @@ class FileSystemServer {
 
 
 
-  bool receiveFile(std::string filepath, int user, int group);
+  bool receiveFile(std::string filepath,std::string archivo, int user, int group);
  
 
 };

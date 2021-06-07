@@ -36,17 +36,16 @@ bool FileSystemClient::sendSocket() {
     string userInput;
 
 
-    do {
+    
         //		Enter lines of text
-        cout << "> ";
-        getline(cin, userInput);
+        std::string solicitud = "Padron";
 
         //		Send to server
-        int sendRes = send(sock, userInput.c_str(), userInput.size() + 1, 0);
+        int sendRes = send(sock, solicitud.c_str(), solicitud.size() + 1, 0);
         if (sendRes == -1)
         {
             cout << "Could not send to server! Whoops!\r\n";
-            continue;
+            
         }
 
         //		Wait for response
@@ -60,8 +59,9 @@ bool FileSystemClient::sendSocket() {
         {
             //		Display response
             cout << "SERVER> " << string(buf, bytesReceived) << "\r\n";
+            string archRecivido = string(buf, bytesReceived);
         }
-    } while (true);
+    
 
     //	Close the socket
     close(sock);
