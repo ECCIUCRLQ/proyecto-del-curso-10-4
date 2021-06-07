@@ -105,6 +105,7 @@ class File {
   * @param char permission
   **/
   File(std::string fileName, int user, int group, char permission);
+
   /**
    * @brief Destructor for a File
    */
@@ -137,6 +138,8 @@ class File {
   int getUser();
   int getGroup();
   char getPermission();
+  size_t increaseSize(size_t bytes);
+  size_t decreaseSize(size_t bytes);
 };
 
 

@@ -2,6 +2,8 @@
 #include <cstring>
 #include <bitset>
 
+#include <iostream>
+
 FileSystem::FileSystem(const size_t& size, HardDrive* drive) : size(size),
 hardDrive(drive) {
   // Creates the Bitmap for free/used space in storage
@@ -65,6 +67,65 @@ bool FileSystem::createFile(std::string fileName, int user, int group, char perm
   return created;
 }
 
+bool FileSystem::readFile(std::string filepath, char* dest, size_t len, int user, int group) {
+  bool ret = false;
+
+  // Search for the file
+  File* file = this->search(filepath);
+  Directory* directory = dynamic_cast<Directory*>(file);
+
+  // Read only if file is no Dir
+  if (directory == nullptr) {
+    // Permisions here?
+    if (this->openFile(filepath, user, group)) {
+      // Blocks to read
+      auto portions = file->getAllPortions();
+      size_t bytesRead = 0;
+
+      std::cout << "The file size is: " << file->getSize() << std::endl;
+
+      for (auto p : portions) {
+        std::cout << "Reading portion: " << p.first << " & " << p.second << std::endl;
+        size_t amountOfBlocks = p.second - p.first + 1;
+        size_t portionBytes = amountOfBlocks * BLOCK_SIZE;
+        bytesRead += portionBytes;
+
+        std::cout << "Amount of blocks to read: " << amountOfBlocks << std::endl;
+
+        // Read the data of the portion
+        std::string portionData = this->readBlocks(p.first, amountOfBlocks);
+
+        // Add all read bytes to ret
+        if (bytesRead <= file->getSize()) {
+          std::cout << '1' << std::endl;
+          portionData.copy(dest, portionData.length());
+        } else {
+          std::cout << '2' << std::endl;
+          // Add just the remaining bytes to the string
+          size_t remainingBytes = bytesRead - (bytesRead - file->getSize());
+          portionData.copy(dest, remainingBytes);
+        }
+
+        ret = true;
+      }
+    }
+  }
+
+  return ret;
+}
+
+std::string FileSystem::readBlocks(size_t block, size_t amount) {
+  std::string ret;
+
+  // If block is valid
+  if (block > 0) {
+    char* hdData = this->hardDrive->getPos(block * BLOCK_SIZE);
+    ret.assign(hdData, amount * BLOCK_SIZE);
+  }
+
+  return ret;
+}
+
 bool FileSystem::writeFile(std::string filepath, const char* data, size_t len, int user, int group) {
   bool ret = false;
 
@@ -72,7 +133,6 @@ bool FileSystem::writeFile(std::string filepath, const char* data, size_t len, i
   File* file = this->search(filepath);
   if (file != nullptr) {
     // Opens the File
-
     if (this->openFile(filepath, user, group)) {
       if (true /*verifyPermission(file->getPermission(), file->getUser(), file->getGroup(), WRITE, user, group)*/) {
         // Calculates the amount of blocks needed for the file
@@ -80,8 +140,6 @@ bool FileSystem::writeFile(std::string filepath, const char* data, size_t len, i
 
         // Reserves blocks for the data
         auto portions = this->spaceBitmap->reserveBlocks(blocksNeeded);
-
-        // TODO(any): file size must increase
 
         // Divides the data in chunks for each portion
         size_t pos = 0;
@@ -103,6 +161,9 @@ bool FileSystem::writeFile(std::string filepath, const char* data, size_t len, i
           delete[] chunk;
           pos += chunkSize;
         }
+
+        // Increase file size
+        file->increaseSize(len);
 
         // Serializes the tree
         this->serializeTree();
@@ -312,6 +373,20 @@ void FileSystem::serializeFile(File* file) {
   }
 }
 
+size_t FileSystem::sizeOfFile(std::string filepath, int user, int group) {
+  size_t ret = 0;
+  File* file = this->search(filepath);
+  Directory* directory = dynamic_cast<Directory*>(file);
+
+  // If it is not a directory
+  if (directory == nullptr) {
+    // Verify permisions?
+    ret = file->getSize();
+  }
+
+  return ret;
+}
+
 //METODO TEMPORAL
 /**
 * @brief verifies file permissions
@@ -344,8 +419,8 @@ bool FileSystem::verifyPermission(char permission, int fileUser, int fileGroup,
 
 
   return good2Go;
-
 }
+
 bool FileSystem::verifyGroup(char permission, char accessPermission) {
   std::bitset<8> bits(permission);
   bool good2Go = false;

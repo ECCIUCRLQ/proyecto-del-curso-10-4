@@ -129,3 +129,16 @@ char File::getPermission() {
   return this->permission;
 }
 
+size_t File::getSize() {
+  return this->size;
+}
+
+size_t File::increaseSize(size_t bytes) {
+  this->size += bytes;
+  return this->size;
+}
+
+size_t File::decreaseSize(size_t bytes) {
+  this->size -= bytes;
+  return this->size;
+}

@@ -107,7 +107,7 @@ class FileSystem {
    * @param group Group of the user trying to access the File
    * @return Array of chars containing the data. Nullptr on failure.
    */
-  unsigned char* readFile(std::string filepath, int user, int group);
+  bool readFile(std::string filepath, char* dest, size_t len, int user, int group);
 
   /**
    * @brief Write some content into a File
@@ -165,6 +165,8 @@ class FileSystem {
    * @return True on success, false on failure.
    */
   bool isFileOpen(std::string filepath, int user, int group);
+
+  size_t sizeOfFile(std::string filepath, int user, int group);
  
 
   /*
@@ -182,6 +184,7 @@ class FileSystem {
  private:
   bool writeFile(size_t block, char* data, size_t len);
   bool writeBlock(size_t block, char* data, size_t len);
+  std::string readBlocks(size_t block, size_t amount);
   File* search(std::vector<std::string>* splitPath, size_t pos, Directory* directory);
   char* getBlock(size_t pos);
   void serializeDirectory(Directory* dir);
