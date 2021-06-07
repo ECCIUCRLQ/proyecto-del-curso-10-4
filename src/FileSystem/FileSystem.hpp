@@ -187,8 +187,8 @@ class FileSystem {
   void serializeDirectory(Directory* dir);
   void serializeFile(File* file);
   bool verifyPermission(char permission, int user, int group,char accessPermission, int accessUser, int accessGroup);
-  bool verifyUser(char permission, char accessPermission);
-  bool verifyGroup(char permission, char accessPermission);
+  bool verifyUser(char permission, char accessPermission, bool verification);
+  bool verifyGroup(char permission, char accessPermission, bool verification);
  public:
   File* search(const std::string& filepath);
   void serializeTree();
