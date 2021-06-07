@@ -8,6 +8,7 @@
 
 #include <cstddef>
 #include <vector>
+#include <iostream>
 
 class Bitmap {
  private:
@@ -86,6 +87,12 @@ class Bitmap {
    * @return a vector containing the contigous portions of blocks reserved
    */
   std::vector<std::pair<size_t, size_t>> reserveBlocks(size_t amountOfBlocks);
+
+  void print() {
+    for (auto i : this->blocks) {
+      std::cout << (int)i << std::endl;
+    }
+  };
 };
 
 

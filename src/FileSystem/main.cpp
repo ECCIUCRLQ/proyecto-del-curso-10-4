@@ -22,17 +22,18 @@ int main(int argc, char* argv[]) {
 
   fs->writeFile("/prueba", prueba.c_str(), prueba.length(), 0, 0);
 
-  std::cout << "--- BEGINNING OF DISK ---" << std::endl;
-  //hd->print();
-  std::cout << "--- END OF DISK ---" << std::endl;
+  std::string prueba2 = "abcdef";
+  fs->createFile("prueba2", 0, 0, 0);
+  fs->writeFile("/prueba2", prueba2.c_str(), prueba2.length(), 0, 0);
+  fs->printBitmap();
 
-  std::vector<char> pruebaLectura;
-  size_t pruebaSize = fs->sizeOfFile("/prueba", 0, 0);
-  pruebaLectura.resize(pruebaSize + 10);
-  std::cout << "SizeOfFile: " << pruebaSize << std::endl;
-  fs->readFile("/prueba", pruebaLectura.data(), pruebaSize, 0, 0);
-  std::cout << "Lectura concluida" << std::endl;
-  std::cout << "El archivo 'prueba' contiene: " << pruebaLectura.data() << std::endl;
+  std::string prueba3 = "abcdefghijk";
+  fs->createFile("pruebita", 0, 0, 0);
+  fs->writeFile("/pruebita", prueba3.c_str(), prueba3.length(), 0, 0);
+
+  std::cout << "--- BEGINNING OF DISK ---" << std::endl;
+  hd->print();
+  std::cout << "--- END OF DISK ---" << std::endl;
 
   delete hd;
   delete fs;

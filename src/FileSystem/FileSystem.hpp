@@ -31,6 +31,7 @@
 #include <cstddef>
 #include <map>
 #include <string>
+#include <iostream>
 
 #include "Bitmap.hpp"
 #include "Directory.hpp"
@@ -195,6 +196,9 @@ class FileSystem {
  public:
   File* search(const std::string& filepath);
   void serializeTree();
+  void printBitmap() {
+    this->spaceBitmap->print();
+  };
 };
 
 
