@@ -405,11 +405,11 @@ bool FileSystem::verifyPermission(char permission, int fileUser, int fileGroup,
   //by group, check all relating to groups
   // if permission allows all, good to go
   if (fileGroup == accessGroup) {
-    good2Go =this->verifyGroup(permission, accessPermission);
+    good2Go =this->verifyGroup(permission, accessPermission, good2Go);
   }
   //by user
   if (fileUser == accessUser) {
-    good2Go = this->verifyUser(permission, accessPermission);
+    good2Go = this->verifyUser(permission, accessPermission, good2Go);
   }
   // verify for following:
   // case: FILE
@@ -420,10 +420,9 @@ bool FileSystem::verifyPermission(char permission, int fileUser, int fileGroup,
 
   return good2Go;
 }
-
-bool FileSystem::verifyGroup(char permission, char accessPermission) {
+bool FileSystem::verifyGroup(char permission, char accessPermission, bool verification) {
   std::bitset<8> bits(permission);
-  bool good2Go = false;
+  bool good2Go = verification;
   // if it allows all as a group
   if (permission == ALLOW_ALL ) {
     good2Go = true;
@@ -442,9 +441,9 @@ bool FileSystem::verifyGroup(char permission, char accessPermission) {
   return good2Go;
 }
 
-bool FileSystem::verifyUser(char permission, char accessPermission) {
+bool FileSystem::verifyUser(char permission, char accessPermission, bool verification) {
   std::bitset<8> bits(permission);
-  bool good2Go = false;
+  bool good2Go = verification;
   // if it allows all as a user
   if (permission == ALLOW_ALL ) {
     good2Go = true;
