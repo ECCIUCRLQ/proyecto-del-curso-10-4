@@ -432,15 +432,11 @@ bool FileSystem::verifyGroup(char permission, char accessPermission, bool verifi
   if (accessPermission == READ) {
     if (bits[1] == 1) {
       good2Go = true;
-    } else {
-      good2Go = false;
     }
   // Checks if you can write as a group
   } else if (accessPermission == WRITE) {
     if (bits[0] == 1) {
       good2Go = true;
-    } else {
-      good2Go = false;
     }
   }
   return good2Go;
@@ -457,15 +453,11 @@ bool FileSystem::verifyUser(char permission, char accessPermission, bool verific
   if (accessPermission == READ) {
     if (bits[3] == 1) {
       good2Go = true;
-    } else {
-      good2Go = false;
     }
   // Checks if you can write as a user
   } else if (accessPermission == WRITE) {
     if (bits[2] == 1) {
       good2Go = true;
-    } else {
-      good2Go = false;
     }
   }
 
