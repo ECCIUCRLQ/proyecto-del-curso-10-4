@@ -38,7 +38,7 @@
 #include "File.hpp"
 #include "HardDrive.hpp"
 
-#include "Utils/Parser.hpp"
+#include "Parser.hpp"
 
 /**
  * @brief File System that allows reading from and writing on a Hard Drive.
@@ -198,6 +198,9 @@ class FileSystem {
   void serializeTree();
   void printBitmap() {
     this->spaceBitmap->print();
+  };
+  void printHD() {
+    this->hardDrive->print();
   };
 };
 

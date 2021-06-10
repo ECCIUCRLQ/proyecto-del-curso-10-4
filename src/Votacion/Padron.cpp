@@ -2,17 +2,15 @@
 #include <cstring>
 
 Padron::Padron(){
-	
 }
 
 Padron::~Padron() {
-
 }
 
 void Padron::agregarVotante(std::string carnet){
 	mapaPadron[carnet].codigo = 0;
-    mapaPadron[carnet].nombre = "";
-    mapaPadron[carnet].voto = 0;
+  mapaPadron[carnet].nombre = "";
+  mapaPadron[carnet].voto = 0;
 }
 
 void Padron::setNombre(std::string carnet,std::string nombre){
@@ -43,16 +41,12 @@ std::string Padron::getCarnet(int codigo){
 	std::string carnet;
 
 	auto iter = mapaPadron.begin();
-    while (iter != mapaPadron.end()) {
-        if(iter->second.codigo == codigo){
-			carnet = iter->first;
-		}
-        ++iter;
-    }
-	return carnet;
+  while (iter != mapaPadron.end()) {
+    if(iter->second.codigo == codigo){
+		  carnet = iter->first;
+	  }
+    ++iter;
+  }
+
+  return carnet;
 }
-
-
-
-
-

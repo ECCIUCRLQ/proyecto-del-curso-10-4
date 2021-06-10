@@ -5,27 +5,22 @@
 #include <string>
 #include <sstream>
 #include <fstream>
-//#include "FileSystem.hpp"
-#include "TcpServer.hpp"
+
 #include "Padron.hpp"
+#include "Socket.hpp"
+#include "TcpServer.hpp"
+
 #define NOMBRE_ARCHIVO "PadronPrueba.csv"
 
 class serverPadron : public TcpServer {
- 
+ private:
   Padron padron;
- 
-
  public:
   serverPadron();
-
-  /**
-   * @brief Default Destructor for a Directory
-   */
   ~serverPadron();
 
  public:
   void handleClientConnection(Socket& client);
-  
 };
 
 

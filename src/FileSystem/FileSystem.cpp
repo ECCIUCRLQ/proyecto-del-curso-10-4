@@ -82,25 +82,18 @@ bool FileSystem::readFile(std::string filepath, char* dest, size_t len, int user
       auto portions = file->getAllPortions();
       size_t bytesRead = 0;
 
-      std::cout << "The file size is: " << file->getSize() << std::endl;
-
       for (auto p : portions) {
-        std::cout << "Reading portion: " << p.first << " & " << p.second << std::endl;
         size_t amountOfBlocks = p.second - p.first + 1;
         size_t portionBytes = amountOfBlocks * BLOCK_SIZE;
         bytesRead += portionBytes;
-
-        std::cout << "Amount of blocks to read: " << amountOfBlocks << std::endl;
 
         // Read the data of the portion
         std::string portionData = this->readBlocks(p.first, amountOfBlocks);
 
         // Add all read bytes to ret
         if (bytesRead <= file->getSize()) {
-          std::cout << '1' << std::endl;
           portionData.copy(dest, portionData.length());
         } else {
-          std::cout << '2' << std::endl;
           // Add just the remaining bytes to the string
           size_t remainingBytes = bytesRead - (bytesRead - file->getSize());
           portionData.copy(dest, remainingBytes);
@@ -167,8 +160,16 @@ bool FileSystem::writeFile(std::string filepath, const char* data, size_t len, i
 
         // Serializes the tree
         this->serializeTree();
+
+        ret = true;
+      } else {
+        std::cout << "Error 3" << std::endl;
       }
+    } else {
+      std::cout << "Error 2" << std::endl;
     }
+  } else {
+    std::cout << "Error 1" << std::endl;
   }
 
   return ret;
