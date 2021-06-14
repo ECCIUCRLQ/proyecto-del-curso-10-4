@@ -12,7 +12,7 @@ serverPadron::~serverPadron() {
 void serverPadron::handleClientConnection(Socket& client) {
 	std::string hilera = "";
 	client.readLine(hilera);
-	std::cout << "Comando recivido: "<< hilera << std::endl;
+	std::cout << "Comando recibido: "<< hilera << std::endl;
 	if(hilera.at(0) == 'a'){
 		std::string carnet = "";
 		for(int i = 1; i<hilera.length();++i){
