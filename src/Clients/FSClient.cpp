@@ -65,12 +65,12 @@ void FSClient::parse(const std::string& input) {
   }
 
   // No opcode matches
-  /*TcpClient client;
+  TcpClient client;
   Socket& socket = client.connect(this->serverIp.c_str(), this->serverPort.c_str());
   socket << "p46421";
   socket.send();
   socket.close();
-  this->fs->printHD();*/
+  this->fs->printHD();
   std::cout << "Error: invalid command" << std::endl;
 }
 
