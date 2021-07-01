@@ -23,37 +23,44 @@
 #define SEARCH_COMMAND  "search"
 
 class FSClient {
- private:
+ protected:
   FileSystem* fs = nullptr;
 
- private:
-  std::string serverIp = "127.0.0.1";
-  std::string serverPort = "8081";
+ protected:
+  std::string serverIp;
+  std::string serverPort;
 
  public:
-  FSClient(FileSystem& fs);
-  ~FSClient();
+  FSClient(FileSystem& fs, std::string& serverIp, std::string& serverPort);
+  virtual ~FSClient();
 
  public:
   void shell();
 
- private:
+ protected:
   void parse(const std::string& input);
 
- public:
+ protected:
   bool fileExists(const std::string& filepath);
   bool createFile(const std::string& filepath);
   bool writeFile(const std::string& filepath, const std::string& data);
-  bool readFile(const std::string& filepath);
-  void deleteFile(const std::string& filepath);
+  bool readFile(const std::string& filepath, std::string& output);
+  bool deleteFile(const std::string& filepath);
 
- private:
+ protected:
+  void fileExistsShell(const std::string& filepath);
+  void createFileShell(const std::string& filepath);
+  void writeFileShell(const std::string& filepath, const std::string& data);
+  void readFileShell(const std::string& filepath);
+  void deleteFileShell(const std::string& filepath);
+
+ protected:
   bool createLocalFile(const std::string& filepath);
   bool writeLocalFile(const std::string& filepath, const std::string& data);
   std::string readLocalFile(const std::string& filepath);
   bool deleteLocalFile(const std::string& filepath);
 
- private:
+ protected:
   void sendDatagram(Socket& socket, const std::string& datagram);
   std::string readSocketResponse(Socket& socket);
 };

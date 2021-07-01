@@ -1,6 +1,7 @@
 #include "FSClient.hpp"
 
-FSClient::FSClient(FileSystem& fs) : fs(&fs) {
+FSClient::FSClient(FileSystem& fs, std::string& serverIp,
+  std::string& serverPort) : fs(&fs), serverIp(serverIp), serverPort(serverPort) {
 }
 
 FSClient::~FSClient() {
@@ -28,7 +29,7 @@ void FSClient::parse(const std::string& input) {
   // Create Command
   if (command.compare(CREATE_COMMAND) == 0) {
     filepath = input.substr(pos + 1);
-    this->createFile(filepath);
+    this->createFileShell(filepath);
     return;
   }
 
@@ -38,7 +39,7 @@ void FSClient::parse(const std::string& input) {
     filepath = input.substr(pos + 1, posFin - pos - 1);
 
     std::string content = input.substr(posFin + 1);
-    this->writeFile(filepath, content);
+    this->writeFileShell(filepath, content);
 
     return;
   }
@@ -46,14 +47,14 @@ void FSClient::parse(const std::string& input) {
   // Read File
   if (command.compare(READ_COMMAND) == 0) {
     filepath = input.substr(pos + 1);
-    this->readFile(filepath);
+    this->readFileShell(filepath);
     return;
   }
 
   // Delete File
   if (command.compare(DELETE_COMMAND) == 0) {
     filepath = input.substr(pos + 1);
-    this->deleteFile(filepath);
+    this->deleteFileShell(filepath);
     return;
   }
 
@@ -92,6 +93,14 @@ bool FSClient::fileExists(const std::string& filepath) {
   return ret;
 }
 
+void FSClient::fileExistsShell(const std::string& filepath) {
+  if (this->fileExists(filepath)) {
+    std::cout << "File " << filepath << " exists" << std::endl;
+  } else {
+    std::cout << "File " << filepath << " does not exist" << std::endl;
+  }
+}
+
 bool FSClient::createFile(const std::string& filepath) {
   bool ret = false;
 
@@ -105,15 +114,20 @@ bool FSClient::createFile(const std::string& filepath) {
     std::string response = this->readSocketResponse(socket);
     if (response.length() > 0 && response.at(0) == '1') {
       ret = true;
-      std::cout << filepath << " created successfully" << std::endl;
-    } else {
-      std::cout << "Could not create " << filepath << std::endl;
     }
 
     socket.close();
   }
 
   return ret;
+}
+
+void FSClient::createFileShell(const std::string& filepath) {
+  if (this->createFile(filepath)) {
+    std::cout << filepath << " created successfully" << std::endl;
+  } else {
+    std::cout << "Could not create " << filepath << std::endl;
+  }
 }
 
 bool FSClient::writeFile(const std::string& filepath, const std::string& content) {
@@ -132,10 +146,7 @@ bool FSClient::writeFile(const std::string& filepath, const std::string& content
 
     std::string response = this->readSocketResponse(socket);
     if (response.length() > 0 && response.at(0) == '1') {
-      std::cout << filepath << " written successfully" << std::endl;
       ret = true;
-    } else {
-      std::cout << "Could not write " << filepath << std::endl;
     }
 
     socket.close();
@@ -144,7 +155,15 @@ bool FSClient::writeFile(const std::string& filepath, const std::string& content
   return ret;
 }
 
-bool FSClient::readFile(const std::string& filepath) {
+void FSClient::writeFileShell(const std::string& filepath, const std::string& content) {
+  if (this->writeFile(filepath, content)) {
+    std::cout << filepath << " written successfully" << std::endl;
+  } else {
+    std::cout << "Could not write " << filepath << std::endl;
+  }
+}
+
+bool FSClient::readFile(const std::string& filepath, std::string& output) {
   bool ret = false;
 
   if (this->fileExists(filepath)) {
@@ -157,9 +176,8 @@ bool FSClient::readFile(const std::string& filepath) {
     std::string response = this->readSocketResponse(socket);
     if (response.length() > 0 && response.at(0) == '1') {
       response = response.substr(1);
-      std::cout << response << std::endl;
-    } else {
-      std::cout << "Could not read " << filepath << std::endl;
+      output = response;
+      ret = true;
     }
 
     socket.close();
@@ -168,7 +186,20 @@ bool FSClient::readFile(const std::string& filepath) {
   return ret;
 }
 
-void FSClient::deleteFile(const std::string& filepath) {
+void FSClient::readFileShell(const std::string& filepath) {
+  bool ret = false;
+
+  std::string content;
+  if (this->readFile(filepath, content)) {
+    std::cout << content << std::endl;
+  } else {
+    std::cout << "Could not read " << filepath << std::endl;
+  }
+}
+
+bool FSClient::deleteFile(const std::string& filepath) {
+  bool ret = false;
+
   TcpClient client;
   Socket& socket = client.connect(this->serverIp.c_str(), this->serverPort.c_str());
 
@@ -177,13 +208,19 @@ void FSClient::deleteFile(const std::string& filepath) {
 
   std::string response = this->readSocketResponse(socket);
   if (response.length() > 0 && response.at(0) == '1') {
+    ret = true;
+  }
+
+  socket.close();
+  return ret;
+}
+
+void FSClient::deleteFileShell(const std::string& filepath) {
+  if (this->deleteFile(filepath)) {
     std::cout << filepath << " deleted successfully" << std::endl;
   } else {
     std::cout << "Could not delete " << filepath << std::endl;
   }
-
-  socket.close();
-  return;
 }
 
 void FSClient::sendDatagram(Socket& socket, const std::string& datagram) {
