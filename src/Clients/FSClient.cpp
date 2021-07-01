@@ -1,7 +1,7 @@
 #include "FSClient.hpp"
 
-FSClient::FSClient(FileSystem& fs, std::string& serverIp,
-  std::string& serverPort) : fs(&fs), serverIp(serverIp), serverPort(serverPort) {
+FSClient::FSClient(FileSystem& fs, const std::string& serverIp,
+  const std::string& serverPort) : fs(&fs), serverIp(serverIp), serverPort(serverPort) {
 }
 
 FSClient::~FSClient() {

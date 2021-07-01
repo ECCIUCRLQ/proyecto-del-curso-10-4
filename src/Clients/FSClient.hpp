@@ -27,11 +27,11 @@ class FSClient {
   FileSystem* fs = nullptr;
 
  protected:
-  std::string serverIp;
-  std::string serverPort;
+  std::string serverIp = "";
+  std::string serverPort = "";
 
  public:
-  FSClient(FileSystem& fs, std::string& serverIp, std::string& serverPort);
+  FSClient(FileSystem& fs, const std::string& serverIp, const std::string& serverPort);
   virtual ~FSClient();
 
  public:
@@ -41,11 +41,11 @@ class FSClient {
   void parse(const std::string& input);
 
  protected:
-  bool fileExists(const std::string& filepath);
-  bool createFile(const std::string& filepath);
-  bool writeFile(const std::string& filepath, const std::string& data);
-  bool readFile(const std::string& filepath, std::string& output);
-  bool deleteFile(const std::string& filepath);
+  virtual bool fileExists(const std::string& filepath);
+  virtual bool createFile(const std::string& filepath);
+  virtual bool writeFile(const std::string& filepath, const std::string& data);
+  virtual bool readFile(const std::string& filepath, std::string& output);
+  virtual bool deleteFile(const std::string& filepath);
 
  protected:
   void fileExistsShell(const std::string& filepath);

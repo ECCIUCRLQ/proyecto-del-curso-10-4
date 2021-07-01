@@ -9,71 +9,128 @@ FSServer::FSServer(FileSystem& fs) : fileSystem(&fs) {
 FSServer::~FSServer() {}
 
 void FSServer::handleClientConnection(Socket& socketWithClient) {
-  // Read the data from the socket
-  std::string readLine;
-  std::string filepath;
-  std::vector<char> data;
-  size_t filepathLen = 0;
-
-  // Read until null char
-  if (socketWithClient.readLine(readLine, 0)) {
-    if (readLine.length() > 1) {
-      char opCode = readLine.at(0);
-      switch (opCode) {
-        // Create File
-        case CREATE_OPCODE:
-          filepath = readLine.substr(1);
-          this->createFile(socketWithClient, filepath);
-          break;
-        // Write File
-        case WRITE_OPCODE:
-          filepathLen = this->parseWriteOp(readLine.substr(1));
-          // If filepath len > 0
-          if (filepathLen) {
-            filepath = readLine.substr(1, filepathLen);
-            data.resize(readLine.length() - filepathLen - 2);
-            readLine.copy(data.data(), data.size(), filepathLen + 2);
-            this->writeFile(socketWithClient, filepath, data);
-          } else {
-            this->sendErrorMessage(socketWithClient);
-          }
-          break;
-        // Read File
-        case READ_OPCODE:
-          filepath = readLine.substr(1);
-          this->readFile(socketWithClient, filepath);
-          break;
-        // Delete File
-        case DELETE_OPCODE:
-          filepath = readLine.substr(1);
-          this->deleteFile(socketWithClient, filepath);
-          break;
-        case EXIST_OPCODE:
-          filepath = readLine.substr(1);
-          this->fileExists(socketWithClient, filepath);
-          break;
-        case 'p':
-          this->fileSystem->printHD();
-          break;
-        default:
-          this->sendErrorMessage(socketWithClient, 'a');
-          break;
-        }
-    } else {
-      // Send a generic error message
-      this->sendErrorMessage(socketWithClient);
-    }
-  } else {
-    // Send a generic error message
+  std::cout << "Server: listening..." << std::endl;
+  std::string datagram = this->readLineFromSocket(socketWithClient);
+  if (!this->handleFileSystemOps(datagram, socketWithClient)) {
+    std::cout << "Error: opcode not supported" << std::endl;
     this->sendErrorMessage(socketWithClient);
   }
+}
 
-  std::cout << "Server: listening..." << std::endl;
+std::string FSServer::readLineFromSocket(Socket& socketWithClient) {
+  std::string readLine;
+
+  // Read until null char
+  socketWithClient.readLine(readLine, 0);
+
+  return readLine;
+}
+
+bool FSServer::handleFileSystemOps(std::string datagram, Socket& socketWithClient) {
+  std::string filepath;
+  char opCode;
+
+  if (datagram.length() > 0) {
+    opCode = datagram.at(0);
+
+    // File Exist
+    if (opCode == EXIST_OPCODE) {
+      filepath = datagram.substr(1);
+      if (this->fileExists(filepath)) {
+        std::cout << "Exists: " << filepath << " was found" << std::endl;
+        this->sendSuccessCode(socketWithClient);
+      } else {
+        std::cout << "Exists: " << filepath << " was not found" << std::endl;
+        this->sendErrorMessage(socketWithClient);
+      }
+      return true;
+    }
+
+    // Create File
+    if (opCode == CREATE_OPCODE) {
+      filepath = datagram.substr(1);
+      if (this->createFile(filepath)) {
+        std::cout << "Create: created file " << filepath << std::endl;
+        this->sendSuccessCode(socketWithClient);
+      } else {
+        std::cout << "Create: could not create file " << filepath << std::endl;
+        this->sendErrorMessage(socketWithClient);
+      }
+      return true;
+    }
+
+    // Read File
+    if (opCode == READ_OPCODE) {
+      filepath = datagram.substr(1);
+      std::string content;
+      if (this->readFile(filepath, content)) {
+        std::cout << "Read: could read the file " << filepath << std::endl;
+        socketWithClient << "1";
+        socketWithClient << content;
+        socketWithClient.send();
+      } else {
+        std::cout << "Read: could not read the file " << filepath << std::endl;
+        this->sendErrorMessage(socketWithClient);
+      }
+      return true;
+    }
+
+    // Delete File
+    if (opCode == DELETE_OPCODE) {
+      filepath = datagram.substr(1);
+      if (this->deleteFile(filepath)) {
+        std::cout << "Delete: could delete the file " << filepath << std::endl;
+        this->sendSuccessCode(socketWithClient);
+      } else {
+        std::cout << "Delete: could not read the file " << filepath << std::endl;
+        this->sendErrorMessage(socketWithClient);
+      }
+      return true;
+    }
+
+    // Write File
+    if (opCode == WRITE_OPCODE) {
+      size_t filepathLen = this->parseWriteOp(datagram.substr(1));
+      if (filepathLen > 0) {
+        std::vector<char> data;
+        filepath = datagram.substr(1, filepathLen);
+        data.resize(datagram.length() - filepathLen - 2);
+        datagram.copy(data.data(), data.size(), filepathLen + 2);
+        if (this->writeFile(filepath, data)) {
+          std::cout << "Write: could write the file " << filepath << std::endl;
+          this->sendSuccessCode(socketWithClient);
+        } else {
+          std::cout << "Write: could not write the file " << filepath << std::endl;
+          this->sendErrorMessage(socketWithClient);
+        }
+      }
+      return true;
+    }
+
+    // PRINT HDD
+    if (opCode == PRINT_HD_CODE) {
+      std::cout << "PrintHD: printing the hard drive" << std::endl;
+      this->fileSystem->printHD();
+      return true;
+    }
+  }
+  
+  // Return false if no action was taken
+  return false;
+}
+
+void FSServer::sendSuccessCode(Socket& socket) {
+  std::cout << "Server: sending success code 1" << std::endl;
+
+  socket << "1";
+  socket.send();
+
+  return;
 }
 
 void FSServer::sendErrorMessage(Socket& socket, char errCode) {
   std::cout << "Server: sending error code: " << (int)errCode << std::endl;
-  socket << '0';
+  socket << "0";
 
   if (errCode) {
     socket << errCode;
@@ -98,64 +155,36 @@ size_t FSServer::parseWriteOp(std::string datagram) {
   return ret;
 }
 
-void FSServer::fileExists(Socket& socket, std::string& filepath) {
-  if (this->fileSystem->search(filepath)) {
-    std::cout << "Exists: " << filepath << " was found" << std::endl;
-    socket << "1";
-    socket.send(); 
-  } else {
-    std::cout << "Exist: " << filepath << " was not found" << std::endl;
-    this->sendErrorMessage(socket);
-  }
+bool FSServer::fileExists(std::string& filepath) {
+  return this->fileSystem->search(filepath);
 }
 
-void FSServer::createFile(Socket& socket, std::string& filepath) {
-  if (this->fileSystem->createFile(filepath, 0, 0, ALLOW_ALL)) {
-    std::cout << "\tCreate: created file " << filepath << std::endl;
-    socket << "1";
-    socket.send();
-  } else {
-    std::cout << "\tCreate: could not create file" << std::endl;
-    this->sendErrorMessage(socket);
-  }
+bool FSServer::createFile(std::string& filepath) {
+  return this->fileSystem->createFile(filepath, 0, 0, ALLOW_ALL);
 }
 
-void FSServer::writeFile(Socket& socket, std::string& filepath, std::vector<char>& content) {
-  std::cout << "Write: writing on file " << filepath;
+bool FSServer::writeFile(std::string& filepath, std::vector<char>& content) {
   content.resize(content.size());
-  std::cout << std::endl << '\t' << content.data() << std::endl;
-
-  if (this->fileSystem->writeFile(filepath, content.data(), content.size(), 0, 0)) {
-    socket << "1";
-    socket.send();
-  } else {
-    this->sendErrorMessage(socket);
-  }
+  return this->fileSystem->writeFile(filepath, content.data(), content.size(), 0, 0);
 }
 
-void FSServer::readFile(Socket& socket, std::string& filepath) {
-  std::cout << "Read: reading file " << filepath << std::endl;
+bool FSServer::readFile(std::string& filepath, std::string& output) {
+  bool ret = false;
 
   size_t fileSize = this->fileSystem->sizeOfFile(filepath, 0, 0);
   if (fileSize > 0) {
     std::vector<char> data(fileSize);
     if (this->fileSystem->readFile(filepath, data.data(), fileSize, 0, 0)) {
-      socket << "1";
       std::string readData(data.data(), data.size());
-      socket << readData;
-      socket.send();
-    } else {
-      std::cout << "Error a" << std::endl;
-      this->sendErrorMessage(socket);
+      output = readData;
+      ret = true;
     }
-  } else {
-    std::cout << "Error b" << std::endl;
-    this->sendErrorMessage(socket);
   }
+
+  return ret;
 }
 
-void FSServer::deleteFile(Socket& socket, std::string& filepath) {
-  std::cout << "Delete: deleting file " << filepath << std::endl;
-  this->sendErrorMessage(socket);
+bool FSServer::deleteFile(std::string& filepath) {
   // TODO(any): implement this after testing deleteFile in FileSystem
+  return false;
 }

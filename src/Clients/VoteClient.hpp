@@ -3,7 +3,7 @@
 
 #include "FileSystem.hpp"
 #include "FSClient.hpp"
-#include "Hash.hpp"
+#include "Socket.hpp"
 
 #include <string>
 
@@ -12,6 +12,7 @@
 
 #define CLASS_OPCODE 'f'
 #define ID_OPCODE 'g'
+#define DIST_VOTE_OPCODE 'h'
 
 class VoteClient : public FSClient {
  private:
@@ -19,8 +20,9 @@ class VoteClient : public FSClient {
   std::string clientID = "";
 
  public:
-  VoteClient(FileSystem& fs, std::string& parentIp, std::string& parentPort);
-  ~VoteClient();
+  VoteClient() = delete;
+  VoteClient(FileSystem& fs, const std::string& parentIp, const std::string& parentPort);
+  virtual ~VoteClient();
 
  private:
   bool getClassAndID();
@@ -28,8 +30,15 @@ class VoteClient : public FSClient {
  private:
   std::string generateVoteFilename(size_t len);
 
+ private:
+  bool createFileNV(const std::string& filepath);
+
+ private:
+  bool distributeVote(const std::string& filepath);
+
  public:
   bool sendVote(const std::string& voteContent);
+  bool sendVoteToClient(const std::string& filepath, const std::string& voteContent);
 };
 
 

@@ -13,9 +13,10 @@
 #define READ_OPCODE   'c'
 #define DELETE_OPCODE 'd'
 #define EXIST_OPCODE  'e'
+#define PRINT_HD_CODE 'p'
 
 class FSServer : public TcpServer {
- private:
+ protected:
   FileSystem* fileSystem = nullptr;
 
  public:
@@ -25,21 +26,26 @@ class FSServer : public TcpServer {
   FSServer(FileSystem&& other) = delete;
   ~FSServer();
 
- private:
-  void fileExists(Socket& socket, std::string& filepath);
-  void createFile(Socket& socket, std::string& filepath);
-  void writeFile(Socket& socket, std::string& filepath, std::vector<char>& content);
-  void deleteFile(Socket& socket, std::string& filepath);
-  void readFile(Socket& socket, std::string& filepath);
+ protected:
+  bool fileExists(std::string& filepath);
+  bool createFile(std::string& filepath);
+  bool writeFile(std::string& filepath, std::vector<char>& content);
+  bool deleteFile(std::string& filepath);
+  bool readFile(std::string& filepath, std::string& output);
 
- private:
+ protected:
   size_t parseWriteOp(std::string datagram);
 
- private:
+ protected:
+  void sendSuccessCode(Socket& socket);
   void sendErrorMessage(Socket& socket, char errCode = 0);
 
- public:
-  void handleClientConnection(Socket& socketWithClient);
+ protected:
+  std::string readLineFromSocket(Socket& socketWithClient);
+  bool handleFileSystemOps(std::string datagram, Socket& socketWithClient);
+
+ protected:
+  virtual void handleClientConnection(Socket& socketWithClient);
 };
 
 #endif

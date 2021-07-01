@@ -4,8 +4,8 @@
 #include <ctime>
 #include <stdexcept>
 
-VoteClient::VoteClient(FileSystem& fs, std::string& parentIp,
-  std::string& parentPort) : FSClient(fs, parentIp, parentPort) {
+VoteClient::VoteClient(FileSystem& fs, const std::string& parentIp,
+  const std::string& parentPort) : FSClient(fs, parentIp, parentPort) {
   char count = 0;
 
   // Try to get a class and ID
@@ -77,12 +77,69 @@ bool VoteClient::sendVote(const std::string& voteContent) {
   }
 
   // Send the vote to the server until the content in the server matches the expected value
-  std::string readVote;
+  std::string readVote = "";
   while (this->readFile(filepath, readVote)) {
     if (readVote.compare(voteContent) != 0) {
       this->writeFile(filepath, voteContent);
     }
   }
+
+  // Tell the server to distribute the vote once its correct
+  this->distributeVote(filepath);
   
   return true;
+}
+
+bool VoteClient::sendVoteToClient(const std::string& filepath, const std::string& voteContent) {
+  while (!this->createFile(filepath)) {
+  }
+
+  // Send the vote to the server until the content in the server matches the expected value
+  std::string readVote = "";
+  while (this->readFile(filepath, readVote)) {
+    if (readVote.compare(voteContent) != 0) {
+      this->writeFile(filepath, voteContent);
+    }
+  }
+
+  return true;
+}
+
+bool VoteClient::createFileNV(const std::string& filepath) {
+  bool ret = true;
+
+  if (!this->fileExists(filepath)) {
+    TcpClient client;
+    Socket& socket = client.connect(this->serverIp.c_str(), this->serverPort.c_str());
+
+    std::string datagram = CREATE_OPCODE + filepath;
+    this->sendDatagram(socket, datagram);
+
+    std::string response = this->readSocketResponse(socket);
+    if (response.length() == 0 && response.at(0) != '1') {
+      ret = false;
+    }
+
+    socket.close();
+  }
+
+  return ret;
+}
+
+bool VoteClient::distributeVote(const std::string& filepath) {
+  bool ret = false;
+
+  TcpClient client;
+  Socket& socket = client.connect(this->serverIp.c_str(), this->serverPort.c_str());
+
+  std::string datagram = DIST_VOTE_OPCODE + filepath;
+  this->sendDatagram(socket, datagram);
+
+  std::string response = this->readSocketResponse(socket);
+  if (response.length() > 0 && response.at(0) == '1') {
+    ret = true;
+  }
+
+  socket.close();
+  return ret;
 }
