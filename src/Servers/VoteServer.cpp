@@ -5,23 +5,27 @@ VoteServer::VoteServer(FileSystem& fs, const std::string& serverClass) :
 }
 
 VoteServer::~VoteServer() {
-  // TODO(any): clean clients
+  for (auto client : this->clients) {
+    delete client.voteClient;
+  }
 }
 
 bool VoteServer::addClient(const std::string& ipAddress, const std::string& port) {
   bool ret = false;
 
-  if (this->clients.find(ipAddress) == this->clients.end()) {
+  //if (this->clients.find(ipAddress) == this->clients.end()) {
     // Create a new struct for the client
     client_t newClient;
     newClient.ipAddress = ipAddress;
+    newClient.port = port;
     newClient.id = this->clients.size() + 1;
-    newClient.voteClient = new VoteClient(*this->fileSystem, ipAddress, port);
+    newClient.connected = false;
 
     // Insert the new client to the array and associates it with its IP Address
-    this->clients.insert(std::pair<std::string, client_t>(ipAddress, newClient));
+    // TODO(change key back to IP after testing) ¿also use map?
+    this->clients.push_back(newClient);
     ret = true;
-  }
+  //}
 
   return ret;
 }
@@ -35,6 +39,15 @@ void VoteServer::handleClientConnection(Socket& socketWithClient) {
   }
 
   if (!this->handleFileSystemOps(datagram, socketWithClient)) {
+    // Client Info
+    if (opCode == CLIENT_INFO_OPCODE) {
+      std::cout << "Client requesting info..." << std::endl;
+      socketWithClient << this->getClass() << "\n" << this->getId();
+      socketWithClient.send();
+      return;
+    }
+
+    // Get Id operation
     // Distribute vote
     if (opCode == DIST_VOTE_OPCODE) {
       // Filepath
@@ -67,9 +80,29 @@ void VoteServer::handleClientConnection(Socket& socketWithClient) {
 bool VoteServer::distributeVote(const std::string& filepath, const std::string& voteContent, const std::string& sender) {
   bool send = true;
   for (auto client : this->clients) {
-    if (client.second.ipAddress.compare(sender) != 0) {
-      client.second.voteClient->sendVoteToClient(filepath, voteContent);
+    //if (client.second.ipAddress.compare(sender) != 0) {
+      // Initialize the connection
+      if (!client.connected) {
+        try {
+          std::cout << "Connecting with " << client.ipAddress << " on port " << client.port << std::endl;
+          client.voteClient = new VoteClient(*this->fileSystem, client.ipAddress, client.port);
+          client.connected = true;
+        } catch (std::exception& e) {
+          std::cout << "Error: " << e.what() << std::endl;
+        }
+      }
+      client.voteClient->sendVoteToClient(filepath, voteContent);
+      // Toggle send to send it to half of the children
+      // send != send;
     }
-  }
+  //}
   return true;
+}
+
+std::string VoteServer::getClass() {
+  return this->serverClass;
+}
+
+std::string VoteServer::getId() {
+  return std::to_string(this->lastId++);
 }

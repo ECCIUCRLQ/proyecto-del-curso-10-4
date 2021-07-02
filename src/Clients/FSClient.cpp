@@ -7,74 +7,6 @@ FSClient::FSClient(FileSystem& fs, const std::string& serverIp,
 FSClient::~FSClient() {
 }
 
-void FSClient::shell() {
-  std::string line;
-  std::cout << "[FileSystem Client]: ";
-  while (std::getline(std::cin, line)) {
-    this->parse(line);
-    std::cout << "[FileSystem Client]: ";
-  }
-}
-
-void FSClient::parse(const std::string& input) {
-  std::string command;
-  std::string filepath;
-
-  // Search for the first space
-  std::string::size_type pos = input.find(' ');
-
-  // Gets the command input
-  command = input.substr(0, pos);
-
-  // Create Command
-  if (command.compare(CREATE_COMMAND) == 0) {
-    filepath = input.substr(pos + 1);
-    this->createFileShell(filepath);
-    return;
-  }
-
-  // Write Command
-  if (command.compare(WRITE_COMMAND) == 0) {
-    std::string::size_type posFin = input.find(' ', pos + 1);
-    filepath = input.substr(pos + 1, posFin - pos - 1);
-
-    std::string content = input.substr(posFin + 1);
-    this->writeFileShell(filepath, content);
-
-    return;
-  }
-
-  // Read File
-  if (command.compare(READ_COMMAND) == 0) {
-    filepath = input.substr(pos + 1);
-    this->readFileShell(filepath);
-    return;
-  }
-
-  // Delete File
-  if (command.compare(DELETE_COMMAND) == 0) {
-    filepath = input.substr(pos + 1);
-    this->deleteFileShell(filepath);
-    return;
-  }
-
-  // Search File
-  if (command.compare(SEARCH_COMMAND) == 0) {
-    filepath = input.substr(pos + 1);
-    this->fileExists(filepath);
-    return;
-  }
-
-  // No opcode matches
-  TcpClient client;
-  Socket& socket = client.connect(this->serverIp.c_str(), this->serverPort.c_str());
-  socket << "p46421";
-  socket.send();
-  socket.close();
-  this->fs->printHD();
-  std::cout << "Error: invalid command" << std::endl;
-}
-
 bool FSClient::fileExists(const std::string& filepath) {
   bool ret = false;
 
@@ -91,14 +23,6 @@ bool FSClient::fileExists(const std::string& filepath) {
 
   socket.close();
   return ret;
-}
-
-void FSClient::fileExistsShell(const std::string& filepath) {
-  if (this->fileExists(filepath)) {
-    std::cout << "File " << filepath << " exists" << std::endl;
-  } else {
-    std::cout << "File " << filepath << " does not exist" << std::endl;
-  }
 }
 
 bool FSClient::createFile(const std::string& filepath) {
@@ -120,14 +44,6 @@ bool FSClient::createFile(const std::string& filepath) {
   }
 
   return ret;
-}
-
-void FSClient::createFileShell(const std::string& filepath) {
-  if (this->createFile(filepath)) {
-    std::cout << filepath << " created successfully" << std::endl;
-  } else {
-    std::cout << "Could not create " << filepath << std::endl;
-  }
 }
 
 bool FSClient::writeFile(const std::string& filepath, const std::string& content) {
@@ -155,14 +71,6 @@ bool FSClient::writeFile(const std::string& filepath, const std::string& content
   return ret;
 }
 
-void FSClient::writeFileShell(const std::string& filepath, const std::string& content) {
-  if (this->writeFile(filepath, content)) {
-    std::cout << filepath << " written successfully" << std::endl;
-  } else {
-    std::cout << "Could not write " << filepath << std::endl;
-  }
-}
-
 bool FSClient::readFile(const std::string& filepath, std::string& output) {
   bool ret = false;
 
@@ -186,17 +94,6 @@ bool FSClient::readFile(const std::string& filepath, std::string& output) {
   return ret;
 }
 
-void FSClient::readFileShell(const std::string& filepath) {
-  bool ret = false;
-
-  std::string content;
-  if (this->readFile(filepath, content)) {
-    std::cout << content << std::endl;
-  } else {
-    std::cout << "Could not read " << filepath << std::endl;
-  }
-}
-
 bool FSClient::deleteFile(const std::string& filepath) {
   bool ret = false;
 
@@ -215,12 +112,22 @@ bool FSClient::deleteFile(const std::string& filepath) {
   return ret;
 }
 
-void FSClient::deleteFileShell(const std::string& filepath) {
-  if (this->deleteFile(filepath)) {
-    std::cout << filepath << " deleted successfully" << std::endl;
-  } else {
-    std::cout << "Could not delete " << filepath << std::endl;
+bool FSClient::printDisk() {
+  bool ret = false;
+
+  TcpClient client;
+  Socket& socket = client.connect(this->serverIp.c_str(), this->serverPort.c_str());
+
+  std::string datagram = std::string(1, PRINT_HD_CODE);
+  this->sendDatagram(socket, datagram);
+
+  std::string response = this->readSocketResponse(socket);
+  if (response.length() > 0 && response.at(0) == '1') {
+    ret = true;
   }
+
+  socket.close();
+  return ret;
 }
 
 void FSClient::sendDatagram(Socket& socket, const std::string& datagram) {

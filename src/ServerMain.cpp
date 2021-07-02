@@ -1,19 +1,19 @@
-#include "FSServer.hpp"
+#include "VoteServer.hpp"
 #include "HardDrive.hpp"
 #include "FileSystem.hpp"
 
 #include <iostream>
 
 int main(int argc, char const *argv[]) {
-  HardDrive* hd = new HardDrive(1024 * 8);
-  FileSystem* fs = new FileSystem(1024 * 8, hd);
-  FSServer* server = new FSServer(*fs);
+  HardDrive hd(1024 * 8);
+  FileSystem fs(1024 * 8, &hd);
+  VoteServer server(fs, "FACU_INGE");
 
-  server->listenForever("8081");
+  // Add clients
+  server.addClient("127.0.0.1", "8082");
+  server.addClient("127.0.0.1", "8083");
 
-  delete server;
-  delete hd;
-  delete fs;
+  server.listenForever("8081");
 
   return 0;
 }

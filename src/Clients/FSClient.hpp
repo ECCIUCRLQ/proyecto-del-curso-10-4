@@ -15,12 +15,7 @@
 #define READ_OPCODE   'c'
 #define DELETE_OPCODE 'd'
 #define EXIST_OPCODE  'e'
-
-#define CREATE_COMMAND  "create"
-#define WRITE_COMMAND   "write"
-#define READ_COMMAND    "read"
-#define DELETE_COMMAND  "delete"
-#define SEARCH_COMMAND  "search"
+#define PRINT_HD_CODE 'p'
 
 class FSClient {
  protected:
@@ -46,13 +41,7 @@ class FSClient {
   virtual bool writeFile(const std::string& filepath, const std::string& data);
   virtual bool readFile(const std::string& filepath, std::string& output);
   virtual bool deleteFile(const std::string& filepath);
-
- protected:
-  void fileExistsShell(const std::string& filepath);
-  void createFileShell(const std::string& filepath);
-  void writeFileShell(const std::string& filepath, const std::string& data);
-  void readFileShell(const std::string& filepath);
-  void deleteFileShell(const std::string& filepath);
+  virtual bool printDisk();
 
  protected:
   bool createLocalFile(const std::string& filepath);

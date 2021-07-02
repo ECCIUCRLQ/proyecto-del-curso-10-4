@@ -1,13 +1,16 @@
 CXX = g++
 INCLUDES =  -Isrc/Network -Isrc/FileSystem -Isrc/Utils -Isrc/Servers -Isrc/Clients
 
-all: ServerMain ClientMain prueba
+all: vote_server vote_client vote_client2
 
-ServerMain:
-	$(CXX) $(INCLUDES) src/Network/*.cpp src/FileSystem/*.cpp src/Utils/*.cpp src/Servers/*.cpp src/ServerMain.cpp -o ServerMain.out
+vote_server:
+	$(CXX) $(INCLUDES) src/Network/*.cpp src/FileSystem/*.cpp src/Utils/*.cpp src/Servers/*.cpp src/Clients/*.cpp src/ServerMain.cpp -o VoteServer.out
 	
-ClientMain:
-	$(CXX) $(INCLUDES) src/Network/*.cpp src/FileSystem/*.cpp src/Utils/*.cpp src/Clients/*.cpp src/ClientMain.cpp -o ClientMain.out
+vote_client:
+	$(CXX) $(INCLUDES) src/Network/*.cpp src/FileSystem/*.cpp src/Utils/*.cpp src/Servers/*.cpp src/Clients/*.cpp src/ClientMain.cpp -o VoteClient.out -pthread
+	
+vote_client2:
+	$(CXX) $(INCLUDES) src/Network/*.cpp src/FileSystem/*.cpp src/Utils/*.cpp src/Servers/*.cpp src/Clients/*.cpp src/ClientMain2.cpp -o VoteClient2.out -pthread
 
 prueba:
 	$(CXX) $(INCLUDES) src/Network/*.cpp src/FileSystem/*.cpp src/Utils/*.cpp src/Clients/*.cpp src/prueba.cpp -o prueba.out

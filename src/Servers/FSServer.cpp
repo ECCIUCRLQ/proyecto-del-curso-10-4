@@ -111,6 +111,7 @@ bool FSServer::handleFileSystemOps(std::string datagram, Socket& socketWithClien
     if (opCode == PRINT_HD_CODE) {
       std::cout << "PrintHD: printing the hard drive" << std::endl;
       this->fileSystem->printHD();
+      this->sendSuccessCode(socketWithClient);
       return true;
     }
   }

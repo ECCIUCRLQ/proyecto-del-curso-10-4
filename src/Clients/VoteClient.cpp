@@ -6,6 +6,8 @@
 
 VoteClient::VoteClient(FileSystem& fs, const std::string& parentIp,
   const std::string& parentPort) : FSClient(fs, parentIp, parentPort) {
+  this->serverIp = parentIp;
+  this->serverPort = parentPort;
   char count = 0;
 
   // Try to get a class and ID
@@ -13,8 +15,10 @@ VoteClient::VoteClient(FileSystem& fs, const std::string& parentIp,
     ++count;
   }
   
-  // If it could not get a class and ID 
-  throw std::runtime_error("VoteClient: could not obtain a class and ID");
+  // If it could not get a class and ID
+  if (count == MAX_ATTEMPTS) {
+    throw std::runtime_error("VoteClient: could not obtain a class and ID");
+  }
 }
 
 VoteClient::~VoteClient() {
@@ -28,25 +32,22 @@ bool VoteClient::getClassAndID() {
   Socket& socket = client.connect(this->serverIp.c_str(), this->serverPort.c_str());
 
   // Datagrams
-  std::string classDatagram = "";
-  std::string idDatagram = "";
-  classDatagram += CLASS_OPCODE;
-  idDatagram += ID_OPCODE;
+  std::string datagram = std::string(1, CLIENT_INFO_OPCODE);
 
-  // Get Class
-  this->sendDatagram(socket, classDatagram);
-  this->clientClass = this->readSocketResponse(socket);
-  if (this->clientClass.length() == 0) {
+  // Get Class and ID separated by \n
+  this->sendDatagram(socket, datagram);
+  std::string clientInfo = this->readSocketResponse(socket);
+  if (clientInfo.length() > 0) {
+    size_t separator = clientInfo.find('\n');
+    std::string sClass = clientInfo.substr(0, separator);
+    std::string sID = clientInfo.substr(separator + 1);
+    this->clientClass = sClass;
+    this->clientID = sID;
+  } else {
     ret = false;
   }
 
-  // Get ID
-  this->sendDatagram(socket, idDatagram);
-  this->clientID = this->readSocketResponse(socket);
-  if (this->clientID.length() == 0) {
-    ret = false;
-  }
-
+  std::cout << "Client info: " << this->clientClass << " & " << this->clientID << std::endl;
   return ret;
 }
 
@@ -69,16 +70,17 @@ std::string VoteClient::generateVoteFilename(size_t len) {
 
 bool VoteClient::sendVote(const std::string& voteContent) {
   // Generate a filepath for the vote
-  std::string filepath = '/' + this->generateVoteFilename(RANDOM_FILENAME_LEN);
+  std::string filepath = this->generateVoteFilename(RANDOM_FILENAME_LEN);
 
   // Create a new file with an unique name
   while (!this->createFile(filepath)) {
-    filepath = '/' + this->generateVoteFilename(RANDOM_FILENAME_LEN);
+    filepath = this->generateVoteFilename(RANDOM_FILENAME_LEN);
   }
+  std::cout << "1" << std::endl;
 
   // Send the vote to the server until the content in the server matches the expected value
   std::string readVote = "";
-  while (this->readFile(filepath, readVote)) {
+  while (!this->readFile(filepath, readVote)) {
     if (readVote.compare(voteContent) != 0) {
       this->writeFile(filepath, voteContent);
     }
@@ -90,22 +92,42 @@ bool VoteClient::sendVote(const std::string& voteContent) {
   return true;
 }
 
+bool VoteClient::distributeVote(const std::string& filepath) {
+  bool ret = false;
+
+  TcpClient client;
+  Socket& socket = client.connect(this->serverIp.c_str(), this->serverPort.c_str());
+
+  std::string datagram = DIST_VOTE_OPCODE + filepath;
+  this->sendDatagram(socket, datagram);
+
+  std::string response = this->readSocketResponse(socket);
+  if (response.length() > 0 && response.at(0) == '1') {
+    ret = true;
+  }
+
+  socket.close();
+  return ret;
+}
+
 bool VoteClient::sendVoteToClient(const std::string& filepath, const std::string& voteContent) {
-  while (!this->createFile(filepath)) {
+  if (!this->fileExists(filepath)) {
+    std::cout << "Trying to create file" << std::endl;
+    this->createFileLocal(filepath);
   }
 
   // Send the vote to the server until the content in the server matches the expected value
   std::string readVote = "";
-  while (this->readFile(filepath, readVote)) {
+  while (!this->readFile(filepath, readVote)) {
     if (readVote.compare(voteContent) != 0) {
-      this->writeFile(filepath, voteContent);
+      this->writeFileLocal(filepath, voteContent);
     }
   }
 
   return true;
 }
 
-bool VoteClient::createFileNV(const std::string& filepath) {
+bool VoteClient::createFileLocal(const std::string& filepath) {
   bool ret = true;
 
   if (!this->fileExists(filepath)) {
@@ -126,20 +148,23 @@ bool VoteClient::createFileNV(const std::string& filepath) {
   return ret;
 }
 
-bool VoteClient::distributeVote(const std::string& filepath) {
+bool VoteClient::writeFileLocal(const std::string& filepath, const std::string& content) {
   bool ret = false;
 
-  TcpClient client;
-  Socket& socket = client.connect(this->serverIp.c_str(), this->serverPort.c_str());
+  if (this->fileExists(filepath)) {
+    TcpClient client;
+    Socket& socket = client.connect(this->serverIp.c_str(), this->serverPort.c_str());
 
-  std::string datagram = DIST_VOTE_OPCODE + filepath;
-  this->sendDatagram(socket, datagram);
+    std::string datagram = WRITE_OPCODE + filepath + '\n' + content;
+    this->sendDatagram(socket, datagram);
 
-  std::string response = this->readSocketResponse(socket);
-  if (response.length() > 0 && response.at(0) == '1') {
-    ret = true;
+    std::string response = this->readSocketResponse(socket);
+    if (response.length() > 0 && response.at(0) == '1') {
+      ret = true;
+    }
+
+    socket.close();
   }
 
-  socket.close();
   return ret;
 }

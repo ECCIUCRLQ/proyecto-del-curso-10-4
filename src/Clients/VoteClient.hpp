@@ -10,11 +10,13 @@
 #define MAX_ATTEMPTS 3
 #define RANDOM_FILENAME_LEN 5
 
-#define CLASS_OPCODE 'f'
-#define ID_OPCODE 'g'
-#define DIST_VOTE_OPCODE 'h'
+#define CLIENT_INFO_OPCODE  'f'
+#define DIST_VOTE_OPCODE    'g'
+
+class VoteShell;
 
 class VoteClient : public FSClient {
+ friend class VoteShell;
  private:
   std::string clientClass = "";
   std::string clientID = "";
@@ -31,7 +33,8 @@ class VoteClient : public FSClient {
   std::string generateVoteFilename(size_t len);
 
  private:
-  bool createFileNV(const std::string& filepath);
+  bool createFileLocal(const std::string& filepath);
+  bool writeFileLocal(const std::string& filepath, const std::string& data);
 
  private:
   bool distributeVote(const std::string& filepath);
