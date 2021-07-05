@@ -27,7 +27,7 @@ PadronServer::PadronServer(FileSystem& fs, const std::string& serverClass) :
 	padron.agregarVotante(carnet);
 	nombre = nombre + apellido1 + apellido2;
 	padron.setNombre(carnet,nombre);
-	padron.setCodigo(carnet,stoi(codigo));
+	padron.setCodigo(carnet,codigo);
 	padron.setVoto(carnet,stoi(yaVoto));
     // no es necesario imprimir los valores sino guardarlos 
   }
@@ -82,14 +82,12 @@ void PadronServer::handleClientConnection(Socket& client) {
 	else{
 		if (opCode == 'b'){
 			std::string codigo = "";
-			int nCodigo = 0;
 			for(int i = 1; i<hilera.length();++i){
 			codigo+= hilera.at(i);
 			}
-			nCodigo = std::stoi(codigo);
 			//Aqui se le agrega al padron la nueva informacion recivida por el cliente
 			hilera = "Carnet asociado a codigo";
-			hilera += codigo + ": " + padron.getCarnet(nCodigo); ;
+			hilera += codigo + ": " + padron.getCarnet(codigo); ;
 			client << hilera;
 			client.send();
 		}
@@ -126,7 +124,7 @@ void PadronServer::handleClientConnection(Socket& client) {
 						carnet+= hilera.at(i);
 					}
 					hilera = "Codigo asociado a carnet ";
-					hilera += carnet + ": " + std::to_string(padron.getCodigo(carnet)); ;
+					hilera += carnet + ": " + padron.getCodigo(carnet);
 					client << hilera;
 					client.send();
 
