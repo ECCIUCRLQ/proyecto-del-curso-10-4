@@ -34,7 +34,7 @@ class PadronServer : public FSServer {
     std::string port = "";
     int id = 0;
     bool connected = false;
-    PadronClient* client;
+    PadronClient* padronClient;
   } client_t;
 
  protected:
