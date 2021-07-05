@@ -15,6 +15,9 @@
 #include <map>
 #include <string>
 #include <vector>
+#include <iostream>
+#include <sstream>
+#include <fstream>
 
 #define CLIENT_INFO_OPCODE  'f'
 #define DIST_VOTE_OPCODE    'g'
@@ -27,7 +30,7 @@ class PadronServer : public FSServer {
     std::string port = "";
     int id = 0;
     bool connected = false;
-    VoteClient* voteClient = nullptr;
+    //agregar Cliente
   } client_t;
 
  protected:

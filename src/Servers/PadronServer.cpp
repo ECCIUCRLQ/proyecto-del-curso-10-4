@@ -1,17 +1,20 @@
 #include "PadronServer.hpp"
+#include <cstring>
+#define NOMBRE_ARCHIVO "PadronPrueba.csv"
 
 PadronServer::PadronServer(FileSystem& fs, const std::string& serverClass) :
   FSServer(fs), serverClass(serverClass) {
-  ifstream archivo(NOMBRE_ARCHIVO);
-  string linea;
+  
+  std::ifstream archivo(NOMBRE_ARCHIVO);
+  std::string linea;
   char delimitador = ',';// esto se debe cambiar segun el delimitador que presenta el padron
     
   getline(archivo, linea);
   while (getline(archivo, linea))
   {
 
-    stringstream stream(linea); // Convertir la cadena a un stream
-    string carnet, nombre, apellido1, apellido2, yaVoto, codigo;
+    std::stringstream stream(linea); // Convertir la cadena a un stream
+    std::string carnet, nombre, apellido1, apellido2, yaVoto, codigo;
     // Extraer todos los valores de esa fila- todos estos valores se cambian segun los datos que se necesitan para el padron
     getline(stream, carnet, delimitador);
     getline(stream, nombre, delimitador);
@@ -34,11 +37,11 @@ PadronServer::PadronServer(FileSystem& fs, const std::string& serverClass) :
 
 PadronServer::~PadronServer() {
   for (auto client : this->clients) {
-    delete client.voteClient;
+    //delete client.voteClient;
   }
 }
 
-bool VoteServer::addClient(const std::string& ipAddress, const std::string& port) {
+bool PadronServer::addClient(const std::string& ipAddress, const std::string& port) {
   bool ret = false;
 
   //if (this->clients.find(ipAddress) == this->clients.end()) {
@@ -58,7 +61,7 @@ bool VoteServer::addClient(const std::string& ipAddress, const std::string& port
   return ret;
 }
 
-void serverPadron::handleClientConnection(Socket& client) {
+void PadronServer::handleClientConnection(Socket& client) {
 	std::string hilera = "";
 	client.readLine(hilera);
 	std::cout << "Comando recibido: "<< hilera << std::endl;
@@ -137,32 +140,10 @@ void serverPadron::handleClientConnection(Socket& client) {
  
 }
 
-bool VoteServer::distributeVote(const std::string& filepath, const std::string& voteContent, const std::string& sender) {
-  bool send = true;
-  for (auto client : this->clients) {
-    //if (client.second.ipAddress.compare(sender) != 0) {
-      // Initialize the connection
-      if (!client.connected) {
-        try {
-          std::cout << "Connecting with " << client.ipAddress << " on port " << client.port << std::endl;
-          client.voteClient = new VoteClient(*this->fileSystem, client.ipAddress, client.port);
-          client.connected = true;
-        } catch (std::exception& e) {
-          std::cout << "Error: " << e.what() << std::endl;
-        }
-      }
-      client.voteClient->sendVoteToClient(filepath, voteContent);
-      // Toggle send to send it to half of the children
-      // send != send;
-    }
-  //}
-  return true;
-}
-
-std::string VoteServer::getClass() {
+std::string PadronServer::getClass() {
   return this->serverClass;
 }
 
-std::string VoteServer::getId() {
+std::string PadronServer::getId() {
   return std::to_string(this->lastId++);
 }

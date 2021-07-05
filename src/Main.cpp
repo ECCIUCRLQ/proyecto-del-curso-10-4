@@ -14,7 +14,7 @@ void initServer(FileSystem* fs) {
 int main(int argc, char const *argv[]) {
   HardDrive hd(1024 * 8);
   FileSystem fs(1024 * 8, &hd);
-  initServer(fs);
+  initServer(&fs);
 
   return 0;
 }
