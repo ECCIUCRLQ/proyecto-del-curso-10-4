@@ -8,8 +8,8 @@
 class Padron {
  private:
 	struct datoVotante{
-    std::string nombre;
-	  int codigo;
+    	std::string nombre;
+	  std::string codigo;
 	  int voto;
   };
 	std::map<std::string,datoVotante> mapaPadron;
@@ -19,12 +19,12 @@ class Padron {
   ~Padron();
     void agregarVotante(std::string carnet);
 	void setNombre(std::string carnet,std::string nombre);
-	void setCodigo(std::string carnet,int codigo);
+	void setCodigo(std::string carnet,std::string codigo);
 	void setVoto(std::string carnet,int voto);
 	std::string getNombre(std::string carnet);
 	int getCodigo(std::string carnet);
 	int getVoto(std::string carnet);
-	std::string getCarnet(int codigo);
+	std::string getCarnet(std:string codigo);
 };
 
 
