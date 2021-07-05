@@ -61,12 +61,6 @@ void PadronShell::parse(const std::string& input) {
   }
 
 
-  // Print Disk
-  if (command.compare(PRINT_COMMAND) == 0) {
-    this->printDisk();
-    return;
-  }
-
   std::cout << "Error: invalid command" << std::endl;
   return;
 }
@@ -102,10 +96,4 @@ void PadronShell::updateVote(const std::string& filepath) {
     std::cout << "updateVote: unsuccessful update" << std::endl;
   }
 }
-void PadronShell::printDisk() {
-  if (this->padronClient.printDisk()) {
-    this->padronClient.fs->printHD();
-  } else {
-    std::cout << "PrintDisk: could not print the disk" << std::endl;
-  }
-}
+

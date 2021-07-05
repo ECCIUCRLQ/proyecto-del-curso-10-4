@@ -35,7 +35,7 @@ class PadronShell {
   void verifyCarnet(const std::string& filepath);
   // voter vote updated in padron (actualizar padron)
   void updateVote(const std::string& filepath);
-  void printDisk();
+  
 
  private:
   void parse(const std::string& input);
