@@ -10,6 +10,8 @@
 #define UPDATE_VOTO_UPCODE 'i'
 #define VERIFY_CODE_UPCODE 'j'
 #define VERIFY_CARNET_UPCODE 'k'
+#define CLIENT_INFO_OPCODE  'f'
+#define DIST_VOTE_OPCODE    'g'
 class PadronClient : public FSClient {
 
 private:
