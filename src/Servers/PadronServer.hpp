@@ -19,7 +19,11 @@
 #include <sstream>
 #include <fstream>
 
-#define CLIENT_INFO_OPCODE  'f'
+#define UPDATE_CODE_UPCODE 'h'
+#define UPDATE_VOTO_UPCODE 'i'
+#define VERIFY_CODE_UPCODE 'j'
+#define VERIFY_CARNET_UPCODE 'k'
+#define CLIEN_INFO_OPCODE  'f'
 #define DIST_VOTE_OPCODE    'g'
 #define NOMBRE_ARCHIVO "PadronPrueba.csv"
 
@@ -30,7 +34,7 @@ class PadronServer : public FSServer {
     std::string port = "";
     int id = 0;
     bool connected = false;
-    //agregar Cliente
+    PadronClient* client;
   } client_t;
 
  protected:
