@@ -34,7 +34,7 @@ std::string Padron::getNombre(std::string carnet){
 	return this->mapaPadron[carnet].nombre;
 }
 
-int Padron::getCodigo(std::string carnet){
+std::string Padron::getCodigo(std::string carnet){
 	return this->mapaPadron[carnet].codigo;
 }
 

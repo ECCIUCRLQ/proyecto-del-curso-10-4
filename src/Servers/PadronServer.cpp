@@ -24,21 +24,18 @@ PadronServer::PadronServer(FileSystem& fs, const std::string& serverClass) :
     getline(stream, codigo, delimitador);
     getline(stream, centroLoc, delimitador);
     // Imprimir
-
 	padron.agregarVotante(carnet);
 	nombre = nombre + apellido1 + apellido2;
 	padron.setNombre(carnet,nombre);
 	padron.setCodigo(carnet,codigo);
-	padron.setVoto(carnet,stoi(yaVoto));
-	  
+	padron.setVoto(carnet,0);
 	  this->createFile(carnet);
-	  std:string data = nombre + voto + codigo + centroLoc;
+	  std::string data = nombre + yaVoto + codigo + centroLoc;
 	  std::vector<char> vData(data.begin(), data.end());
-	  this->writeFile(carnet,v);
+	  this->writeFile(carnet,vData);
     // no es necesario imprimir los valores sino guardarlos 
   }
   archivo.close();
-
 }
 
 PadronServer::~PadronServer() {
@@ -67,7 +64,7 @@ bool PadronServer::addClient(const std::string& ipAddress, const std::string& po
   return ret;
 }
 
-void PadronServer::handleClientConnection(Socket& client) {
+void PadronServer::handleClientConnection(Socket& socketWithClient) {
 	std::string filepath = "";
 	std::string datagram = this->readLineFromSocket(socketWithClient);
 	std::cout << "Comando recibido: "<< datagram << std::endl;
@@ -75,7 +72,7 @@ void PadronServer::handleClientConnection(Socket& client) {
 
 	if(opCode == UPDATE_CODE_OPCODE){
 		size_t filepathLen = this->parseWriteOp(datagram.substr(1));
-	      if (hileraLen > 0) {
+	      if (filepathLen > 0) {
 		std::vector<char> data;
 		filepath = datagram.substr(1, filepathLen);
 		data.resize(datagram.length() - filepathLen - 2);
@@ -85,7 +82,8 @@ void PadronServer::handleClientConnection(Socket& client) {
 		 
 		
 		// Aqui hay que modificar el archivo para que se guarde el codigo correcto en el archivo, el codigo esta guardado en data
-		if (padron.setCodigo(codigo);) {
+		if (this->fileExists(filepath)) {
+			padron.setCodigo(filepath,codigo);
 		  std::cout << "Could update code " << filepath << std::endl;
 		  this->sendSuccessCode(socketWithClient);
 		} else {
@@ -93,56 +91,58 @@ void PadronServer::handleClientConnection(Socket& client) {
 		  this->sendErrorMessage(socketWithClient);
 		}
 	      }
-	      return true;
+	      return;
 	}
 	
-	if (opCode == VERIFY_CODE_UPCODE){
+	if (opCode == VERIFY_CODE_OPCODE){
 		size_t filepathLen = this->parseWriteOp(datagram.substr(1));
-	      if (hileraLen > 0) {
-		std::vector<char> data;
-		filepath = datagram.substr(1, filepathLen);
-		data.resize(datagram.length() - filepathLen - 2);
-		datagram.copy(data.data(), data.size(), filepathLen + 2);
-		 
-		 std::string codigo(data.begin(), data.end());
-		 
-		
+	    if (filepathLen > 0) {
+			std::vector<char> data;
+			filepath = datagram.substr(1, filepathLen);
+			data.resize(datagram.length() - filepathLen - 2);
+			datagram.copy(data.data(), data.size(), filepathLen + 2);
+			
+			std::string codigo(data.begin(), data.end());
+			
+			
 		// Aqui hay que verificar que en el carnet este contenido ese codigo en especifio, guardado en data
-		if (padron.getCarnet == filepath) {
-		  std::cout << "Could verifiy code: "<< codigo "for: " << filepath << std::endl;
-		  this->sendSuccessCode(socketWithClient);
-		} else {
-		   std::cout << "Could Not verifiy code: "<< codigo "for: " << filepath << std::endl;
-		  this->sendErrorMessage(socketWithClient);
+			if (padron.getCarnet(codigo) == filepath) {
+			std::cout << "Could verifiy code: "<< codigo << "for: " << filepath << std::endl;
+			this->sendSuccessCode(socketWithClient);
+			} else {
+			std::cout << "Could Not verifiy code: "<< codigo << "for: " << filepath << std::endl;
+			this->sendErrorMessage(socketWithClient);
+			}
 		}
-	      }
+		return;
 	}
 		
 
-	if(opCode == VERIFY_CARNET_UPCODE){
+	if(opCode == VERIFY_CARNET_OPCODE){
 		std::string carnet = datagram.substr(1);
-		if(this->searchFile(carnet){
+		if(this->fileExists(carnet)){
 			this->sendSuccessCode(socketWithClient);
 		}
 		else{
 			this->sendErrorMessage(socketWithClient);
 		}
-
+		return;
 	}
 			
 
-	if(opCode == UPDATE_VOTE_UPCODE){
+	if(opCode == UPDATE_VOTE_OPCODE){
 		std::string carnet = datagram.substr(1);
-		if(this->searchFile(carnet)){
-			this->setVoto(carnet, 1);
+		if(this->fileExists(carnet)){
+			padron.setVoto(carnet, 1);
 			this->sendSuccessCode(socketWithClient);
 		}
 		else{
 			this->sendErrorMessage(socketWithClient);
 		}	
-
+		return;
 	}
-		
+	this->sendErrorMessage(socketWithClient);
+	
 }
 
 std::string PadronServer::getClass() {

@@ -6,10 +6,10 @@
 #include "Socket.hpp"
 #define MAX_ATTEMPTS 3
 #define RANDOM_FILENAME_LEN 5
-#define UPDATE_CODE_UPCODE 'h'
-#define UPDATE_VOTO_UPCODE 'i'
-#define VERIFY_CODE_UPCODE 'j'
-#define VERIFY_CARNET_UPCODE 'k'
+#define UPDATE_CODE_OPCODE 'h'
+#define UPDATE_VOTE_OPCODE 'i'
+#define VERIFY_CODE_OPCODE 'j'
+#define VERIFY_CARNET_OPCODE 'k'
 #define CLIENT_INFO_OPCODE  'f'
 #define DIST_VOTE_OPCODE    'g'
 class PadronClient : public FSClient {
@@ -21,7 +21,7 @@ private:
  public:
   PadronClient() = delete;
   PadronClient(FileSystem& fs, const std::string& parentIp, const std::string& parentPort);
-  virtual ~VoteClient();
+  virtual ~PadronClient();
 
  private:
   bool getClassAndID();
@@ -36,4 +36,6 @@ private:
   bool verifyCarnet(const std::string& filepath);
   bool updateVote(const std::string& filepath);
 
-}
+};
+
+#endif

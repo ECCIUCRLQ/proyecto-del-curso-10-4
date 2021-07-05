@@ -11,6 +11,7 @@
 
 // PADRON
 #include "Padron.hpp"
+#include "PadronClient.hpp"
 
 #include <map>
 #include <string>
@@ -19,10 +20,10 @@
 #include <sstream>
 #include <fstream>
 
-#define UPDATE_CODE_UPCODE 'h'
-#define UPDATE_VOTO_UPCODE 'i'
-#define VERIFY_CODE_UPCODE 'j'
-#define VERIFY_CARNET_UPCODE 'k'
+#define UPDATE_CODE_OPCODE 'h'
+#define UPDATE_VOTE_OPCODE 'i'
+#define VERIFY_CODE_OPCODE 'j'
+#define VERIFY_CARNET_OPCODE 'k'
 #define CLIEN_INFO_OPCODE  'f'
 #define DIST_VOTE_OPCODE    'g'
 #define NOMBRE_ARCHIVO "PadronPrueba.csv"

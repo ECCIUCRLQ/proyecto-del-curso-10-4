@@ -93,7 +93,9 @@ bool PadronClient::verifyCarnet(const std::string& filepath){
   TcpClient client;
   Socket& socket = client.connect(this->serverIp.c_str(), this->serverPort.c_str());
 
+  std::cout << "Comando enviado pre: "<< filepath << std::endl;
   std::string datagram = VERIFY_CARNET_OPCODE + filepath;
+  std::cout << "Comando enviado: "<< datagram << std::endl;
   this->sendDatagram(socket, datagram);
   std::string response = this->readSocketResponse(socket);
 	if(response.at(0) == '1'){
