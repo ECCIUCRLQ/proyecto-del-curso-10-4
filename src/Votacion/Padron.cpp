@@ -8,7 +8,7 @@ Padron::~Padron() {
 }
 
 void Padron::agregarVotante(std::string carnet){
-	mapaPadron[carnet].codigo = 0;
+	mapaPadron[carnet].codigo = "";
   mapaPadron[carnet].nombre = "";
   mapaPadron[carnet].voto = 0;
 }
@@ -17,7 +17,7 @@ void Padron::setNombre(std::string carnet,std::string nombre){
 	this->mapaPadron[carnet].nombre = nombre;
 }
 
-void Padron::setCodigo(std::string carnet,int codigo){
+void Padron::setCodigo(std::string carnet,std::string codigo){
 	this->mapaPadron[carnet].codigo = codigo;
 }
 
@@ -37,7 +37,7 @@ int Padron::getVoto(std::string carnet){
 	return this->mapaPadron[carnet].voto;
 }
 
-std::string Padron::getCarnet(int codigo){
+std::string Padron::getCarnet(std::string codigo){
 	std::string carnet;
 
 	auto iter = mapaPadron.begin();
