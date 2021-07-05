@@ -10,25 +10,15 @@
 #define UPDATE_VOTE_OPCODE 'i'
 #define VERIFY_CODE_OPCODE 'j'
 #define VERIFY_CARNET_OPCODE 'k'
-#define CLIENT_INFO_OPCODE  'f'
-#define DIST_VOTE_OPCODE    'g'
+
 class PadronClient : public FSClient {
 
-private:
-  std::string clientClass = "";
-  std::string clientID = "";
 
  public:
   PadronClient() = delete;
   PadronClient(FileSystem& fs, const std::string& parentIp, const std::string& parentPort);
   virtual ~PadronClient();
 
- private:
-  bool getClassAndID();
-
- private:
-  bool createFileLocal(const std::string& filepath);
-  bool writeFileLocal(const std::string& filepath, const std::string& data);
 
  public:
   bool updateCode(const std::string& filepath, std::string codigo);

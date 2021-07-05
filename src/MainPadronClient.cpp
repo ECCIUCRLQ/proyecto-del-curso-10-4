@@ -15,7 +15,7 @@ int main(int argc, char const *argv[]) {
   FileSystem fs(1024 * 8, &hd);
   PadronClient vc(fs, "127.0.0.1", "8081");
 
-  std::cout << vc.verifyCarnet("B94534") << std::endl;
+  std::cout << vc.updateVote("B94536") << std::endl;
 
   return 0;
 }

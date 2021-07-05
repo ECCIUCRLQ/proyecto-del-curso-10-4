@@ -141,7 +141,6 @@ void PadronServer::handleClientConnection(Socket& socketWithClient) {
 		}	
 		return;
 	}
-	this->sendErrorMessage(socketWithClient);
 	
 }
 
