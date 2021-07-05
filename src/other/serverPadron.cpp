@@ -1,10 +1,37 @@
 #include "serverPadron.hpp"
 #include <cstring>
-#include "Socket.hpp"
+#include "../Network/Socket.hpp"
 serverPadron::serverPadron(){
-	//this->padron = padron;
-}
+	ifstream archivo(NOMBRE_ARCHIVO);
+    string linea;
+    char delimitador = ',';// esto se debe cambiar segun el delimitador que presenta el padron
+    
+    getline(archivo, linea);
+	while (getline(archivo, linea))
+    {
 
+        stringstream stream(linea); // Convertir la cadena a un stream
+        string carnet, nombre, apellido1, apellido2, yaVoto, codigo;
+        // Extraer todos los valores de esa fila- todos estos valores se cambian segun los datos que se necesitan para el padron
+        getline(stream, carnet, delimitador);
+        getline(stream, nombre, delimitador);
+        getline(stream, apellido1, delimitador);
+		getline(stream, apellido2, delimitador);
+		getline(stream, yaVoto, delimitador);
+        getline(stream, codigo, delimitador);
+        // Imprimir
+        cout << "==================" << endl;
+		padron.agregarVotante(carnet);
+		nombre = nombre + apellido1 + apellido2;
+		padron.setNombre(carnet,nombre);
+		padron.setCodigo(carnet,stoi(codigo));
+		padron.setVoto(carnet,stoi(yaVoto));
+    // no es necesario imprimir los valores sino guardarlos 
+    }
+
+    archivo.close();
+
+}	
 serverPadron::~serverPadron() {
 
 }
@@ -13,7 +40,9 @@ void serverPadron::handleClientConnection(Socket& client) {
 	std::string hilera = "";
 	client.readLine(hilera);
 	std::cout << "Comando recibido: "<< hilera << std::endl;
-	if(hilera.at(0) == 'a'){
+	char opCode = hilera.at(0);
+
+	if(opCode == 'a'){
 		std::string carnet = "";
 		for(int i = 1; i<hilera.length();++i){
 			carnet+= hilera.at(i);
@@ -26,7 +55,7 @@ void serverPadron::handleClientConnection(Socket& client) {
 		client.send();
 	}
 	else{
-		if (hilera.at(0) == 'b'){
+		if (opCode == 'b'){
 			std::string codigo = "";
 			int nCodigo = 0;
 			for(int i = 1; i<hilera.length();++i){
@@ -41,7 +70,7 @@ void serverPadron::handleClientConnection(Socket& client) {
 		}
 		else{
 
-			if(hilera.at(0) == 'c'){
+			if(opCode == 'c'){
 				std::string carnet = "";
 				for(int i = 1; i<hilera.length();++i){
 					carnet+= hilera.at(i);
@@ -55,7 +84,7 @@ void serverPadron::handleClientConnection(Socket& client) {
 			}
 			else{
 
-				if(hilera.at(0) == 'd'){
+				if(opCode == 'd'){
 					std::string carnet = "";
 					for(int i = 1; i<hilera.length();++i){
 						carnet+= hilera.at(i);

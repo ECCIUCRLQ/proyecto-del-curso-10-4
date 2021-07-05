@@ -5,10 +5,11 @@
 #include <string>
 #include <sstream>
 #include <fstream>
+using namespace std;
 
-#include "Padron.hpp"
-#include "Socket.hpp"
-#include "TcpServer.hpp"
+#include "../Votacion/Padron.hpp"
+#include "../Network/Socket.hpp"
+#include "../Network/TcpServer.hpp"
 
 #define NOMBRE_ARCHIVO "PadronPrueba.csv"
 
