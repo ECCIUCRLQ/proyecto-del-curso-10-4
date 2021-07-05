@@ -4,7 +4,12 @@
 #include "FileSystem.hpp"
 #include "FSClient.hpp"
 #include "Socket.hpp"
-
+#define MAX_ATTEMPTS 3
+#define RANDOM_FILENAME_LEN 5
+#define UPDATE_CODE_UPCODE 'h'
+#define UPDATE_CARNET_UPCODE 'i'
+#define VERIFY_CODE_UPCODE 'j'
+#define VERIFY_CARNET_UPCODE 'k'
 class PadronClient : public FSClient {
 
 private:
