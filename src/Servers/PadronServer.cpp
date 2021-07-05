@@ -14,14 +14,15 @@ PadronServer::PadronServer(FileSystem& fs, const std::string& serverClass) :
   {
 
     std::stringstream stream(linea); // Convertir la cadena a un stream
-    std::string carnet, nombre, apellido1, apellido2, yaVoto, codigo;
+    std::string carnet, nombre, apellido1, apellido2, yaVoto, codigo, centroLoc;
     // Extraer todos los valores de esa fila- todos estos valores se cambian segun los datos que se necesitan para el padron
     getline(stream, carnet, delimitador);
     getline(stream, nombre, delimitador);
     getline(stream, apellido1, delimitador);
-	getline(stream, apellido2, delimitador);
-	getline(stream, yaVoto, delimitador);
+    getline(stream, apellido2, delimitador);
+    getline(stream, yaVoto, delimitador);
     getline(stream, codigo, delimitador);
+    getline(stream, centroLoc, delimitador);
     // Imprimir
 
 	padron.agregarVotante(carnet);
@@ -29,6 +30,11 @@ PadronServer::PadronServer(FileSystem& fs, const std::string& serverClass) :
 	padron.setNombre(carnet,nombre);
 	padron.setCodigo(carnet,codigo);
 	padron.setVoto(carnet,stoi(yaVoto));
+	  
+	  this->createFile(carnet);
+	  std:string data = nombre + voto + codigo + centroLoc;
+	  std::vector<char> vData(data.begin(), data.end());
+	  this->writeFile(carnet,v);
     // no es necesario imprimir los valores sino guardarlos 
   }
   archivo.close();
@@ -37,7 +43,7 @@ PadronServer::PadronServer(FileSystem& fs, const std::string& serverClass) :
 
 PadronServer::~PadronServer() {
   for (auto client : this->clients) {
-    //delete client.voteClient;
+    delete client.padronClient;
   }
 }
 
