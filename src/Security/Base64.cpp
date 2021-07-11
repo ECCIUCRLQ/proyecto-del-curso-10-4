@@ -1,3 +1,5 @@
+//Based on: https://stackoverflow.com/a/5291537
+
 #include "Base64.hpp"
 
 std::string base64_encode(const std::string &bindata) {
