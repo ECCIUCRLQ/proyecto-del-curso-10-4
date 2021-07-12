@@ -6,10 +6,7 @@
 #include <string>
 
 
-#define CREATE_COMMAND  "create"
-#define WRITE_COMMAND   "write"
-#define READ_COMMAND    "read"
-#define SEARCH_COMMAND  "search"
+
 #define PRINT_COMMAND   "print"
 #define UPDATECODE_COMMAND  "code"
 #define VERIFYCODE_COMMAND  "verifycode"
@@ -35,7 +32,7 @@ class PadronShell {
   void verifyCarnet(const std::string& filepath);
   // voter vote updated in padron (actualizar padron)
   void updateVote(const std::string& filepath);
-  
+    void printDisk();
 
  private:
   void parse(const std::string& input);

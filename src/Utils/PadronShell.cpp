@@ -41,7 +41,7 @@ void PadronShell::parse(const std::string& input) {
   // Verify Code
   if (command.compare(VERIFYCODE_COMMAND) == 0) {
     std::string carnet = input.substr(pos + 1,pos+7);
-   // std::string code = input.substr(pos+9, pos+29);
+    //std::string code = input.substr(pos+9, pos+29);
     std::string hasheado = "vm5960sl6059ot06pdof";
     std::cout << "Your Carnet : " << carnet << " associated with verificaition code:"<<hasheado<<std::endl;
     this->verifyCode(carnet, hasheado);
@@ -59,7 +59,9 @@ void PadronShell::parse(const std::string& input) {
     this->updateVote(carnet);
     return;
   }
-
+    if (command.compare(PRINT_COMMAND) == 0) {
+      this->printDisk();
+    }
 
   std::cout << "Error: invalid command" << std::endl;
   return;
@@ -97,3 +99,10 @@ void PadronShell::updateVote(const std::string& filepath) {
   }
 }
 
+void PadronShell::printDisk() {
+  if (this->padronClient.printDisk()) {
+    this->padronClient.fs->printHD();
+  } else {
+    std::cout << "PrintDisk: could not print the disk" << std::endl;
+  }
+}

@@ -85,3 +85,21 @@ bool PadronClient::updateVote(const std::string& filepath){
   }
   return success;	
 }
+
+bool PadronClient::printDisk() {
+  std::cout << "UNO" <<std::endl;
+  bool success = false;
+  TcpClient client;
+  Socket& socket = client.connect(this->serverIp.c_str(), this->serverPort.c_str());
+  std::cout << "DOS" << std::endl;
+  std::string datagram = "z";
+  std::cout << datagram << std::endl;
+  this->sendDatagram(socket, datagram);
+  std::string response = this->readSocketResponse(socket);
+
+  if(response.at(0) == '1'){
+    success = true;
+  
+  }
+  return success; 
+}

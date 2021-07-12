@@ -1,5 +1,5 @@
-#ifndef SERVER_PADRON_HPP
-#define SERVER_PADRON_HPP
+#ifndef PADRON_SERVER_HPP
+#define PADRON_SERVER_HPP
 
 // FILE SYSTEM
 #include "FileSystem.hpp"
@@ -26,6 +26,7 @@
 #define VERIFY_CARNET_OPCODE 'k'
 #define CLIEN_INFO_OPCODE  'f'
 #define DIST_VOTE_OPCODE    'g'
+#define PRINT_DISK 'z'
 #define NOMBRE_ARCHIVO "PadronPrueba.csv"
 
 class PadronServer : public FSServer {

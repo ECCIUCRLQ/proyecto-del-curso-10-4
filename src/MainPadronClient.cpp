@@ -5,6 +5,7 @@
 #include "FileSystem.hpp"
 #include "PadronServer.hpp"
 #include "PadronShell.hpp"
+#include "PadronClient.hpp"
 
 void initServer(FileSystem* fs) {
   PadronServer server(*fs, "URNA");
@@ -14,8 +15,8 @@ void initServer(FileSystem* fs) {
 int main(int argc, char const *argv[]) {
   HardDrive hd(1024 * 8);
   FileSystem fs(1024 * 8, &hd);
-  PowerClient vc(fs, "127.0.0.1", "8081");
-  PowerShell vs(vc);
+  PadronClient vc(fs, "127.0.0.1", "8085");
+  PadronShell vs(vc);
 
   std::thread server(initServer, &fs);
 

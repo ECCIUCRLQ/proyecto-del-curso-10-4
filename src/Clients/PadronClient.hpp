@@ -1,5 +1,5 @@
 #ifndef PADRON_CLIENT_HPP
-#define PADRON_CLIENT_H
+#define PADRON_CLIENT_HPP
 
 #include "FileSystem.hpp"
 #include "FSClient.hpp"
@@ -10,9 +10,10 @@
 #define UPDATE_VOTE_OPCODE 'i'
 #define VERIFY_CODE_OPCODE 'j'
 #define VERIFY_CARNET_OPCODE 'k'
-
+#define PRINT_DISK 'z'
+class PadronShell;
 class PadronClient : public FSClient {
-
+ friend class PadronShell;
 
  public:
   PadronClient() = delete;
@@ -25,6 +26,7 @@ class PadronClient : public FSClient {
   bool verifyCode(const std::string& filepath, std::string codigo);
   bool verifyCarnet(const std::string& filepath);
   bool updateVote(const std::string& filepath);
+  bool printDisk();
 
 };
 
