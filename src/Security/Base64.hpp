@@ -1,3 +1,5 @@
+//Based on: https://stackoverflow.com/a/5291537
+
 #ifndef BASE64_HPP
 #define BASE64_HPP
 
