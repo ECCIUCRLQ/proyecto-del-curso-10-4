@@ -78,7 +78,6 @@ void VoteServer::handleClientConnection(Socket& socketWithClient) {
 }
 
 bool VoteServer::distributeVote(const std::string& filepath, const std::string& voteContent, const std::string& sender) {
-  bool send = true;
   for (auto client : this->clients) {
     //if (client.second.ipAddress.compare(sender) != 0) {
       // Initialize the connection

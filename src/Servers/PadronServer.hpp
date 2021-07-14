@@ -1,17 +1,20 @@
-#ifndef PADRON_SERVER_HPP
-#define PADRON_SERVER_HPP
+#ifndef SERVER_PADRON_HPP
+#define SERVER_PADRON_HPP
+
+// CLIENTS
+#include "Clients/PadronClient.hpp"
 
 // FILE SYSTEM
-#include "FileSystem.hpp"
-#include "FSServer.hpp"
+#include "FileSystem/FileSystem.hpp"
 
 // NETWORK
-#include "NetworkAddress.hpp"
-#include "Socket.hpp"
+#include "Network/Socket.hpp"
 
-// PADRON
-#include "Padron.hpp"
-#include "PadronClient.hpp"
+// SERVERS
+#include "Servers/FSServer.hpp"
+
+// VOTACION
+#include "Votacion/Padron.hpp"
 
 #include <map>
 #include <string>
@@ -26,7 +29,6 @@
 #define VERIFY_CARNET_OPCODE 'k'
 #define CLIEN_INFO_OPCODE  'f'
 #define DIST_VOTE_OPCODE    'g'
-#define PRINT_DISK 'z'
 #define NOMBRE_ARCHIVO "PadronPrueba.csv"
 
 class PadronServer : public FSServer {

@@ -17,15 +17,6 @@ void FSServer::handleClientConnection(Socket& socketWithClient) {
   }
 }
 
-std::string FSServer::readLineFromSocket(Socket& socketWithClient) {
-  std::string readLine;
-
-  // Read until null char
-  socketWithClient.readLine(readLine, 0);
-
-  return readLine;
-}
-
 bool FSServer::handleFileSystemOps(std::string datagram, Socket& socketWithClient) {
   std::string filepath;
   char opCode;
@@ -118,27 +109,6 @@ bool FSServer::handleFileSystemOps(std::string datagram, Socket& socketWithClien
   
   // Return false if no action was taken
   return false;
-}
-
-void FSServer::sendSuccessCode(Socket& socket) {
-  std::cout << "Server: sending success code 1" << std::endl;
-
-  socket << "1";
-  socket.send();
-
-  return;
-}
-
-void FSServer::sendErrorMessage(Socket& socket, char errCode) {
-  std::cout << "Server: sending error code: " << (int)errCode << std::endl;
-  socket << "0";
-
-  if (errCode) {
-    socket << errCode;
-  }
-
-  socket.send();
-  socket.close();
 }
 
 size_t FSServer::parseWriteOp(std::string datagram) {

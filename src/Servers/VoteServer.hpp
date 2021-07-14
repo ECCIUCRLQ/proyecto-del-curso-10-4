@@ -1,16 +1,17 @@
 #ifndef VOTE_SERVER_HPP
 #define VOTE_SERVER_HPP
 
+// CLIENTS
+#include "Clients/VoteClient.hpp"
+
 // FILE SYSTEM
-#include "FileSystem.hpp"
-#include "FSServer.hpp"
+#include "FileSystem/FileSystem.hpp"
 
 // NETWORK
-#include "NetworkAddress.hpp"
-#include "Socket.hpp"
+#include "Network/Socket.hpp"
 
-// VOTES
-#include "VoteClient.hpp"
+// SERVERS
+#include "Servers/FSServer.hpp"
 
 #include <map>
 #include <string>

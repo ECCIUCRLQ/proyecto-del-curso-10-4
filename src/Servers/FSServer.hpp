@@ -4,9 +4,14 @@
 #include <string>
 #include <vector>
 
-#include "FileSystem.hpp"
-#include "Socket.hpp"
-#include "TcpServer.hpp"
+// FILE SYSTEM
+#include "FileSystem/FileSystem.hpp"
+
+// NETWORK
+#include "Network/Socket.hpp"
+
+// SERVERS
+#include "Servers/Server.hpp"
 
 #define CREATE_OPCODE 'a'
 #define WRITE_OPCODE  'b'
@@ -15,7 +20,7 @@
 #define EXIST_OPCODE  'e'
 #define PRINT_HD_CODE 'p'
 
-class FSServer : public TcpServer {
+class FSServer : public Server {
  protected:
   FileSystem* fileSystem = nullptr;
 
@@ -37,14 +42,7 @@ class FSServer : public TcpServer {
   size_t parseWriteOp(std::string datagram);
 
  protected:
-  void sendSuccessCode(Socket& socket);
-  void sendErrorMessage(Socket& socket, char errCode = 0);
-
- protected:
-  std::string readLineFromSocket(Socket& socketWithClient);
   bool handleFileSystemOps(std::string datagram, Socket& socketWithClient);
-
- protected:
   virtual void handleClientConnection(Socket& socketWithClient);
 };
 

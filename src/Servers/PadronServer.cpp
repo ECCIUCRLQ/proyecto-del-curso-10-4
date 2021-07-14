@@ -24,11 +24,11 @@ PadronServer::PadronServer(FileSystem& fs, const std::string& serverClass) :
     getline(stream, codigo, delimitador);
     getline(stream, centroLoc, delimitador);
     // Imprimir
-	padron.agregarVotante(carnet);
-	nombre = nombre + apellido1 + apellido2;
-	padron.setNombre(carnet,nombre);
-	padron.setCodigo(carnet,codigo);
-	padron.setVoto(carnet,0);
+    padron.agregarVotante(carnet);
+    nombre = nombre + apellido1 + apellido2;
+    padron.setNombre(carnet,nombre);
+    padron.setCodigo(carnet,codigo);
+    padron.setVoto(carnet,0);
 	  this->createFile(carnet);
 	  std::string data = nombre + yaVoto + codigo + centroLoc;
 	  std::vector<char> vData(data.begin(), data.end());
@@ -77,7 +77,7 @@ void PadronServer::handleClientConnection(Socket& socketWithClient) {
 		filepath = datagram.substr(1, filepathLen);
 		data.resize(datagram.length() - filepathLen - 2);
 		datagram.copy(data.data(), data.size(), filepathLen + 2);
-		
+		 
 		 std::string codigo(data.begin(), data.end());
 		 
 		
@@ -85,12 +85,6 @@ void PadronServer::handleClientConnection(Socket& socketWithClient) {
 		if (this->fileExists(filepath)) {
 			padron.setCodigo(filepath,codigo);
 		  std::cout << "Could update code " << filepath << std::endl;
-		  /*
-		  std::string votito = to_string(padron.getVoto(filepath));
-		   std::string archivo = archivo + padron.getNombre(filepath) +votito+ codigo + padron.getCentroLoc(filepath);  
-		   std::vector<char> datos(archivo.begin(),archivo.end());
-		   this->writeFile(filepath,datos);
-		   */
 		  this->sendSuccessCode(socketWithClient);
 		} else {
 		  std::cout << "Could not update code " << filepath << std::endl;
@@ -126,7 +120,7 @@ void PadronServer::handleClientConnection(Socket& socketWithClient) {
 
 	if(opCode == VERIFY_CARNET_OPCODE){
 		std::string carnet = datagram.substr(1);
-		if(this->fileExists(carnet) && (!padron.getVoto(carnet))){
+		if(this->fileExists(carnet)){
 			this->sendSuccessCode(socketWithClient);
 		}
 		else{
@@ -140,11 +134,6 @@ void PadronServer::handleClientConnection(Socket& socketWithClient) {
 		std::string carnet = datagram.substr(1);
 		if(this->fileExists(carnet)){
 			padron.setVoto(carnet, 1);
-			/*
-			std::string archivo = archivo + padron.getNombre(filepath) +"1"+padron.getCodigo(filepath) + padron.getCentroLoc(filepath);  
-		   std::vector<char> datos(archivo.begin(),archivo.end());
-		   this->writeFile(filepath,datos);
-		   */
 			this->sendSuccessCode(socketWithClient);
 		}
 		else{
@@ -152,13 +141,6 @@ void PadronServer::handleClientConnection(Socket& socketWithClient) {
 		}	
 		return;
 	}
-
-	if(opCode == PRINT_DISK){
-		std::string carnet = datagram.substr(1);
-		this->fileSystem->printHD();
-    this->sendSuccessCode(socketWithClient);
-    return;
-  }
 	
 }
 
