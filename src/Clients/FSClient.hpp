@@ -1,14 +1,17 @@
 #ifndef FSCLIENT_HPP
 #define FSCLIENT_HPP
 
+// FILE SYSTEM
+#include "FileSystem/FileSystem.hpp"
+#include "FileSystem/HardDrive.hpp"
+
+// NETWORK
+#include "Network/Socket.hpp"
+#include "Network/TcpClient.hpp"
+
 #include <iostream>
 #include <string>
 #include <vector>
-
-#include "FileSystem.hpp"
-#include "HardDrive.hpp"
-#include "Socket.hpp"
-#include "TcpClient.hpp"
 
 #define CREATE_OPCODE 'a'
 #define WRITE_OPCODE  'b'

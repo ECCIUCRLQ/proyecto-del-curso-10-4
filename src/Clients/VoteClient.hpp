@@ -1,9 +1,15 @@
 #ifndef VOTE_CLIENT_HPP
 #define VOTE_CLIENT_HPP
 
-#include "FileSystem.hpp"
-#include "FSClient.hpp"
-#include "Socket.hpp"
+// CLIENTS
+#include "Clients/FSClient.hpp"
+
+// FILE SYSTEM
+#include "FileSystem/FileSystem.hpp"
+
+// NETWORK
+#include "Network/Socket.hpp"
+#include "Network/TcpClient.hpp"
 
 #include <string>
 
@@ -13,10 +19,7 @@
 #define CLIENT_INFO_OPCODE  'f'
 #define DIST_VOTE_OPCODE    'g'
 
-class VoteShell;
-
 class VoteClient : public FSClient {
- friend class VoteShell;
  private:
   std::string clientClass = "";
   std::string clientID = "";
@@ -29,14 +32,14 @@ class VoteClient : public FSClient {
  private:
   bool getClassAndID();
 
- private:
+ public:
   std::string generateVoteFilename(size_t len);
 
- private:
+ public:
   bool createFileLocal(const std::string& filepath);
   bool writeFileLocal(const std::string& filepath, const std::string& data);
 
- private:
+ public:
   bool distributeVote(const std::string& filepath);
 
  public:
