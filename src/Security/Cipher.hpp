@@ -5,6 +5,9 @@
 #include <string>
 #include <vector>
 
+// Security
+#include "Security/Base64.hpp"
+
 #define AES256_SALT_LEN 16
 #define AES256_PASS_ROUNDS 16
 #define AES256_KEY_LEN 32

@@ -1,5 +1,9 @@
 load("@rules_cc//cc:defs.bzl", "cc_library")
 
+#
+# TARGETS
+#
+
 # Network Address
 cc_library(
   name = "NetworkAddress",
@@ -45,6 +49,7 @@ cc_library(
     ":friends"
   ]
 )
+
 
 #
 # FRIEND PACKAGES

@@ -1,7 +1,5 @@
 #include "Cipher.hpp"
 
-#include "Base64.hpp"
-
 #include <cinttypes>
 #include <fstream>
 #include <iostream>
