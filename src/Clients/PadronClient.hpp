@@ -18,10 +18,10 @@
 #define VERIFY_CARNET_OPCODE 'k'
 #define PRINT_DISK 'z'
 
-class PadronClient : public FSClient {
+class PadronClient : public Client {
  public:
   PadronClient() = delete;
-  PadronClient(FileSystem& fs, const std::string& parentIp, const std::string& parentPort);
+  PadronClient(const std::string& parentIp, const std::string& parentPort);
   virtual ~PadronClient();
 
  public:

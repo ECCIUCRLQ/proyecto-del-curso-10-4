@@ -4,35 +4,30 @@
 #include <ctime>
 #include <stdexcept>
 
-PadronClient::PadronClient(FileSystem& fs, const std::string& parentIp,
-  const std::string& parentPort) : FSClient(fs, parentIp, parentPort) {
+PadronClient::PadronClient(const std::string& parentIp,
+  const std::string& parentPort) : Client() {
   this->serverIp = parentIp;
   this->serverPort = parentPort;
-  char count = 0;
 }
-
 
 PadronClient::~PadronClient() {
 }
 
-
-  
 bool PadronClient::updateCode(const std::string& filepath, std::string codigo){
-bool success = false;
-TcpClient client;
-Socket& socket = client.connect(this->serverIp.c_str(), this->serverPort.c_str());
+  bool success = false;
+  TcpClient client;
+  Socket& socket = client.connect(this->serverIp.c_str(), this->serverPort.c_str());
 
-std::string datagram = UPDATE_CODE_OPCODE + filepath + "\n" + codigo;
-this->sendDatagram(socket, datagram);
-  
-std::string response = this->readSocketResponse(socket);
+  std::string datagram = UPDATE_CODE_OPCODE + filepath + "\n" + codigo;
+  this->sendDatagram(socket, datagram);
 
-if(response.at(0) == '1'){
-	success = true;
-	
-}
+  std::string response = this->readSocketResponse(socket);
 
-return success;
+  if(response.at(0) == '1'){
+    success = true;
+  }
+
+  return success;
 }
 
 bool PadronClient::verifyCode(const std::string& filepath, std::string codigo){
@@ -42,13 +37,12 @@ bool PadronClient::verifyCode(const std::string& filepath, std::string codigo){
 
   std::string datagram = VERIFY_CODE_OPCODE + filepath + "\n" + codigo;
   this->sendDatagram(socket, datagram);
-  
+
   std::string response = this->readSocketResponse(socket);
 	if(response.at(0) == '1'){
 		match = true;
 	}
-	
-	
+
 	return match;
 }
 
@@ -66,7 +60,7 @@ bool PadronClient::verifyCarnet(const std::string& filepath){
 		existeVotante = true;
 	}
 
-return existeVotante;
+  return existeVotante;
 }
 
 bool PadronClient::updateVote(const std::string& filepath){
@@ -76,13 +70,13 @@ bool PadronClient::updateVote(const std::string& filepath){
 
   std::string datagram = UPDATE_VOTE_OPCODE + filepath;
   this->sendDatagram(socket, datagram);
-  
+
   std::string response = this->readSocketResponse(socket);
 
   if(response.at(0) == '1'){
 	  success = true;
-	
   }
+
   return success;	
 }
 
@@ -101,5 +95,6 @@ bool PadronClient::printDisk() {
     success = true;
   
   }
+
   return success; 
 }

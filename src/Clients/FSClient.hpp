@@ -1,6 +1,9 @@
 #ifndef FSCLIENT_HPP
 #define FSCLIENT_HPP
 
+// CLIENTS
+#include "Clients/Client.hpp"
+
 // FILE SYSTEM
 #include "FileSystem/FileSystem.hpp"
 #include "FileSystem/HardDrive.hpp"
@@ -20,23 +23,14 @@
 #define EXIST_OPCODE  'e'
 #define PRINT_HD_CODE 'p'
 
-class FSClient {
+class FSClient : public Client {
  protected:
   FileSystem* fs = nullptr;
 
- protected:
-  std::string serverIp = "";
-  std::string serverPort = "";
-
  public:
+  FSClient() = delete;
   FSClient(FileSystem& fs, const std::string& serverIp, const std::string& serverPort);
   virtual ~FSClient();
-
- public:
-  void shell();
-
- protected:
-  void parse(const std::string& input);
 
  protected:
   virtual bool fileExists(const std::string& filepath);

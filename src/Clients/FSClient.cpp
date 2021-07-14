@@ -1,7 +1,9 @@
 #include "FSClient.hpp"
 
 FSClient::FSClient(FileSystem& fs, const std::string& serverIp,
-  const std::string& serverPort) : fs(&fs), serverIp(serverIp), serverPort(serverPort) {
+  const std::string& serverPort) : Client(), fs(&fs) {
+  this->serverIp = serverIp;
+  this->serverPort = serverPort;
 }
 
 FSClient::~FSClient() {
@@ -127,17 +129,6 @@ bool FSClient::printDisk() {
   }
 
   socket.close();
-  return ret;
-}
-
-void FSClient::sendDatagram(Socket& socket, const std::string& datagram) {
-  socket << datagram;
-  socket.send();
-}
-
-std::string FSClient::readSocketResponse(Socket& socket) {
-  std::string ret;
-  socket.readLine(ret, 0);
   return ret;
 }
 
