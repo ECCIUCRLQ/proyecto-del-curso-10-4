@@ -5,8 +5,8 @@
 
 #include <netdb.h>
 
-#include "common.hpp"
-#include "Socket.hpp"
+#include "Network/common.hpp"
+#include "Network/Socket.hpp"
 
 class NetworkAddress;
 

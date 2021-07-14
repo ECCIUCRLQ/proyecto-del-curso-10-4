@@ -14,8 +14,6 @@
 #include <utility>
 
 #include "TcpServer.hpp"
-#include "NetworkAddress.hpp"
-#include "Socket.hpp"
 
 TcpServer::TcpServer() {
   // Set initial values for searching for a suitable network address

@@ -9,9 +9,10 @@
 #include <string>
 #include <sstream>
 
-#include "common.hpp"
+// NETWORK
+#include "Network/common.hpp"
+#include "Network/NetworkAddress.hpp"
 
-class NetworkAddress;
 struct SharedSocket;
 
 /// Expands the extraction operator>> with the given data type

@@ -11,7 +11,6 @@
 #include <vector>
 
 #include "Socket.hpp"
-#include "NetworkAddress.hpp"
 
 // Shared Socket ---------------------------------------------------------------
 

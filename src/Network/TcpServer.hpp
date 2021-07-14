@@ -6,10 +6,9 @@
 #include <netdb.h>
 #include <vector>
 
-#include "common.hpp"
-
-class NetworkAddress;
-class Socket;
+#include "Network/common.hpp"
+#include "Network/NetworkAddress.hpp"
+#include "Network/Socket.hpp"
 
 class TcpServer {
   DISABLE_COPY(TcpServer);
