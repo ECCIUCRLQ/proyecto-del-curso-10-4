@@ -1,11 +1,15 @@
 #ifndef DIRECTORY_HPP
 #define DIRECTORY_HPP
 
+// FILE SYSTEM
+#include "FileSystem/File.hpp"
+
+// UTILS
+#include "Utils/Parser.hpp"
+
 #include <cstddef>
 #include <vector>
 
-#include "File.hpp"
-#include "Parser.hpp"
 
 class Directory : public File {
  protected:

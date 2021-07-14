@@ -1,6 +1,21 @@
 #ifndef FILE_SYSTEM_HPP
 #define FILE_SYSTEM_HPP
 
+// FILE SYSTEM
+#include "FileSystem/Bitmap.hpp"
+#include "FileSystem/Directory.hpp"
+#include "FileSystem/File.hpp"
+#include "FileSystem/HardDrive.hpp"
+
+// UTILS
+#include "Utils/Parser.hpp"
+
+#include <cstddef>
+#include <map>
+#include <string>
+#include <iostream>
+
+
 #define BLOCK_SIZE 512
 
 // 15 permissions to choose from
@@ -22,23 +37,12 @@
 #define uWritegReadWrite 'G' 
 #define uReadWritegWrite 'M'
 
-//use wwhen calling verifypermission from a fileSystem function.
+// use when calling verifypermission from a fileSystem function.
 // use READ when opening, reading
 // use WRITE when creating,deleting, writing
 #define READ 'R'
 #define WRITE 'W'
 
-#include <cstddef>
-#include <map>
-#include <string>
-#include <iostream>
-
-#include "Bitmap.hpp"
-#include "Directory.hpp"
-#include "File.hpp"
-#include "HardDrive.hpp"
-
-#include "Parser.hpp"
 
 /**
  * @brief File System that allows reading from and writing on a Hard Drive.

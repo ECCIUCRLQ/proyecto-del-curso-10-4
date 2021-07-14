@@ -1,11 +1,11 @@
 #include "FileSystem.hpp"
+
 #include <cstring>
 #include <bitset>
-
 #include <iostream>
 
-FileSystem::FileSystem(const size_t& size, HardDrive* drive) : size(size),
-hardDrive(drive) {
+FileSystem::FileSystem(const size_t& size, HardDrive* drive) : hardDrive(drive),
+size(size) {
   // Creates the Bitmap for free/used space in storage
   this->spaceBitmap = new Bitmap(this->size / BLOCK_SIZE);
 
@@ -19,7 +19,6 @@ hardDrive(drive) {
 }
 
 FileSystem::~FileSystem() {
-
 }
 
 /*
