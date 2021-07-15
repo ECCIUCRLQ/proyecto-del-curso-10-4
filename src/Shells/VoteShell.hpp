@@ -1,9 +1,10 @@
 #ifndef VOTE_SHELL_HPP
 #define VOTE_SHELL_HPP
 
-#include "VoteClient.hpp"
-
 #include <string>
+
+// CLIENTS
+#include "Clients/VoteClient.hpp"
 
 #define CREATE_OPCODE 'a'
 #define WRITE_OPCODE  'b'
