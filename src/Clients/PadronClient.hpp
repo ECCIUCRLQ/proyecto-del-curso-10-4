@@ -2,13 +2,11 @@
 #define PADRON_CLIENT_HPP
 
 // CLIENTS
-#include "Clients/FSClient.hpp"
-
-// FILE SYSTEM
-#include "FileSystem/FileSystem.hpp"
+#include "Client.hpp"
 
 // NETWORK
 #include "Network/Socket.hpp"
+#include "Network/TcpClient.hpp"
 
 #define MAX_ATTEMPTS 3
 #define RANDOM_FILENAME_LEN 5

@@ -10,8 +10,8 @@
 #include <sstream>
 
 // NETWORK
-#include "Network/common.hpp"
-#include "Network/NetworkAddress.hpp"
+#include "common.hpp"
+#include "NetworkAddress.hpp"
 
 struct SharedSocket;
 

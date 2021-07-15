@@ -2,10 +2,10 @@
 #define FILE_SYSTEM_HPP
 
 // FILE SYSTEM
-#include "FileSystem/Bitmap.hpp"
-#include "FileSystem/Directory.hpp"
-#include "FileSystem/File.hpp"
-#include "FileSystem/HardDrive.hpp"
+#include "Bitmap.hpp"
+#include "Directory.hpp"
+#include "File.hpp"
+#include "HardDrive.hpp"
 
 // UTILS
 #include "Utils/Parser.hpp"

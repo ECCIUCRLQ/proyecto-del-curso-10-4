@@ -11,7 +11,7 @@
 #include "Network/Socket.hpp"
 
 // SERVERS
-#include "Servers/Server.hpp"
+#include "Server.hpp"
 
 #define CREATE_OPCODE 'a'
 #define WRITE_OPCODE  'b'

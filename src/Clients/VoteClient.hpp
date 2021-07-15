@@ -2,7 +2,7 @@
 #define VOTE_CLIENT_HPP
 
 // CLIENTS
-#include "Clients/FSClient.hpp"
+#include "FSClient.hpp"
 
 // FILE SYSTEM
 #include "FileSystem/FileSystem.hpp"

@@ -2,7 +2,7 @@
 #define DIRECTORY_HPP
 
 // FILE SYSTEM
-#include "FileSystem/File.hpp"
+#include "File.hpp"
 
 // UTILS
 #include "Utils/Parser.hpp"

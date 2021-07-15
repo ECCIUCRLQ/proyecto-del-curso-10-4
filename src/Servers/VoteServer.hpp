@@ -11,7 +11,7 @@
 #include "Network/Socket.hpp"
 
 // SERVERS
-#include "Servers/FSServer.hpp"
+#include "FSServer.hpp"
 
 #include <map>
 #include <string>

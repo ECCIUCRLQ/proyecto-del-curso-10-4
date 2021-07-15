@@ -2,7 +2,7 @@
 #define FSCLIENT_HPP
 
 // CLIENTS
-#include "Clients/Client.hpp"
+#include "Client.hpp"
 
 // FILE SYSTEM
 #include "FileSystem/FileSystem.hpp"
@@ -23,7 +23,11 @@
 #define EXIST_OPCODE  'e'
 #define PRINT_HD_CODE 'p'
 
+class VoteShell;
+
 class FSClient : public Client {
+  friend class VoteShell;
+
  protected:
   FileSystem* fs = nullptr;
 
@@ -45,10 +49,6 @@ class FSClient : public Client {
   bool writeLocalFile(const std::string& filepath, const std::string& data);
   std::string readLocalFile(const std::string& filepath);
   bool deleteLocalFile(const std::string& filepath);
-
- protected:
-  void sendDatagram(Socket& socket, const std::string& datagram);
-  std::string readSocketResponse(Socket& socket);
 };
 
 #endif
