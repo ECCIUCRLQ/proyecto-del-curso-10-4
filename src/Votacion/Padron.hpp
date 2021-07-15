@@ -4,6 +4,7 @@
 #include <map>
 #include <string_view>
 #include <string>
+
 class Padron {
  private:
 	struct datoVotante{
@@ -18,7 +19,7 @@ class Padron {
  public:
   Padron();
   ~Padron();
-    void agregarVotante(std::string carnet);
+  void agregarVotante(std::string carnet);
 	void setNombre(std::string carnet,std::string nombre);
 	void setCodigo(std::string carnet,std::string codigo);
 	void setVoto(std::string carnet,int voto);
