@@ -1,22 +1,21 @@
 #include <iostream>
 #include <thread>
 
-#include "HardDrive.hpp"
-#include "FileSystem.hpp"
-#include "VoteClient.hpp"
-#include "VoteServer.hpp"
-#include "VoteShell.hpp"
+#include "FileSystem/HardDrive.hpp"
+#include "FileSystem/FileSystem.hpp"
+#include "Servers/PadronServer.hpp"
+#include "Shells/PadronShell.hpp"
 
 void initServer(FileSystem* fs) {
-  VoteServer server(*fs, "URNA");
+  PadronServer server(*fs, "URNA");
   server.listenForever("8082");
 }
 
 int main(int argc, char const *argv[]) {
   HardDrive hd(1024 * 8);
   FileSystem fs(1024 * 8, &hd);
-  VoteClient vc(fs, "127.0.0.1", "8081");
-  VoteShell vs(vc);
+  PadronClient vc("127.0.0.1", "8085");
+  PadronShell vs(vc);
 
   std::thread server(initServer, &fs);
 
