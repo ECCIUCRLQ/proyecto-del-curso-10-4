@@ -198,6 +198,7 @@ class FileSystem {
   bool verifyUser(char permission, char accessPermission, bool verification);
   bool verifyGroup(char permission, char accessPermission, bool verification);
  public:
+  bool fileExists(const std::string& filepath);
   File* search(const std::string& filepath);
   void serializeTree();
   void printBitmap() {

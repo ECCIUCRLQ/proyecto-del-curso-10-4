@@ -1,66 +1,50 @@
 #ifndef SERVER_PADRON_HPP
 #define SERVER_PADRON_HPP
 
-// CLIENTS
-#include "Clients/PadronClient.hpp"
-
-// FILE SYSTEM
-#include "FileSystem/FileSystem.hpp"
+#include <string>
 
 // NETWORK
 #include "Network/Socket.hpp"
 
 // SERVERS
-#include "FSServer.hpp"
+#include "Server.hpp"
+
+// UTILS
+#include "Utils/Parser.hpp"
 
 // VOTACION
-#include "Votacion/Padron.hpp"
+#include "Votacion/PadronManager.hpp"
 
-#include <map>
-#include <string>
-#include <vector>
-#include <iostream>
-#include <sstream>
-#include <fstream>
+#define UPDATE_CODE_OPCODE    'h'
+#define UPDATE_VOTE_OPCODE    'i'
+#define VERIFY_CODE_OPCODE    'j'
+#define VERIFY_CARNET_OPCODE  'k'
+#define GET_CENTRO_OPCODE     'l'
+#define GET_NOMBRE_OPCODE     'm'
+#define VERIFY_VOTE_OPCODE    'n'
 
-#define UPDATE_CODE_OPCODE 'h'
-#define UPDATE_VOTE_OPCODE 'i'
-#define VERIFY_CODE_OPCODE 'j'
-#define VERIFY_CARNET_OPCODE 'k'
-#define CLIEN_INFO_OPCODE  'f'
-#define DIST_VOTE_OPCODE    'g'
-#define NOMBRE_ARCHIVO "PadronPrueba.csv"
-
-class PadronServer : public FSServer {
+class PadronServer : public Server {
  protected:
-  typedef struct {
-    std::string ipAddress = "";
-    std::string port = "";
-    int id = 0;
-    bool connected = false;
-    PadronClient* padronClient;
-  } client_t;
-
- protected:
-  Padron padron;
-  std::string serverClass = "";
-  std::vector<client_t> clients;
-  //std::map<int, client_t> clients;
-  size_t lastId = 0;
+  PadronManager* padron;
 
  public:
-  PadronServer(FileSystem& fs, const std::string& serverClass);
+  PadronServer() = delete;
+  PadronServer(PadronManager& padron);
   ~PadronServer();
 
- public:
-  bool addClient(const std::string& ipAddress, const std::string& port);
+ protected:
+  std::string carnetValido(const std::string& carnet);
+  std::string codigoValido(const std::string& carnet, const std::string& data);
+  std::string getNombreCompleto(const std::string& carnet);
+  std::string getCentroVotacion(const std::string& carnet);
+  std::string getHaVotado(const std::string& carnet);
 
  protected:
-  std::string getClass();
-  std::string getId();
+  std::string setCodigo(const std::string& carnet, const std::string& codigo);
+  std::string setHaVotado(const std::string& carnet);
 
  protected:
-  virtual void handleClientConnection(Socket& socketWithClient);
+  virtual void handleClientConnection(Socket& socket);
 };
 
 

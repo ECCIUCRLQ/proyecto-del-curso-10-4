@@ -13,6 +13,7 @@ class Server : public TcpServer {
   ~Server();
 
  protected:
+  void sendMessage(Socket& socket, const std::string& msg);
   void sendSuccessCode(Socket& socket);
   void sendErrorMessage(Socket& socket, char errCode = 0);
 

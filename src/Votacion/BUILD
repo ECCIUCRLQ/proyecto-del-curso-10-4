@@ -9,6 +9,18 @@ cc_library(
   ],
 )
 
+cc_library(
+  name = "PadronManager",
+  srcs = ["PadronManager.cpp"],
+  hdrs = ["PadronManager.hpp"],
+  deps = [
+    "//FileSystem:FileSystem",
+  ],
+  visibility = [
+    ":friends",
+  ],
+)
+
 
 #
 # FRIEND PACKAGES

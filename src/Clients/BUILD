@@ -47,7 +47,7 @@ cc_library(
     "//Network:Socket",
     "//Network:TcpClient",
   ],
-  visibility = [":friends"],
+  visibility = [":friends",],
 )
 
 

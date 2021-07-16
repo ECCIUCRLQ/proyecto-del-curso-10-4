@@ -256,6 +256,10 @@ File* FileSystem::search(std::vector<std::string>* splitPath, size_t pos, Direct
   return ret;
 }
 
+bool FileSystem::fileExists(const std::string& filepath) {
+  return (this->search(filepath) != nullptr);
+}
+
 bool FileSystem::deleteFile(const std::string& filePath, int user, int group) {
   bool ret = false;
   File* file = this->search(filePath);

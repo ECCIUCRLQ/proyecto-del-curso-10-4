@@ -43,6 +43,7 @@ cc_library(
   ],
   visibility = [
     ":friends",
+    "//Votacion:__pkg__",
   ],
 )
 
@@ -65,8 +66,8 @@ package_group(
   name = "friends",
   packages = [
     "//Clients",
+    "//Executables",
     "//Servers",
     "//Shells",
-    "//Executables",
   ],
 )

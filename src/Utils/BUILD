@@ -8,5 +8,8 @@ cc_library(
   name = "Parser",
   srcs = ["Parser.cpp"],
   hdrs = ["Parser.hpp"],
-  visibility = ["//FileSystem:__pkg__"],
+  visibility = [
+    "//FileSystem:__pkg__",
+    "//Servers:__pkg__",
+  ],
 )

@@ -15,6 +15,11 @@ std::string Server::readLineFromSocket(Socket& socketWithClient) {
   return readLine;
 }
 
+void Server::sendMessage(Socket& socket, const std::string& msg) {
+  socket << msg;
+  socket.send();
+}
+
 void Server::sendSuccessCode(Socket& socket) {
   socket << "1";
   socket.send();
@@ -28,5 +33,4 @@ void Server::sendErrorMessage(Socket& socket, char errCode) {
   }
 
   socket.send();
-  socket.close();
 }

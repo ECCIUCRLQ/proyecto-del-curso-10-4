@@ -22,11 +22,10 @@ cc_library(
   srcs = ["PadronServer.cpp"],
   hdrs = ["PadronServer.hpp"],
   deps = [
-    "//Clients:PadronClient",
-    "//FileSystem:FileSystem",
+    ":Server",
     "//Network:Socket",
-    "//Servers:FSServer",
-    "//Votacion:Padron",
+    "//Utils:Parser",
+    "//Votacion:PadronManager",
   ],
   visibility = [
     ":friends",
