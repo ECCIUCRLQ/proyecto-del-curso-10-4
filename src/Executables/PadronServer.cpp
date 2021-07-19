@@ -1,19 +1,38 @@
-#include "Servers/PadronServer.hpp"
-#include "FileSystem/HardDrive.hpp"
-#include "FileSystem/FileSystem.hpp"
-
 #include <iostream>
+#include <string>
+
+// FILE SYSTEM
+#include "FileSystem/FileSystem.hpp"
+#include "FileSystem/HardDrive.hpp"
+
+// SERVERS
+#include "Servers/PadronServer.hpp"
+
+// VOTACION
+#include "Votacion/PadronManager.hpp"
 
 int main(int argc, char const *argv[]) {
-  HardDrive hd(1024 * 8);
-  FileSystem fs(1024 * 8, &hd);
-  PadronServer server(fs, "FACU_INGE");
+  // Validate the amount of arguments
+  if (argc < 3) {
+    return EXIT_FAILURE;
+  }
 
-  // Add clients
-  server.addClient("127.0.0.1", "8082");
-  server.addClient("127.0.0.1", "8083");
+  // Get the filepath for the CSV containing the data
+  std::string filepath = argv[1];
 
-  server.listenForever("8081");
+  // Get the port to be used
+  std::string port = argv[2];
 
-  return 0;
+  // File System for the PadronManager
+  HardDrive hd(1024 * 20);
+  FileSystem fs(1024 * 20, &hd);
+
+  // Instance of the PadronManager
+  PadronManager padronManager(filepath, fs);
+
+  // Create and start the server
+  PadronServer server(padronManager);
+  server.listenForever(port.c_str());
+
+  return EXIT_SUCCESS;
 }

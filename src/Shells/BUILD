@@ -8,7 +8,10 @@ cc_library(
   name = "PadronShell",
   srcs = ["PadronShell.cpp"],
   hdrs = ["PadronShell.hpp"],
-  deps = ["//Clients:PadronClient"],
+  deps = [
+    "//Clients:PadronClient",
+    "//Utils:Parser",
+  ],
   visibility = [
     ":friends",
   ],

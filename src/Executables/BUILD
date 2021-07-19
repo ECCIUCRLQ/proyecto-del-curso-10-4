@@ -7,15 +7,14 @@ load("@rules_cc//cc:defs.bzl", "cc_binary")
 
 # Padron Client
 cc_binary(
-  name = "PadronClient",
-  srcs = ["PadronClient.cpp"],
+  name = "PadronShell",
+  srcs = ["PadronShell.cpp"],
   deps = [
     "//FileSystem:HardDrive",
     "//FileSystem:FileSystem",
     "//Servers:PadronServer",
     "//Shells:PadronShell",
-  ],
-  linkopts = ["-pthread"],
+  ]
 )
 
 # Padron Server

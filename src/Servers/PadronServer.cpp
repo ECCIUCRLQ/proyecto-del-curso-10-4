@@ -1,8 +1,10 @@
 #include "PadronServer.hpp"
 
+#include <iostream>
 #include <vector>
 
 PadronServer::PadronServer(PadronManager& padron) : Server(), padron(&padron) {
+  std::cout << "Server started..." << std::endl;
 }
 
 PadronServer::~PadronServer() {
@@ -124,7 +126,7 @@ void PadronServer::handleClientConnection(Socket& socket) {
 
   // Update Code
   if (opCode == UPDATE_CODE_OPCODE) {
-    std::string datagram = datagram.substr(1);
+    datagram = datagram.substr(1);
     std::vector<std::string> parts = Parser::split(datagram, ' ');
     if (parts.size() >= 2) {
       datagram = this->setCodigo(parts[0], parts[1]);
@@ -138,7 +140,7 @@ void PadronServer::handleClientConnection(Socket& socket) {
 
   // Verify Code
   if (opCode == VERIFY_CODE_OPCODE) {
-    std::string datagram = datagram.substr(1);
+    datagram = datagram.substr(1);
     std::vector<std::string> parts = Parser::split(datagram, ' ');
     if (parts.size() >= 2) {
       datagram = this->codigoValido(parts[0], parts[1]);

@@ -15,6 +15,7 @@ cc_library(
   hdrs = ["PadronManager.hpp"],
   deps = [
     "//FileSystem:FileSystem",
+    "//Utils:Parser",
   ],
   visibility = [
     ":friends",
@@ -30,5 +31,6 @@ package_group(
   name = "friends",
   packages = [
     "//Servers",
+    "//Executables",
   ],
 )

@@ -2,6 +2,7 @@
 
 #include <fstream>
 #include <sstream>
+#include <vector>
 
 PadronManager::PadronManager(const std::string& filepath, FileSystem& fs) : fs(&fs), rutaPadron(filepath) {
   this->initPadron();
@@ -22,39 +23,27 @@ bool PadronManager::initPadron() {
 
     // Parse each line
     while (std::getline(padronFile, linea)) {
-      std::string carnet, nombre, apellido1, apellido2;
-      std::string centroVotacion, codigo, haVotado;
-      bool yaVoto;
       datosVotante votante;
       std::stringstream ss(linea);
       // Extraer todos los valores de esa fila- todos estos valores se cambian segun los datos que se necesitan para el padron
-      getline(ss, carnet, ',');
-      getline(ss, nombre, ',');
-      getline(ss, apellido1, ',');
-      getline(ss, apellido2, ',');
-      getline(ss, haVotado, ',');
-      getline(ss, codigo, ',');
-      getline(ss, centroVotacion, ',');
-      if (haVotado.compare("No") == 0) {
-        yaVoto = false;
+      std::vector<std::string> fields = Parser::split(linea, ',');
+      votante.carnet = fields[0];
+      votante.apellido1 = fields[1];
+      votante.apellido2 = fields[2];
+      votante.nombre = fields[3];
+      if (fields[4].compare("No") == 0) {
+        votante.haVotado = false;
       } else {
-        yaVoto = true;
+        votante.haVotado = true;
       }
-
-      // Add the data to the dummy voter
-      votante.carnet = carnet;
-      votante.nombre = nombre;
-      votante.apellido1 = apellido1;
-      votante.apellido2 = apellido2;
-      votante.centroVotacion = centroVotacion;
-      votante.codigo = codigo;
-      votante.haVotado = yaVoto;
+      votante.codigo = fields[5];
+      votante.centroVotacion = fields[6];
 
       // Add the dummy to the map
-      this->padron.insert(std::pair<std::string, datosVotante>(carnet, votante));
+      this->padron.insert(std::pair<std::string, datosVotante>(votante.carnet, votante));
 
       // Serialize the new voter into the file system
-      this->serialize(carnet, votante);
+      this->serialize(votante.carnet, votante);
     }
 
     ret = true;
@@ -66,9 +55,10 @@ bool PadronManager::initPadron() {
 bool PadronManager::serialize(const std::string& carnet, const datosVotante& data) {
   bool ret = false;
 
-  if (!this->fs->fileExists(carnet + ".votante")) {
+  if (!this->fs->fileExists("/" + carnet + ".votante")) {
     // Create the file for the user
-    this->fs->createFile(carnet + ".votante", 0, 0, 0);
+    if (!this->fs->createFile(carnet + ".votante", 0, 0, uReadWrite)) {
+    }
 
     // Char array for the data
     char serializedData[BLOCK_SIZE] = {0};
@@ -83,7 +73,7 @@ bool PadronManager::serialize(const std::string& carnet, const datosVotante& dat
     serializedData[POS_HA_VOTADO] = (char)data.haVotado;
 
     // Write the data into the file system
-    this->fs->writeFile(carnet + ".votante", serializedData, BLOCK_SIZE, 0, 0);
+    this->fs->writeFile("/" + carnet + ".votante", serializedData, BLOCK_SIZE, 0, 0);
     ret = true;
   }
 
@@ -93,9 +83,9 @@ bool PadronManager::serialize(const std::string& carnet, const datosVotante& dat
 bool PadronManager::deserialize(const std::string& carnet, datosVotante& data) {
   bool ret = false;
 
-  if (this->fs->fileExists(carnet + ".votante")) {
+  if (this->fs->fileExists("/" + carnet + ".votante")) {
     char votanteSerializado[BLOCK_SIZE];
-    this->fs->readFile(carnet + ".votante", votanteSerializado, BLOCK_SIZE, 0, 0);
+    this->fs->readFile("/" + carnet + ".votante", votanteSerializado, BLOCK_SIZE, 0, 0);
 
     // Read the data from the serialized data
     std::string carnet(votanteSerializado[POS_CARNET], LARGO_CARNET);
@@ -141,8 +131,8 @@ std::string PadronManager::getNombreCompleto(const std::string& carnet) {
   if (this->votanteExiste(carnet)) {
     auto votante = this->padron.find(carnet);
     ret += votante->second.nombre;
-    ret += votante->second.apellido1;
-    ret += votante->second.apellido2;
+    ret += " " + votante->second.apellido1;
+    ret += " " + votante->second.apellido2;
   }
 
   return ret;
@@ -164,7 +154,7 @@ std::string PadronManager::getCodigo(const std::string& carnet) {
 
   if (this->votanteExiste(carnet)) {
     auto votante = this->padron.find(carnet);
-    ret += votante->second.carnet;
+    ret += votante->second.codigo;
   }
 
   return ret;

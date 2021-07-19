@@ -7,6 +7,9 @@
 // FILE SYSTEM
 #include "FileSystem/FileSystem.hpp"
 
+// UTILS
+#include "Utils/Parser.hpp"
+
 // Largo de datos de votante en bytes, para serializar
 #define LARGO_CARNET 10
 #define LARGO_NOMBRE 30

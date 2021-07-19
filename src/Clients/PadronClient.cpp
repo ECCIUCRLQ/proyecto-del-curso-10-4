@@ -14,7 +14,7 @@ PadronClient::PadronClient(const std::string& parentIp,
 PadronClient::~PadronClient() {
 }
 
-std::string PadronClient::sendReceiveDatagram(char* opCode, const std::string& carnet, const std::string& other) {
+std::string PadronClient::sendReceiveDatagram(std::string opCode, const std::string& carnet, const std::string& other) {
   TcpClient client;
   Socket& socket = client.connect(this->serverIp.c_str(), this->serverPort.c_str());
 
@@ -31,7 +31,7 @@ std::string PadronClient::sendReceiveDatagram(char* opCode, const std::string& c
 
 bool PadronClient::verifyCarnet(const std::string& carnet){
   bool existeVotante = false;
-  std::string response = this->sendReceiveDatagram(VERIFY_VOTE_OPCODE, carnet);
+  std::string response = this->sendReceiveDatagram(VERIFY_CARNET_OPCODE, carnet);
 
 	if (response.length() > 0 && response.at(0) == '1') {
 		existeVotante = true;

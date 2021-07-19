@@ -162,13 +162,13 @@ bool FileSystem::writeFile(std::string filepath, const char* data, size_t len, i
 
         ret = true;
       } else {
-        std::cout << "Error 3" << std::endl;
+        std::cout << "FS::writeFile: Error 3" << std::endl;
       }
     } else {
-      std::cout << "Error 2" << std::endl;
+      std::cout << "FS::writeFile: could not open " << filepath << std::endl;
     }
   } else {
-    std::cout << "Error 1" << std::endl;
+    std::cout << "FS::writeFile: Error 1" << std::endl;
   }
 
   return ret;
@@ -304,13 +304,12 @@ bool FileSystem::openFile(std::string filepath, int user, int group){
   	if (this->verifyPermission(file->getPermission(), file->getUser(), file->getGroup(),READ,user,group)) {
   		file->open();
   		open = true;
-  	}
-
-   // return open;
-
+  	} else {
+      std::cout << "Could not open " << filepath << " due to permission error" << std::endl;
+    }
   }
-  return open;
 
+  return open;
 }
 
 bool FileSystem::closeFile(std::string filepath, int user, int group){

@@ -9,7 +9,21 @@ cc_library(
   srcs = ["Parser.cpp"],
   hdrs = ["Parser.hpp"],
   visibility = [
-    "//FileSystem:__pkg__",
-    "//Servers:__pkg__",
+    ":friends",
+  ],
+)
+
+
+#
+# FRIEND PACKAGES
+#
+
+package_group(
+  name = "friends",
+  packages = [
+    "//FileSystem",
+    "//Servers",
+    "//Shells",
+    "//Votacion",
   ],
 )

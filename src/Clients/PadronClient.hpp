@@ -28,7 +28,7 @@ class PadronClient : public Client {
   virtual ~PadronClient();
 
  private:
-  std::string sendReceiveDatagram(char* opCode, const std::string& carnet, const std::string& other = "");
+  std::string sendReceiveDatagram(std::string opCode, const std::string& carnet, const std::string& other = "");
 
  public:
   bool verifyCarnet(const std::string& carnet);
