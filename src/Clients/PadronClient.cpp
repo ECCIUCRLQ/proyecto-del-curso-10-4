@@ -14,88 +14,105 @@ PadronClient::PadronClient(const std::string& parentIp,
 PadronClient::~PadronClient() {
 }
 
-bool PadronClient::updateCode(const std::string& filepath, std::string codigo){
-  bool success = false;
+std::string PadronClient::sendReceiveDatagram(char* opCode, const std::string& carnet, const std::string& other) {
   TcpClient client;
   Socket& socket = client.connect(this->serverIp.c_str(), this->serverPort.c_str());
 
-  std::string datagram = UPDATE_CODE_OPCODE + filepath + "\n" + codigo;
-  this->sendDatagram(socket, datagram);
-
-  std::string response = this->readSocketResponse(socket);
-
-  if(response.at(0) == '1'){
-    success = true;
+  std::string datagram = opCode + carnet;
+  if (other.length() > 0) {
+    datagram += " " + other;
   }
-
-  return success;
-}
-
-bool PadronClient::verifyCode(const std::string& filepath, std::string codigo){
-  bool match = false;
-  TcpClient client;
-  Socket& socket = client.connect(this->serverIp.c_str(), this->serverPort.c_str());
-
-  std::string datagram = VERIFY_CODE_OPCODE + filepath + "\n" + codigo;
   this->sendDatagram(socket, datagram);
 
   std::string response = this->readSocketResponse(socket);
-	if(response.at(0) == '1'){
-		match = true;
-	}
 
-	return match;
+  return response;
 }
 
-bool PadronClient::verifyCarnet(const std::string& filepath){
+bool PadronClient::verifyCarnet(const std::string& carnet){
   bool existeVotante = false;
-  TcpClient client;
-  Socket& socket = client.connect(this->serverIp.c_str(), this->serverPort.c_str());
+  std::string response = this->sendReceiveDatagram(VERIFY_VOTE_OPCODE, carnet);
 
-  std::cout << "Comando enviado pre: "<< filepath << std::endl;
-  std::string datagram = VERIFY_CARNET_OPCODE + filepath;
-  std::cout << "Comando enviado: "<< datagram << std::endl;
-  this->sendDatagram(socket, datagram);
-  std::string response = this->readSocketResponse(socket);
-	if(response.at(0) == '1'){
+	if (response.length() > 0 && response.at(0) == '1') {
 		existeVotante = true;
 	}
 
   return existeVotante;
 }
 
-bool PadronClient::updateVote(const std::string& filepath){
+bool PadronClient::updateCode(const std::string& carnet, std::string code){
   bool success = false;
-  TcpClient client;
-  Socket& socket = client.connect(this->serverIp.c_str(), this->serverPort.c_str());
+  std::string response = this->sendReceiveDatagram(UPDATE_CODE_OPCODE, carnet, code);
 
-  std::string datagram = UPDATE_VOTE_OPCODE + filepath;
-  this->sendDatagram(socket, datagram);
+  if (response.length() > 0 && response.at(0) == '1') {
+    success = true;
+  }
 
-  std::string response = this->readSocketResponse(socket);
+  return success;
+}
 
-  if(response.at(0) == '1'){
+bool PadronClient::verifyCode(const std::string& carnet, std::string codigo){
+  bool match = false;
+  std::string response = this->sendReceiveDatagram(VERIFY_CODE_OPCODE, carnet, codigo);
+
+	if (response.length() > 0 && response.at(0) == '1') {
+		match = true;
+	}
+
+	return match;
+}
+
+bool PadronClient::verifyVote(const std::string& carnet) {
+  bool voted = false;
+  std::string response = this->sendReceiveDatagram(VERIFY_VOTE_OPCODE, carnet);
+
+  if (response.length() > 0 && response.at(0) == '1') {
+		voted = true;
+	}
+
+  return voted;
+}
+
+bool PadronClient::updateVote(const std::string& carnet){
+  bool success = false;
+  std::string response = this->sendReceiveDatagram(UPDATE_VOTE_OPCODE, carnet);
+
+  if(response.length() > 0 && response.at(0) == '1'){
 	  success = true;
   }
 
-  return success;	
+  return success;
 }
 
-bool PadronClient::printDisk() {
-  std::cout << "UNO" <<std::endl;
+bool PadronClient::verifyCentroVotacion(const std::string& carnet, const std::string& centro) {
   bool success = false;
-  TcpClient client;
-  Socket& socket = client.connect(this->serverIp.c_str(), this->serverPort.c_str());
-  std::cout << "DOS" << std::endl;
-  std::string datagram = "z";
-  std::cout << datagram << std::endl;
-  this->sendDatagram(socket, datagram);
-  std::string response = this->readSocketResponse(socket);
+  std::string response = this->sendReceiveDatagram(GET_CENTRO_OPCODE, carnet, centro);
 
-  if(response.at(0) == '1'){
-    success = true;
-  
+  if (response.length() > 0 && response.at(0) == '1') {
+	  success = true;
   }
 
-  return success; 
+  return success;
+}
+
+std::string PadronClient::getCentroVotacion(const std::string& carnet) {
+  std::string centro = "Centro de Votación no encontrado";
+  std::string response = this->sendReceiveDatagram(GET_CENTRO_OPCODE, carnet);
+
+  if (response.length() > 0 && response.at(0) == '1') {
+	  response = response.substr(1);
+  }
+
+  return response;
+}
+
+std::string PadronClient::getNombreCompleto(const std::string& carnet) {
+  std::string nombre = "Usuario no encontrado";
+  std::string response = this->sendReceiveDatagram(GET_NOMBRE_OPCODE, carnet);
+
+  if (response.length() > 0 && response.at(0) == '1') {
+	  response = response.substr(1);
+  }
+
+  return response;
 }
