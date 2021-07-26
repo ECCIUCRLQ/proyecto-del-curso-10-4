@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.38.2 -->
+<interface>
+  <requires lib="gtk+" version="3.24"/>
+  <object class="GtkWindow" id="interfazUrna1">
+    <property name="can-focus">False</property>
+    <child>
+      <object class="GtkFixed" id="fixed">
+        <property name="visible">True</property>
+        <property name="app-paintable">True</property>
+        <property name="can-focus">False</property>
+        <property name="halign">center</property>
+        <property name="valign">center</property>
+        <child>
+          <object class="GtkButton" id="button1">
+            <property name="label" translatable="yes">Enter</property>
+            <property name="name">button1</property>
+            <property name="width-request">112</property>
+            <property name="height-request">32</property>
+            <property name="visible">True</property>
+            <property name="can-focus">True</property>
+            <property name="receives-default">True</property>
+            <property name="margin-top">70</property>
+          </object>
+          <packing>
+            <property name="x">260</property>
+            <property name="y">305</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="title">
+            <property name="width-request">548</property>
+            <property name="height-request">38</property>
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="halign">center</property>
+            <property name="valign">center</property>
+            <property name="margin-top">3</property>
+            <property name="label" translatable="yes">Universidad de Costa Rica - Sistema de Votacion</property>
+          </object>
+          <packing>
+            <property name="x">39</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkImage">
+            <property name="width-request">400</property>
+            <property name="height-request">100</property>
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="pixbuf">../../../Downloads/LogoUCR.png</property>
+          </object>
+          <packing>
+            <property name="x">116</property>
+            <property name="y">35</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="text1">
+            <property name="width-request">197</property>
+            <property name="height-request">30</property>
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="label" translatable="yes">Ingrese numero de Carnet y Codigo de verificacion</property>
+          </object>
+          <packing>
+            <property name="x">134</property>
+            <property name="y">198</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkEntry" id="entry1">
+            <property name="width-request">57</property>
+            <property name="height-request">25</property>
+            <property name="visible">True</property>
+            <property name="can-focus">True</property>
+          </object>
+          <packing>
+            <property name="x">233</property>
+            <property name="y">227</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkEntry" id="entry2">
+            <property name="width-request">100</property>
+            <property name="height-request">22</property>
+            <property name="visible">True</property>
+            <property name="can-focus">True</property>
+            <property name="visibility">False</property>
+            <property name="invisible-char">*</property>
+          </object>
+          <packing>
+            <property name="x">234</property>
+            <property name="y">267</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel">
+            <property name="width-request">100</property>
+            <property name="height-request">80</property>
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+          </object>
+          <packing>
+            <property name="x">384</property>
+            <property name="y">342</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+  <object class="GtkWindow" id="interfazUrna2">
+    <property name="can-focus">False</property>
+    <child>
+      <object class="GtkFixed">
+        <property name="visible">True</property>
+        <property name="app-paintable">True</property>
+        <property name="can-focus">False</property>
+        <property name="halign">center</property>
+        <child>
+          <object class="GtkLabel" id="title1">
+            <property name="width-request">548</property>
+            <property name="height-request">38</property>
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="halign">center</property>
+            <property name="valign">center</property>
+            <property name="margin-top">3</property>
+            <property name="label" translatable="yes">Universidad de Costa Rica - Sistema de Votacion</property>
+          </object>
+          <packing>
+            <property name="x">9</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkCheckButton" id="candidato1">
+            <property name="label" translatable="yes">Candidato1</property>
+            <property name="width-request">89</property>
+            <property name="height-request">31</property>
+            <property name="visible">True</property>
+            <property name="can-focus">True</property>
+            <property name="receives-default">False</property>
+            <property name="draw-indicator">True</property>
+          </object>
+          <packing>
+            <property name="x">29</property>
+            <property name="y">339</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkCheckButton" id="candidato2">
+            <property name="label" translatable="yes">candidato2</property>
+            <property name="width-request">100</property>
+            <property name="height-request">31</property>
+            <property name="visible">True</property>
+            <property name="can-focus">True</property>
+            <property name="receives-default">False</property>
+            <property name="draw-indicator">True</property>
+          </object>
+          <packing>
+            <property name="x">219</property>
+            <property name="y">339</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkCheckButton" id="candidato3">
+            <property name="label" translatable="yes">candidato3</property>
+            <property name="width-request">100</property>
+            <property name="height-request">31</property>
+            <property name="visible">True</property>
+            <property name="can-focus">True</property>
+            <property name="receives-default">False</property>
+            <property name="draw-indicator">True</property>
+          </object>
+          <packing>
+            <property name="x">463</property>
+            <property name="y">339</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkImage">
+            <property name="width-request">26</property>
+            <property name="height-request">23</property>
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="pixbuf">candidato1.png</property>
+          </object>
+          <packing>
+            <property name="x">-24</property>
+            <property name="y">88</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkImage">
+            <property name="width-request">26</property>
+            <property name="height-request">26</property>
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="pixbuf">candidato2.png</property>
+          </object>
+          <packing>
+            <property name="x">190</property>
+            <property name="y">50</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkImage">
+            <property name="width-request">100</property>
+            <property name="height-request">80</property>
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="pixbuf">candidato3.png</property>
+          </object>
+          <packing>
+            <property name="x">437</property>
+            <property name="y">88</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="confButton">
+            <property name="label" translatable="yes">Confirmar voto</property>
+            <property name="width-request">100</property>
+            <property name="height-request">24</property>
+            <property name="visible">True</property>
+            <property name="can-focus">True</property>
+            <property name="receives-default">True</property>
+          </object>
+          <packing>
+            <property name="x">27</property>
+            <property name="y">431</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="voto">
+            <property name="width-request">96</property>
+            <property name="height-request">25</property>
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="label" translatable="yes">voto:</property>
+          </object>
+          <packing>
+            <property name="x">42</property>
+            <property name="y">396</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkCheckButton" id="confBox">
+            <property name="label" translatable="yes">Confirmo mi voto</property>
+            <property name="width-request">100</property>
+            <property name="height-request">46</property>
+            <property name="visible">True</property>
+            <property name="can-focus">True</property>
+            <property name="receives-default">False</property>
+            <property name="draw-indicator">True</property>
+          </object>
+          <packing>
+            <property name="x">185</property>
+            <property name="y">431</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="resetButton">
+            <property name="label" translatable="yes">Terminar</property>
+            <property name="width-request">100</property>
+            <property name="height-request">24</property>
+            <property name="visible">True</property>
+            <property name="can-focus">True</property>
+            <property name="receives-default">True</property>
+          </object>
+          <packing>
+            <property name="x">27</property>
+            <property name="y">431</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>
