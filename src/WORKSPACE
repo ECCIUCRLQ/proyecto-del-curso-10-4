@@ -1,0 +1,10 @@
+#
+# GTK 3.0 SUPPORT
+#
+
+# gtk-3.0 from /usr/include
+new_local_repository(
+  name = "Gtk-3.0-inc",
+  path = "/usr/include",
+  build_file = "gtkinc.BUILD",
+)

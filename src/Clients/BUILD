@@ -61,5 +61,6 @@ package_group(
     "//Shells",
     "//Servers",
     "//Executables",
+    "//GUI",
   ]
 )
