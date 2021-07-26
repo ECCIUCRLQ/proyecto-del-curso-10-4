@@ -1,4 +1,21 @@
 #
+# Pkg-config
+#
+
+http_archive(
+  name = "bazel_pkg_config",
+  strip_prefix = "bazel_pkg_config-master",
+  urls = ["https://github.com/cherrry/bazel_pkg_config/archive/master.zip"],
+)
+
+load("@bazel_pkg_config//:pkg_config.bzl", "pkg_config")
+
+pkg_config(
+  name = "gtkmm-3.0",
+)
+
+
+#
 # GTK 3.0 SUPPORT
 #
 

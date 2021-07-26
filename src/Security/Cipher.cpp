@@ -110,7 +110,6 @@ char* Cipher::encryptAES256(std::string pass, const char* data, size_t dataSize,
   }
 
   // Variables for encription handles
-  size_t keySize = ::gcry_cipher_get_algo_keylen(GCRY_CIPHER_AES256);
   size_t blockSize = ::gcry_cipher_get_algo_blklen(GCRY_CIPHER_AES256);
   size_t blocksRequired = dataSize / blockSize;
   if (dataSize % blockSize) {

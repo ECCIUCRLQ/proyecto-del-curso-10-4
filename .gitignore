@@ -2,3 +2,5 @@
 .vscode
 .vs
 bazel-*
+src/Build
+src/Bin
