@@ -1,12 +1,13 @@
 # Compile
 CXX = g++
 INCLUDES = -I$(shell pwd)
-CXXFLAGS = `pkg-config --cflags gtkmm-3.0` -Wall -g
+CXXFLAGS = `pkg-config --cflags gtkmm-3.0` -Wall
 LIBS = `pkg-config --libs gtkmm-3.0` -lgcrypt -lgpg-error
 
 # Objects
 CLIENTS = Client.o FSClient.o PadronClient.o VoteClient.o
 FILE_SYSTEM = Bitmap.o Directory.o File.o FileSystem.o HardDrive.o
+GUIS = Urna.o MaquinaVerificadora.o
 NETWORK = NetworkAddress.o Socket.o TcpClient.o TcpServer.o
 SECURITY = Base64.o Cipher.o Hash.o
 SERVERS = FSServer.o PadronServer.o Server.o VoteServer.o
@@ -14,7 +15,7 @@ SHELLS = PadronShell.o VoteShell.o
 UTILS = Parser.o
 VOTACION = Padron.o PadronManager.o
 
-ALL_OBJECTS = $(CLIENTS) $(FILE_SYSTEM) $(NETWORK) $(SECURITY) $(SERVERS) $(SHELLS) $(UTILS) $(VOTACION)
+ALL_OBJECTS = $(CLIENTS) $(FILE_SYSTEM) $(GUIS) $(NETWORK) $(SECURITY) $(SERVERS) $(SHELLS) $(UTILS) $(VOTACION)
 
 # Executables
 EXECUTABLE = PadronServerExe PadronShellExe VoteClientExe VoteServerExe
@@ -110,6 +111,12 @@ PadronManager.o: Votacion/PadronManager.hpp Votacion/PadronManager.cpp
 	$(CXX) -c $(CXXFLAGS) $(INCLUDES) Votacion/PadronManager.cpp -o Build/PadronManager.o $(LIBS)
 
 
+# GUIs
+Urna.o: GUI/Urna.hpp GUI/Urna.hpp
+	$(CXX) -c $(CXXFLAGS) $(INCLUDES) GUI/Urna.cpp -o Build/Urna.o $(LIBS)
+
+MaquinaVerificadora.o: GUI/MaquinaVerificadora.hpp GUI/MaquinaVerificadora.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCLUDES) GUI/MaquinaVerificadora.cpp -o Build/MaquinaVerificadora.o $(LIBS)
 
 # Executables
 PadronServer: makeDirs $(ALL_OBJECTS) Executables/PadronServer.cpp
@@ -124,7 +131,13 @@ VoteClient: makeDirs $(ALL_OBJECTS) Executables/VoteClient.cpp
 VoteServer: makeDirs $(ALL_OBJECTS) Executables/VoteServer.cpp
 	$(CXX) $(CXXFLAGS) $(INCLUDES) Build/*.o Executables/VoteServer.cpp -o Bin/VoteServer.out $(LIBS)
 
-all: makeDirs PadronServer PadronShell VoteClient VoteServer
+Urna: makeDirs $(ALL_OBJECTS) Executables/Urna.cpp
+	$(CXX) $(CXXFLAGS) $(INCLUDES) Build/*.o Executables/Urna.cpp -o Bin/Urna.out $(LIBS)
+
+MaquinaVerificadora: makeDirs $(ALL_OBJECTS) Executables/MaquinaVerificadora.cpp
+	$(CXX) $(CXXFLAGS) $(INCLUDES) Build/*.o Executables/MaquinaVerificadora.cpp -o Bin/MaquinaVerificadora.out $(LIBS)
+
+all: makeDirs PadronServer PadronShell VoteClient VoteServer Urna MaquinaVerificadora
 
 # Phonies
 .PHONY: makeDirs
@@ -134,5 +147,5 @@ makeDirs:
 
 .PHONY: clean
 clean:
-	rm -rf Build
-	rm -rf Bin
+	rm -rf Build/*
+	rm -rf Bin/*.out

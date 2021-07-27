@@ -1,32 +1,47 @@
-#ifndef MAQUINA_VERIFICADORA_HPP
-#define MAQUINA_VERIFICADORA_HPP
+#ifndef MAQUINA_VERIFICADORA_GUI_HPP
+#define MAQUINA_VERIFICADORA_GUI_HPP
 
+#include <gtkmm.h>
+#include <gtkmm/entry.h>
+#include <iostream>
 #include <map>
-#include <string>
+#include <string.h>
 
-#include <gtk/gtk.h>
+// CLIENTS
+#include "Clients/PadronClient.hpp"
+
+#define GLADE_PATH "interfazMaquinaVerificadora.glade"
 
 class MaquinaVerificadora {
  private:
-  GtkApplication* app;
-  GtkBuilder* builder;
-  std::map<std::string, GtkWidget*> windows;
-  std::map<std::string, GtkWidget*> widgets;
+  PadronClient* padronClient = nullptr;
+
+ private:
+  std::map<std::string, Gtk::Window*> windows;
+  std::map<std::string, Gtk::Button*> buttons;
+  std::map<std::string, Gtk::Label*> labels;
+  std::map<std::string, Gtk::Entry*> entries;
+  Glib::RefPtr<Gtk::Application> app;
 
  public:
-  MaquinaVerificadora();
+  MaquinaVerificadora() = delete;
+  MaquinaVerificadora(const std::string& serverIp, const std::string& serverPort);
   ~MaquinaVerificadora();
 
- private:
-  void init(int argc, char *argv[]);
-
- private:
-  void mainWindow(GtkApplication* app, gpointer userData);
-  void errorWindow(GtkApplication* app, gpointer userData);
-  void successWindow(GtkApplication* app, gpointer userData);
-
  public:
-  void run();
+  int run();
+
+ private:
+  void buildUI();
+  void buildMainUI();
+  void buildSuccessUI();
+  void buildErrorUI();
+  void buildConnections();
+
+ private:
+  void verify();
+  void exitError();
+  void exitSuccess();
 };
 
 

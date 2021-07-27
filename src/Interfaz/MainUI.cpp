@@ -1,8 +1,11 @@
 #include <gtkmm.h>
-#include <iostream>
 #include <gtkmm/entry.h>
+#include <iostream>
 #include <string.h>
-#include "../Clients/PadronClient.hpp"
+
+// CLIENTS
+#include "Clients/PadronClient.hpp"
+
 #define UI_FILE "interfazUrna.glade"
 //bazel build Executables:PadronServer /proyecto-del-curso-10-4/src/bazel-out/k8-fastbuild/bin/Executables/PadronServer.runfiles File path ../proyecto-del-curso-10-4/PadronPrueba.csv 8082 
 
@@ -215,13 +218,9 @@ void on_app_activate()
 
 }
 
-
-
-
 int main(int argc, char** argv) {
-
-    app = Gtk::Application::create("interfaz.example");
-    app->signal_activate().connect([] () { on_app_activate(); });
+  app = Gtk::Application::create("interfaz.example");
+  app->signal_activate().connect([] () { on_app_activate(); });
 
   return app->run(argc, argv);
 }
