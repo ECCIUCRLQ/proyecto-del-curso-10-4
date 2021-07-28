@@ -48,11 +48,11 @@ class PadronServer : public Server {
 
  protected:
   /*
- *Funcion setCodigo- cambia el codigo de verificacion de un votante
-	* datos de la funcion setCodigo
-	* @param carnet-carnet del votante
-	* @param codigo-codigo de verificacion hasheado
-	*/
+  *Funcion setCodigo- cambia el codigo de verificacion de un votante
+  * datos de la funcion setCodigo
+  * @param carnet-carnet del votante
+  * @param codigo-codigo de verificacion hasheado
+  */
   std::string setCodigo(const std::string& carnet, const std::string& codigo);
   std::string setHaVotado(const std::string& carnet);
 
@@ -60,6 +60,11 @@ class PadronServer : public Server {
   void printPadron();
 
  protected:
+ /*
+  *Funcion handleClientConnection determina que solicitud se esta realizando basandose en el datagrama recibido que fue enviado por el cliente
+  * datos de la funcion handleClientConnection
+  * @param socket- socket del cliente conectandose con el padron
+  */
   virtual void handleClientConnection(Socket& socket);
 };
 
