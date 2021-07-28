@@ -38,17 +38,49 @@ class PadronManager {
   } datosVotante;
 
  private:
+ /**
+  * @brief objeto de sistema de archivo propio del padron manager
+  */
   FileSystem* fs;
+  /**
+  * @brief ruta de donde se encuentra el archivo que carga y contiene el padron
+  */
   std::string rutaPadron = "";
+  /**
+  * @brief mapa asociativo entre el numero de carnet del votante y sus datos en el padron.
+  */
   std::map<std::string, datosVotante> padron;
 
  public:
+ /**
+   * @brief Constructor del padron manager
+   * @param filepath ruta de donde se encuentra el archivo que se carga y que contiene el padron
+   * @param fs sistema de archivos propio del padron manager
+   */
   PadronManager(const std::string& filepath, FileSystem& fs);
   ~PadronManager();
 
  private:
+ /**
+   * @brief Constructor del padron manager
+   * @param filepath ruta de donde se encuentra el archivo que se carga y que contiene el padron
+   * @param fs sistema de archivos propio del padron manager
+   * @return True on success, false if the File could not be created
+   */
   bool initPadron();
+ /**
+   * @brief serializa el sistema archivos propio del padron manager
+   * @param carnet nuevo del votante agregado al padron manager
+   * @param data datos del votane que esta siendo agregado al padron manager
+   * @return True si hubo exito, false si no se pudo completar la serializacion
+   */
   bool serialize(const std::string& carnet, const datosVotante& data);
+ /**
+   * @brief deserializa el sistema archivos propio del padron manager
+   * @param carnet nuevo del votante agregado al padron manager
+   * @param data datos del votane que esta siendo agregado al padron manager
+   * @return True si hubo exito, false si no se pudo completar la deserializacion
+   */
   bool deserialize(const std::string& carnet, datosVotante& data);
  
  public:
