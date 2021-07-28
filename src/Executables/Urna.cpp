@@ -1,7 +1,7 @@
 #include <string>
 
 #include "GUI/Urna.hpp"
-
+//
 int main(int argc, char *argv[]) {
   if (argc >= 6) {
     std::string padronIp = argv[1];
