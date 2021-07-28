@@ -17,15 +17,18 @@ int main(int argc, char const *argv[]) {
 
   std::string client;
   std::vector<std::string> clientInfo;
+  std::cout << "Add client: ";
   while (std::getline(std::cin, client)) {
     clientInfo = Parser::split(client, ':');
     if (clientInfo.size() >= 2) {
       // Add clients
       server.addClient(clientInfo[0], clientInfo[1]);
     }
+    std::cout << "Add client: ";
   }
 
-  server.listenForever("8081");
+  std::cout << "Listening forever started..." << std::endl;
+  server.listenForever(argv[1]);
 
   return 0;
 }

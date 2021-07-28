@@ -9,10 +9,13 @@ Urna::Urna(const std::string& padronIp, const std::string& padronPort,
   // File System
   this->hd = new HardDrive(HD_SIZE);
   this->fs = new FileSystem(HD_SIZE, this->hd);
+  std::cout << "Fs done" << std::endl;
 
   // Clients
   this->padronClient = new PadronClient(padronIp, padronPort);
+  std::cout << "pc done" << std::endl;
   this->voteClient = new VoteClient(*this->fs, voteIp, votePort);
+  std::cout << "vc done" << std::endl;
   if (padronClient == nullptr) {
     throw std::runtime_error("Error: could not initialize the PadronClient");
   }
@@ -21,17 +24,26 @@ Urna::Urna(const std::string& padronIp, const std::string& padronPort,
   }
 
   // Init server in a separate thread
-  std::thread server(Urna::initServer, this->fs, serverPort);
+  std::cout << "pre thread" << std::endl;
+  std::cout << "post thread" << std::endl;
 }
 
 Urna::~Urna() {
   delete this->padronClient;
-  //delete this->voteClient;
+  delete this->voteClient;
 }
 
 void Urna::initServer(FileSystem* fs, std::string port) {
   VoteServer vs(*fs, "URNA");
-  vs.listenForever(port.c_str());
+  std::cout << "Eoo1" << std::endl;
+  std::cout << "port is " << port << std::endl;
+  try {
+    std::cout << "port is " << port << std::endl;
+    vs.listenForever(port.c_str());
+  } catch (std::runtime_error& e) {
+    std::cout << "Could not run listen forever: " << e.what() << std::endl;
+  }
+  std::cout << "Eoo2" << std::endl;
 }
 
 int Urna::run(int argc, char** argv) {
