@@ -39,6 +39,7 @@ class PadronClient : public Client {
   bool verifyCentroVotacion(const std::string& carnet, const std::string& centro);
   std::string getCentroVotacion(const std::string& carnet);
   std::string getNombreCompleto(const std::string& carnet);
+  void printPadron();
 };
 
 #endif

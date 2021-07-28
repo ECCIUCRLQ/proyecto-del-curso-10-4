@@ -116,3 +116,12 @@ std::string PadronClient::getNombreCompleto(const std::string& carnet) {
 
   return response;
 }
+
+void PadronClient::printPadron() {
+  TcpClient client;
+  Socket& socket = client.connect(this->serverIp.c_str(), this->serverPort.c_str());
+  std::string datagram = "print";
+  this->sendDatagram(socket, datagram);
+  socket.close();
+  return;
+}

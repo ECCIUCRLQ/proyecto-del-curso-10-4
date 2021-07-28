@@ -21,6 +21,13 @@ void PadronShell::shell() {
 void PadronShell::parse(const std::string& input) {
   std::vector<std::string> commandParts = Parser::split(input, ' ');
   
+  // Verify print command first
+  // Print Padron
+  if (input.compare(PRINT_COMMAND) == 0) {
+    this->printPadron();
+    return;
+  }
+
   // Exit if no parts were read
   if (commandParts.size() < 2) {
     return;
@@ -137,4 +144,9 @@ void PadronShell::getName(const std::string& carnet) {
   } else {
     std::cout << "getName: could not get the name for " << carnet << std::endl;
   }
+}
+
+void PadronShell::printPadron() {
+  std::cout << "Shell print" << std::endl;
+  this->padronClient.printPadron();
 }

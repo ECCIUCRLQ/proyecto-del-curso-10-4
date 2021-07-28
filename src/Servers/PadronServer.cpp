@@ -100,6 +100,10 @@ std::string PadronServer::setHaVotado(const std::string& carnet) {
   return ret;
 }
 
+void PadronServer::printPadron() {
+  this->padron->printPadron();
+}
+
 void PadronServer::handleClientConnection(Socket& socket) {
   std::string datagram = this->readLineFromSocket(socket);
   char opCode = datagram.at(0);
@@ -175,6 +179,11 @@ void PadronServer::handleClientConnection(Socket& socket) {
     this->sendMessage(socket, datagram);
     socket.close();
     return;
+  }
+
+  // Print Padron
+  if (opCode == PRINT_OPCODE) {
+    this->printPadron();
   }
 
   this->sendErrorMessage(socket);

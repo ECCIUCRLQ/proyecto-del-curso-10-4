@@ -198,8 +198,10 @@ bool PadronManager::setHaVotado(const std::string& carnet) {
 }
 
 void PadronManager::printPadron() {
-  for(auto i = padron.cbegin(); i != myMap.cend(); ++i)
-{
-    std::cout<<"Nombre: " << i->second.nombre << " " << i->second.apellido1 << " " << it->second.apellido2 << "Si ha votado: "<<i->second.haVotado <<"Código: " << i->second.codigo << "Centro de votación: "<< second.centroVotacion "\n";
+  for(auto i : this->padron) {
+    std::cout << "Nombre: " << i.second.nombre << " " << i.second.apellido1
+    << " " << i.second.apellido2 << " Ha votado: "<< i.second.haVotado
+    << " Código: " << i.second.codigo
+    << " Centro de votación: " << i.second.centroVotacion << std::endl;
+  }
 }
-

@@ -24,6 +24,7 @@
 #define GET_CENTRO_OPCODE     'l'
 #define GET_NOMBRE_OPCODE     'm'
 #define VERIFY_VOTE_OPCODE    'n'
+#define PRINT_OPCODE          'p'
 
 class PadronServer : public Server {
  protected:
@@ -45,6 +46,9 @@ class PadronServer : public Server {
  protected:
   std::string setCodigo(const std::string& carnet, const std::string& codigo);
   std::string setHaVotado(const std::string& carnet);
+
+ protected:
+  void printPadron();
 
  protected:
   virtual void handleClientConnection(Socket& socket);
