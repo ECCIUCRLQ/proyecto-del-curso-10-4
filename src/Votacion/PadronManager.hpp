@@ -39,7 +39,7 @@ class PadronManager {
 
  private:
  /**
-  * @brief objeto de sistema de archivo propio del padron manager
+  * @brief objeto de sistema de archivo propio del padron
   */
   FileSystem* fs;
   /**
@@ -55,30 +55,28 @@ class PadronManager {
  /**
    * @brief Constructor del padron manager
    * @param filepath ruta de donde se encuentra el archivo que se carga y que contiene el padron
-   * @param fs sistema de archivos propio del padron manager
+   * @param fs sistema de archivos propio del padron 
    */
   PadronManager(const std::string& filepath, FileSystem& fs);
   ~PadronManager();
 
  private:
  /**
-   * @brief Constructor del padron manager
-   * @param filepath ruta de donde se encuentra el archivo que se carga y que contiene el padron
-   * @param fs sistema de archivos propio del padron manager
-   * @return True on success, false if the File could not be created
+   * @brief inicializa el padron manager al extraer y agregar cada votante del archivo del padron al padron.
+   * @return True si hubo exito, false si no se pudo inicializar el padron
    */
   bool initPadron();
  /**
-   * @brief serializa el sistema archivos propio del padron manager
-   * @param carnet nuevo del votante agregado al padron manager
-   * @param data datos del votane que esta siendo agregado al padron manager
+   * @brief serializa el sistema archivos propio del padron
+   * @param carnet nuevo del votante agregado al padron
+   * @param data datos del votane que esta siendo agregado al padron
    * @return True si hubo exito, false si no se pudo completar la serializacion
    */
   bool serialize(const std::string& carnet, const datosVotante& data);
  /**
-   * @brief deserializa el sistema archivos propio del padron manager
-   * @param carnet nuevo del votante agregado al padron manager
-   * @param data datos del votane que esta siendo agregado al padron manager
+   * @brief deserializa el sistema archivos propio del padron
+   * @param carnet nuevo del votante agregado al padron
+   * @param data datos del votante que esta siendo agregado al padron
    * @return True si hubo exito, false si no se pudo completar la deserializacion
    */
   bool deserialize(const std::string& carnet, datosVotante& data);
