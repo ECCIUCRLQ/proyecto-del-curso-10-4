@@ -2,6 +2,8 @@
 
 #include <iostream>
 #include <vector>
+#include <sstream>
+
 
 PadronServer::PadronServer(PadronManager& padron) : Server(), padron(&padron) {
   std::cout << "Server started..." << std::endl;
@@ -15,18 +17,24 @@ std::string PadronServer::carnetValido(const std::string& carnet) {
   if (this->padron->votanteExiste(carnet)) {
     ret = "1";
   }
+  std::stringstream ss (ret);
+  int x = 0;
+  ss >> x;
+  this->logger->log("carnetValido",carnet,x);
   return ret;
 }
 
 std::string PadronServer::codigoValido(const std::string& carnet, const std::string& codigo) {
   std::string ret = "0";
-
   if (this->padron->votanteExiste(carnet)) {
     if (this->padron->getCodigo(carnet).compare(codigo) == 0) {
       ret = "1";
     }
   }
-
+  std::stringstream ss (ret);
+  int x = 0;
+  ss >> x;
+  this->logger->log("codigoValido", codigo, x);
   return ret;
 }
 
@@ -35,10 +43,11 @@ std::string PadronServer::getNombreCompleto(const std::string& carnet) {
 
   if (nombreCompleto.length() > 0) {
     nombreCompleto.insert(0, "1");
+    this->logger->log("nombreCompleto", nombreCompleto, 1 );
   } else {
+    this->logger->log("nombreCompleto", nombreCompleto, 0);
     nombreCompleto = "0";
   }
-
   return nombreCompleto;
 }
 
@@ -47,40 +56,47 @@ std::string PadronServer::getCentroVotacion(const std::string& carnet) {
   
   if (centro.length() > 0) {
     centro.insert(0, "1");
+    this->logger->log("centroVotacion", carnet, 1 );
   } else {
     centro = "0";
+    this->logger->log("centroVotacion", carnet, 0);
   }
-
   return centro;
 }
 
 std::string PadronServer::getHaVotado(const std::string& carnet) {
   std::string ret = "0";
-
   if (this->padron->getHaVotado(carnet)) {
     ret = "1";
   }
-
+  std::stringstream ss (ret);
+  int x = 0;
+  ss >> x;
+  this->logger->log(" confirmando que haVotado", carnet, x);
   return ret;
 }
 
 std::string PadronServer::setCodigo(const std::string& carnet, const std::string& codigo) {
   std::string ret = "0";
-
   if (this->padron->setCodigo(carnet, codigo)) {
     ret = "1";
   }
-
+  std::stringstream ss (ret);
+  int x = 0;
+  ss >> x;
+  this->logger->log("setCodigo", carnet + " "+ codigo, x);
   return ret;
 }
 
 std::string PadronServer::setHaVotado(const std::string& carnet) {
-  std::string ret = "";
-
+  std::string ret = "0";
   if (this->padron->setHaVotado(carnet)) {
     ret = "1";
   }
-
+  std::stringstream ss (ret);
+  int x = 0;
+  ss >> x;
+  this->logger->log("actualizando haVotado", carnet, x);
   return ret;
 }
 

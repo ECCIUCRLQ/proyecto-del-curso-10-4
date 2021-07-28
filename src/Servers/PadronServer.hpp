@@ -12,6 +12,8 @@
 // UTILS
 #include "Utils/Parser.hpp"
 
+// LOGGER
+#include "Logger/Logger.hpp"
 // VOTACION
 #include "Votacion/PadronManager.hpp"
 
@@ -26,6 +28,7 @@
 class PadronServer : public Server {
  protected:
   PadronManager* padron;
+  Logger* logger;
 
  public:
   PadronServer() = delete;
