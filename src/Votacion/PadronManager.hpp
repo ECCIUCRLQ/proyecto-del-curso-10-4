@@ -61,6 +61,7 @@ class PadronManager {
  public:
   bool setCodigo(const std::string& carnet, const std::string& codigo);
   bool setHaVotado(const std::string& carnet);
+  void printPadron();
 };
 
 
