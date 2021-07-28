@@ -1,26 +1,37 @@
 #include "Urna.hpp"
 
 #include <stdexcept>
+#include <thread>
 
-Urna::Urna(const std::string& serverIp, const std::string& serverPort) {
+Urna::Urna(const std::string& padronIp, const std::string& padronPort,
+          const std::string& voteIp, const std::string& votePort,
+          const std::string& serverPort) {
   // File System
   this->hd = new HardDrive(HD_SIZE);
   this->fs = new FileSystem(HD_SIZE, this->hd);
 
   // Clients
-  this->padronClient = new PadronClient(serverIp, serverPort);
-  //this->voteClient = new VoteClient(*this->fs, serverIp, serverPort);
+  this->padronClient = new PadronClient(padronIp, padronPort);
+  this->voteClient = new VoteClient(*this->fs, voteIp, votePort);
   if (padronClient == nullptr) {
     throw std::runtime_error("Error: could not initialize the PadronClient");
   }
-  //if (voteClient == nullptr) {
-  //  throw std::runtime_error("Error: could not initialize the VoteClient");
-  //}
+  if (voteClient == nullptr) {
+    throw std::runtime_error("Error: could not initialize the VoteClient");
+  }
+
+  // Init server in a separate thread
+  std::thread server(Urna::initServer, this->fs, serverPort);
 }
 
 Urna::~Urna() {
   delete this->padronClient;
   //delete this->voteClient;
+}
+
+void Urna::initServer(FileSystem* fs, std::string port) {
+  VoteServer vs(*fs, "URNA");
+  vs.listenForever(port.c_str());
 }
 
 int Urna::run(int argc, char** argv) {

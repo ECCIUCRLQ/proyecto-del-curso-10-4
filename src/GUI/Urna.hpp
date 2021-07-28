@@ -15,6 +15,9 @@
 #include "Clients/PadronClient.hpp"
 #include "Clients/VoteClient.hpp"
 
+// SERVERS
+#include "Servers/VoteServer.hpp"
+
 #define GLADE_PATH "interfazUrna.glade"
 #define HD_SIZE 51200
 
@@ -40,8 +43,13 @@ class Urna {
 
  public:
   Urna() = delete;
-  Urna(const std::string& serverIp, const std::string& serverPort);
+  Urna(const std::string& padronIp, const std::string& padronPort,
+      const std::string& voteIp, const std::string& votePort,
+      const std::string& serverPort);
   ~Urna();
+
+ private:
+  static void initServer(FileSystem* fs, std::string port);
 
  public:
   int run(int argc, char** argv);
