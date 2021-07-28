@@ -1,3 +1,5 @@
+/* COPYRIGHT Equipo Tronaditas 2021 */
+// Clase principal-Servidor del padron
 #ifndef SERVER_PADRON_HPP
 #define SERVER_PADRON_HPP
 
@@ -37,6 +39,7 @@ class PadronServer : public Server {
   ~PadronServer();
 
  protected:
+ 
   std::string carnetValido(const std::string& carnet);
   std::string codigoValido(const std::string& carnet, const std::string& data);
   std::string getNombreCompleto(const std::string& carnet);
@@ -44,6 +47,12 @@ class PadronServer : public Server {
   std::string getHaVotado(const std::string& carnet);
 
  protected:
+  /*
+ *Funcion setCodigo- cambia el codigo de verificacion de un votante
+	* datos de la funcion setCodigo
+	* @param carnet-carnet del votante
+	* @param codigo-codigo de verificacion hasheado
+	*/
   std::string setCodigo(const std::string& carnet, const std::string& codigo);
   std::string setHaVotado(const std::string& carnet);
 
